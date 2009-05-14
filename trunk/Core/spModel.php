@@ -28,7 +28,7 @@ class spModel {
 	/**
 	 * 表全名
 	 */
-	protected $tbl_name;
+	protected $tbl_name = null;
 	
 	/**
 	 * 数据驱动程序
@@ -40,7 +40,7 @@ class spModel {
 	 */
 	public function __construct($params = null)
 	{
-		$this->tbl_name = $GLOBALS['G_SP']['db']['prefix'] . $this->table;
+		if( null == $this->tbl_name )$this->tbl_name = $GLOBALS['G_SP']['db']['prefix'] . $this->table;
 		$this->_db = spClass($GLOBALS['G_SP']['db']['driver'], $GLOBALS['G_SP']['db'], $GLOBALS['G_SP']['sp_core_path'].$GLOBALS['G_SP']['db_driver_path']);
 	}
 
