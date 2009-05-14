@@ -28,10 +28,9 @@ class spController {
      * 应用程序的控制器类可以覆盖该函数以使用自定义的跳转程序
      *
      * @param <string> $url  需要前往的地址
-     * @param <int> $delay   延迟时间
      */
-    public function jump($url, $delay = 0){
-		echo "<html><head><http-equiv='refresh' content='{$delay};url={$url}'></head><body></body></html>";
+    public function jump($url){
+		header("Location: {$url}");
 		exit;
     }
 }
