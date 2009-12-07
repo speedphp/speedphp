@@ -1,7 +1,7 @@
 <?php
 /////////////////////////////////////////////////////////////////////////////
 //
-// SpeedPHP - 快速的中文PHP应用框架
+// SpeedPHP - 快速的中文PHP框架
 //
 // Copyright (c) 2008 - 2009 SpeedPHP.com All rights reserved.
 //
@@ -12,7 +12,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 /**
- * mysql 模型应用级扩展
+ * mysql MySQL数据库的驱动支持 
  */
 class mysql {
 	/**
@@ -42,6 +42,11 @@ class mysql {
 		array_pop($rows);
 		return $rows;
 	}
+	
+	public function newinsertid()
+	{
+		return mysql_insert_id($this->conn);
+	}
 
 	/**
 	 * 执行一个SQL语句
@@ -50,10 +55,13 @@ class mysql {
 	 */
 	public function exec($sql)
 	{
+		$this->arrSql[] = $sql;
 		if( $result = mysql_query($sql, $this->conn) ){
 			return $result;
 		}else{
-			die("Invalid query: " . mysql_error());
+			//dump(debug_backtrace());
+			//die("{$sql}<br />Invalid query: " . mysql_error());
+			spError("{$sql}<br />Invalid query: " . mysql_error());
 		}
 	}
 
