@@ -148,7 +148,7 @@ class spArgs {
 	 * 构造函数
 	 *
 	 */
-	public function __construct($args){
+	public function __construct(){
 		$this->args = $_REQUEST;
 	}
 	
