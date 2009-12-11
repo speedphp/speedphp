@@ -72,7 +72,7 @@ class spController {
 	/**
 	 * 魔术函数，获取赋值作为模板内变量
 	 */
-	private function __set($name, $value)
+	public function __set($name, $value)
 	{
 		if(TRUE == $GLOBALS['G_SP']['view']['enabled']){
 			$this->v->getView()->assign(array($name=>$value));
@@ -98,7 +98,7 @@ class spController {
 	public function __call($name, $args)
 	{
 		if(in_array($name, $GLOBALS['G_SP']["auto_load_controller"])){
-			return spClass($name, &$this)->__input($args);
+			return spClass($name)->__input($args);
 		}elseif(!method_exists( $this, $name )){
 			spError("method {$name} not defined");
 		}
