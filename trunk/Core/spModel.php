@@ -230,7 +230,7 @@ class spModel {
 	public function __call($name, $args)
 	{
 		if(in_array($name, $GLOBALS['G_SP']["auto_load_model"])){
-			return spClass($name)->__input(&$this, $args);
+			return spClass($name)->__input( $this, $args);
 		}elseif(!method_exists( $this, $name )){
 			spError("method {$name} not defined");
 		}
@@ -462,9 +462,9 @@ class spCache {
 	
 	public function __call($func_name, $func_args){
 		if( isset($this->input_args[0]) && -1 == $this->input_args[0] ){
-			return $this->clear(& $this->model_obj , $func_name, $func_args);
+			return $this->clear( $this->model_obj , $func_name, $func_args);
 		}
-		return $this->cache_obj(& $this->model_obj , $func_name, $func_args, $this->input_args[0]);
+		return $this->cache_obj( $this->model_obj , $func_name, $func_args, $this->input_args[0]);
 	}
 
 	public function cache_obj(& $obj, $func_name, $func_args = null, $life_time = null ){

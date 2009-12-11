@@ -128,7 +128,7 @@ function dump($vars, $output = TRUE, $show_trace = FALSE)
 function import($filename, $auto_search = TRUE, $auto_error = FALSE)
 {
 	if(isset($GLOBALS['G_SP']["import_file"][md5($filename)]))return TRUE;
-	if( is_readable($filename) ){
+	if( TRUE == @is_readable($filename) ){
 		require($filename);
 		$GLOBALS['G_SP']['import_file'][md5($filename)] = TRUE;
 		return TRUE;
