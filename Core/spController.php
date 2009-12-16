@@ -199,7 +199,7 @@ class spArgs {
 	public function __input($args = -1)
 	{
 		if( -1 == $args )return $this;
-		list( $name, $default, $method ) = $args;
+		@list( $name, $default, $method ) = $args;
 		return $this->get($name, $default, $method);
 	}
 	

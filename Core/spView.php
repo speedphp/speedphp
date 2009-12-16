@@ -192,7 +192,7 @@ class spHtml
 	 */
 	public function setUrl($spurl, $baseuri)
 	{
-		list($controller, $action, $args, $anchor) = $spurl;
+		@list($controller, $action, $args, $anchor) = $spurl;
 		$args = (is_array($args) && !empty($args)) ? serialize($args) : null;
 		$url_input = "{$controller}|{$action}|{$args}|$anchor|$baseuri";
 		$this->clear($controller, $action, $args, $anchor, FALSE);
