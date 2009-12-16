@@ -83,6 +83,15 @@ class mysql {
 		mysql_select_db($dbConfig['database'], $this->conn) or die("Could not select database");
 		$this->exec("SET NAMES UTF8");
 	}
+	
+	public function __val_escape($value) {
+		if(is_null($value))return 'NULL';
+	    if(is_bool($value))return $value ? 1 : 0;
+	    if(is_int($value))return (int)$value;
+	    if(is_float($value))return (float)$value;
+	    if(get_magic_quotes_gpc())$value = stripslashes($value);
+	    return mysql_real_escape_string($value, $this->conn);
+	}
 
 	/**
 	 * 析构函数
