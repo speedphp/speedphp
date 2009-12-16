@@ -24,7 +24,7 @@ class spController {
 	public function __construct()
 	{	
 		if(TRUE == $GLOBALS['G_SP']['view']['enabled']){
-			$this->v = & spClass('spView');
+			$this->v = spClass('spView');
 		}
 	}
     /**
