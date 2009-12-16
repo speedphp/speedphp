@@ -63,18 +63,7 @@ class spModel {
 	 */
 	public function find($conditions = null, $sort = null, $fields = null)
 	{
-		$where = "";
-		$fields = empty($fields) ? "*" : $fields;
-		if(is_array($conditions)){
-			$join = array();
-			foreach( $conditions as $key => $condition )$join[] = "{$key} = '{$condition}'";
-			$where = "WHERE ".join(" AND ",$join);
-		}else{
-			if(null != $conditions)$where = "WHERE ".$conditions;
-		}
-		if(null != $sort)$sort = "ORDER BY {$sort}";
-		$sql = "SELECT {$this->tbl_name}.{$fields} FROM {$this->tbl_name} {$where} {$sort} limit 1";
-		if( $record = $this->_db->getArray($sql) ){
+		if( $record = $this->findAll($conditions, $sort, $fields, 1) ){
 			return array_pop($record);
 		}else{
 			return FALSE;
@@ -90,7 +79,10 @@ class spModel {
 		$fields = empty($fields) ? "*" : $fields;
 		if(is_array($conditions)){
 			$join = array();
-			foreach( $conditions as $key => $condition )$join[] = "{$key} = '{$condition}'";
+			foreach( $conditions as $key => $condition ){
+				$condition = $this->__val_escape($condition);
+				$join[] = "{$key} = '{$condition}'";
+			}
 			$where = "WHERE ".join(" AND ",$join);
 		}else{
 			if(null != $conditions)$where = "WHERE ".$conditions;
@@ -100,6 +92,14 @@ class spModel {
 		$sql = "SELECT {$this->tbl_name}.{$fields} FROM {$this->tbl_name} {$where} {$sort} {$limit}";
 		return $this->_db->getArray($sql);
 	}
+	/**
+	 * 过滤转义字符
+	 */
+	public function __val_escape($value)
+	{
+		return $this->_db->__val_escape($value);
+	}
+
 
 	/**
 	 * 根据SQL查询记录
@@ -119,7 +119,7 @@ class spModel {
 		if(empty($row))return FALSE;
 		foreach($row as $key => $value){
 			$cols[] = $key;
-			$vals[] = "'".$value."'";
+			$vals[] = "'".$this->__val_escape($value)."'";
 		}
 		$col = join(',', $cols);
 		$val = join(',', $vals);
@@ -164,7 +164,10 @@ class spModel {
 		$where = "";
 		if(is_array($conditions)){
 			$join = array();
-			foreach( $conditions as $key => $condition )$join[] = "{$key} = '{$condition}'";
+			foreach( $conditions as $key => $condition ){
+				$condition = $this->__val_escape($condition);
+				$join[] = "{$key} = '{$condition}'";
+			}
 			$where = "WHERE ( ".join(" AND ",$join). ")";
 		}else{
 			if(null != $conditions)$where = "WHERE ( ".$conditions. ")";
@@ -215,13 +218,17 @@ class spModel {
 		$where = "";
 		if(is_array($conditions)){
 			$join = array();
-			foreach( $conditions as $key => $condition )$join[] = "{$key} = '{$condition}'";
+			foreach( $conditions as $key => $condition ){
+				$condition = $this->__val_escape($condition);
+				$join[] = "{$key} = '{$condition}'";
+			}
 			$where = "WHERE ".join(" AND ",$join);
 		}else{
 			if(null != $conditions)$where = "WHERE ".$conditions;
 		}
 		$sql = "SELECT COUNT({$this->pk}) as sp_counter FROM {$this->tbl_name} {$where}";
-		return array_pop( array_pop( $this->_db->getArray($sql) ) );
+		$result = $this->_db->getArray($sql);
+		return $result[0]['sp_counter'];
 	}
 
 	/**
@@ -230,7 +237,7 @@ class spModel {
 	public function __call($name, $args)
 	{
 		if(in_array($name, $GLOBALS['G_SP']["auto_load_model"])){
-			return spClass($name)->__input( $this, $args);
+			return spClass($name)->__input($this, $args);
 		}elseif(!method_exists( $this, $name )){
 			spError("method {$name} not defined");
 		}
@@ -249,12 +256,18 @@ class spModel {
 		if(empty($row))return FALSE;
 		if(is_array($conditions)){
 			$join = array();
-			foreach( $conditions as $key => $condition )$join[] = "{$key} = '{$condition}'";
+			foreach( $conditions as $key => $condition ){
+				$condition = $this->__val_escape($condition);
+				$join[] = "{$key} = '{$condition}'";
+			}
 			$where = "WHERE ".join(" AND ",$join);
 		}else{
 			if(null != $conditions)$where = "WHERE ".$conditions;
 		}
-		foreach($row as $key => $value)$vals[] = "{$key} = '{$value}'";
+		foreach($row as $key => $value){
+			$value = $this->__val_escape($value);
+			$vals[] = "{$key} = '{$value}'";
+		}
 		$values = join(", ",$vals);
 		$sql = "UPDATE {$this->tbl_name} SET {$values} {$where}";
 		return $this->_db->exec($sql);
@@ -265,7 +278,7 @@ class spModel {
 	 */
 	public function deleteByPk($pk)
 	{
-		return $this->delete(array($this->pk=>$pk));
+		return $this->delete(array($this->pk=>intval($pk)));
 	}
 
 }
@@ -312,7 +325,7 @@ class spPager {
 	private function runpager($func_name, $func_args){
 		$page = $this->input_args[0];
 		$pageSize = $this->input_args[1];
-		list($conditions, $sort, $fields ) = $func_args;
+		list($conditions, $sort, $fields ) = each($func_args);
 		if('findSql'==$func_name){
 			$total_count = array_pop( array_pop( $this->model_obj->findSql("SELECT COUNT({$this->model_obj->pk}) as sp_counter FROM ($conditions) sp_tmp_table_pager1") ) );
 		}else{
@@ -332,7 +345,6 @@ class spPager {
 				"all_pages"   => array()	                                   // 全部页码
 			);
 			for($i=1; $i <= $total_page; $i++)$this->pageData['all_pages'][] = $i;
-			$this->input_args[2] = $this->pageData;
 			$limit = ($page - 1) * $pageSize . "," . $pageSize;
 			if('findSql'==$func_name)$conditions .= " LIMIT {$limit}";
 		}
