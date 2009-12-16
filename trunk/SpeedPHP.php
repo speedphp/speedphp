@@ -34,6 +34,8 @@ if(!defined('APP_PATH')) define('APP_PATH', dirname(SP_PATH).'/app');
 // 载入配置文件
 $GLOBALS['G_SP'] = spConfigReady(require(SP_PATH."/spConfig.php"),$spConfig);
 
+if (substr(PHP_VERSION, 0, 1) != '5')spError("The SpeedPHP Framework Require PHP5!");
+set_magic_quotes_runtime(0);
 
 // 载入核心MVC架构文件
 import($GLOBALS['G_SP']["sp_core_path"]."/spController.php", FALSE);
@@ -46,7 +48,7 @@ if('debug' == $GLOBALS['G_SP']['mode']){
 }else{
 	define("SP_DEBUG",FALSE); // 当前正在部署模式下
 }
-define('SP_VERSION', '2.0.876'); // 定义当前框架版本
+define('SP_VERSION', '2.0.895'); // 定义当前框架版本
 
 // 如果是调试模式，打开警告输出
 if (SP_DEBUG) {
@@ -201,7 +203,7 @@ function spClass($class_name, $args = null, $dir = null)
 	if(class_exists($class_name, false) || interface_exists($class_name, false)){
 		$has_define = TRUE;
 	}else{
-		if( TRUE == import($sp_include_path.'/'.$class_name.'.php')){
+		if( TRUE == import($class_name.'.php')){
 			$has_define = TRUE;
 		}
 	}
@@ -229,7 +231,7 @@ function spError($msg, $output = TRUE, $stop = TRUE){
 }
 
 function spLaunch($configname){
-	if( is_array($GLOBALS['G_SP']['launch'][$configname]) ){
+	if( isset($GLOBALS['G_SP']['launch'][$configname]) && is_array($GLOBALS['G_SP']['launch'][$configname]) ){
 		foreach( $GLOBALS['G_SP']['launch'][$configname] as $launch ){
 			if( is_array($launch) ){
 				spClass($launch[0])->{$launch[1]}();
