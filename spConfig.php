@@ -23,7 +23,8 @@ return array(
 
 
 	'sp_core_path' => SP_PATH.'/Core',
-	'sp_include_path' => array( // 类载入路径
+	'sp_include_path' => array( // 扩展类载入路径
+		SP_PATH.'/Extensions'
 	), 
 	'auto_load_controller' => array('spArgs'), // 控制器自动加载的扩展类名
 	'auto_load_model' => array('spPager','spVerifier','spCache','spLinker'), // 模型自动加载的扩展类名
