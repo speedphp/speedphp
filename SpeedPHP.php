@@ -53,7 +53,15 @@ import($GLOBALS['G_SP']["sp_core_path"]."/spController.php", FALSE);
 import($GLOBALS['G_SP']["sp_core_path"]."/spModel.php", FALSE);
 import($GLOBALS['G_SP']["sp_core_path"]."/spView.php", FALSE);
 
-
+// 当在二级目录中使用SpeedPHP框架时，自动获取当前访问的文件名
+if("/index.php" == $GLOBALS['G_SP']['url']["url_path_base"]){
+	if(basename($_SERVER['SCRIPT_NAME']) === basename($_SERVER['SCRIPT_FILENAME']))
+		$GLOBALS['G_SP']['url']["url_path_base"] = $_SERVER['SCRIPT_NAME'];
+	elseif (basename($_SERVER['PHP_SELF']) === basename($_SERVER['SCRIPT_FILENAME']))
+		$GLOBALS['G_SP']['url']["url_path_base"] = $_SERVER['PHP_SELF'];
+	elseif (isset($_SERVER['ORIG_SCRIPT_NAME']) && basename($_SERVER['ORIG_SCRIPT_NAME']) === basename($_SERVER['SCRIPT_FILENAME']))
+		$GLOBALS['G_SP']['url']["url_path_base"] = $_SERVER['ORIG_SCRIPT_NAME'];
+}
 
 // 在使用PATH_INFO的情况下，对路由进行预处理
 if(TRUE == $GLOBALS['G_SP']['url']["url_path_info"] && !empty($_SERVER['PATH_INFO'])){
