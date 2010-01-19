@@ -53,6 +53,8 @@ import($GLOBALS['G_SP']["sp_core_path"]."/spController.php", FALSE);
 import($GLOBALS['G_SP']["sp_core_path"]."/spModel.php", FALSE);
 import($GLOBALS['G_SP']["sp_core_path"]."/spView.php", FALSE);
 
+
+
 // 在使用PATH_INFO的情况下，对路由进行预处理
 if(TRUE == $GLOBALS['G_SP']['url']["url_path_info"] && !empty($_SERVER['PATH_INFO'])){
 	$url_args = explode("/", $_SERVER['PATH_INFO']);$url_sort = array();
@@ -148,11 +150,11 @@ function import($sfilename, $auto_search = TRUE, $auto_error = FALSE)
 }
 
 /**
- * spAccess  高速数据存取程序
+ * spAccess 数据缓存及存取程序
  * 
- * @param method    存取方向，取值"w"为存入数据，取值"r"读取数据
+ * @param method    数据存取模式，取值"w"为存入数据，取值"r"读取数据，取值"c"为删除数据
  * @param name    标识数据的名称
- * @param value    存入数据的值
+ * @param value    存入的值，在读取数据和删除数据的模式下均为NULL
  * @param life_time    变量的生存时间，默认为永久保存
  */
 function spAccess($method, $name, $value = NULL, $life_time = -1)
@@ -176,14 +178,15 @@ function spAccess($method, $name, $value = NULL, $life_time = -1)
 }
 
 /**
- * spClass  类实例化程序  提供自动载入类定义文件，实例化并返回对象句柄的功能
+ * spClass  类实例化函数  自动载入类定义文件，实例化并返回对象句柄
  * 
- * @param class_name    类名
+ * @param class_name    类名称
  * @param args   类初始化时使用的参数，数组形式
- * @param sdir 载入类定义文件的路径
+ * @param sdir 载入类定义文件的路径，可以是目录+文件名的方式，也可以单独是目录。sdir的值将传入import()进行载入
  */
 function spClass($class_name, $args = null, $sdir = null)
 {
+	if(preg_match('/[^a-z0-9\-_.]/i', $class_name))spError($class_name."类名称错误，请检查。");
 	// 检查是否该类已经实例化，直接返回已实例对象，避免再次实例化
 	if(isset($GLOBALS['G_SP']["inst_class"][$class_name])){
 		return $GLOBALS['G_SP']["inst_class"][$class_name];
@@ -208,14 +211,14 @@ function spClass($class_name, $args = null, $sdir = null)
 }
 
 /**
- * spError  系统级错误提示
+ * spError 框架定义的系统级错误提示
  * 
  * @param msg    出错信息
  * @param output    是否输出
  * @param stop    是否停止程序
  */
 function spError($msg, $output = TRUE, $stop = TRUE){
-	if(TRUE != SP_DEBUG && FALSE != $stop)exit;
+	if(TRUE != SP_DEBUG)exit;
 	$traces = debug_backtrace();
 	$notice_html = SP_PATH."/Misc";
 	$bufferabove = ob_get_clean();
@@ -245,6 +248,8 @@ function spLaunch($configname){
  *
  * 多语言实现，翻译函数
  *
+ * @param w    默认语言的词语
+ *
  */
 function T($w) {
 	$method = $GLOBALS['G_SP']["lang"][spController::getLang()];
@@ -268,15 +273,17 @@ function T($w) {
  *
  * URL模式的构建函数
  *
+ * @param controller    控制器名称，默认为配置'default_controller'
+ * @param action    动作名称，默认为配置'default_action' 
+ * @param args    传递的参数，数组形式
+ * @param anchor    跳转锚点
+ * @param no_sphtml    是否应用spHtml设置，在FALSE时效果与不启用spHtml相同。
  */
 function spUrl($controller = null, $action = null, $args = null, $anchor = null, $no_sphtml = FALSE) {
 	if(TRUE == $GLOBALS['G_SP']['html']["enabled"] && TRUE != $no_sphtml){
-		if( function_exists($GLOBALS['G_SP']['html']['url_getter']) ){
-			$realhtml = call_user_func_array($GLOBALS['G_SP']['html']['url_getter'], array($controller, $action, $args, $anchor));
-		}elseif( is_array($GLOBALS['G_SP']['html']['url_getter']) ){
-			$realhtml = spClass($GLOBALS['G_SP']['html']['url_getter'][0])->{$GLOBALS['G_SP']['html']['url_getter'][1]}($controller, $action, $args, $anchor);
-		}
-		if($realhtml)return $realhtml;
+		// 当开启HTML生成时，将查找HTML列表获取静态文件名称。
+		$realhtml = spClass($GLOBALS['G_SP']['html']['url_getter'][0])->{$GLOBALS['G_SP']['html']['url_getter'][1]}($controller, $action, $args, $anchor);
+		if(isset($realhtml[0]))return $realhtml[0];
 	}
 	$controller = ( null != $controller ) ? $controller : $GLOBALS['G_SP']["default_controller"];
 	$action = ( null != $action ) ? $action : $GLOBALS['G_SP']["default_action"];
@@ -298,6 +305,8 @@ function spUrl($controller = null, $action = null, $args = null, $anchor = null,
  *
  * 循环建立目录的辅助函数
  *
+ * @param dir    目录路径
+ * @param mode    文件权限
  */
 function __mkdirs($dir, $mode = 0777)
 {
@@ -309,10 +318,24 @@ function __mkdirs($dir, $mode = 0777)
 }
 
 /**
+ * spExt
+ *
+ * 扩展类获取扩展配置的函数
+ *
+ * @param ext_node_name    扩展配置名
+ */
+function spExt($ext_node_name)
+{
+	return (empty($GLOBALS['G_SP']['ext'][$ext_node_name])) ? FALSE : $GLOBALS['G_SP']['ext'][$ext_node_name];
+}
+
+/**
  * spAddViewFunction
  *
  * 将函数注册到模板内使用，该函数可以是对象的方法，类的方法或是函数。
  *
+ * @param alias    函数在模板内的别名
+ * @param callback_function    回调的函数或方法
  */
 function spAddViewFunction($alias, $callback_function)
 {
@@ -339,7 +362,7 @@ if ( !function_exists('json_encode') ){
 }
 
 /**
- * spConfigReady  快速将用户配置覆盖到框架默认配置中
+ * spConfigReady   快速将用户配置覆盖到框架默认配置
  * 
  * @param preconfig    默认配置
  * @param useconfig    用户配置
