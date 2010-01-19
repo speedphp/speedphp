@@ -159,6 +159,7 @@ function import($sfilename, $auto_search = TRUE, $auto_error = FALSE)
  */
 function spAccess($method, $name, $value = NULL, $life_time = -1)
 {
+	if(!is_dir($GLOBALS['G_SP']['sp_cache']))__mkdirs($GLOBALS['G_SP']['sp_cache']);
 	$sfile = $GLOBALS['G_SP']['sp_cache'].'/'.md5($name).".php";
 	if('w' == $method){ // 写数据
 		$life_time = ( -1 == $life_time ) ? '300000000' : $life_time;
