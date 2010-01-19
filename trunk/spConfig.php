@@ -91,5 +91,7 @@ return array(
 					// 同时请注意，在使用语言文件并且文件中存在中文等时，请将文件设置成UTF8编码
 	'ext' => array(), // 扩展使用的配置根目录
 		
-	'include_path' => array(), // 用户程序扩展类载入路径
+	'include_path' => array(
+		APP_PATH.'/include',
+	), // 用户程序扩展类载入路径
 );
