@@ -18,10 +18,24 @@
 class spAcl
 {
 	/**
-	 * 当前权限检查的处理程序设置，可以是函数名或是数组（array(类名,方法)的形式）
+	 * 默认权限检查的处理程序设置，可以是函数名或是数组（array(类名,方法)的形式）
 	 */
-	public $checker = array('spAclPlus','check');
+	public $checker = array('spAclModel','check');
 	
+	/**
+	 * 默认提示无权限提示，可以是函数名或是数组（array(类名,方法)的形式）
+	 */
+	public $prompt = array('spAcl','def_prompt');
+	/**
+	 * 构造函数，设置权限检查程序与提示程序
+	 */
+	public function __construct()
+	{	
+		$params = spExt("spAcl");
+		if( !empty($params["prompt"]) )$this->prompt = $params["prompt"];
+		if( !empty($params["checker"]) )$this->checker = $params["checker"];
+	}
+
 	/**
 	 * 获取当前会话的用户标识
 	 */
@@ -35,9 +49,9 @@ class spAcl
 	 */
 	public function maxcheck()
 	{
-		$acl_handle = $this->__check();
+		$acl_handle = $this->check();
 		if( 1 !== $acl_handle ){
-			$this->error('Access Fail!');
+			$this->prompt();
 			return FALSE;
 		}
 		return TRUE;
@@ -48,9 +62,9 @@ class spAcl
 	 */
 	public function mincheck()
 	{
-		$acl_handle = $this->__check();
+		$acl_handle = $this->check();
 		if( 0 === $acl_handle ){
-			$this->error('Access Fail!');
+			$this->prompt();
 			return FALSE;
 		}
 		return TRUE;
@@ -59,7 +73,7 @@ class spAcl
 	/**
 	 * 使用程序调度器进行检查等处理
 	 */
-	private function __check()
+	private function check()
 	{
 		GLOBAL $__controller, $__action;
 		$checker = $this->checker; $name = $this->get();
@@ -71,40 +85,54 @@ class spAcl
 		}
 	}
 	/**
-	 * 默认的错误提示跳转
+	 * 无权限提示跳转
 	 */
-	public function error($msg)
+	public function prompt()
+	{
+		$prompt = $this->prompt;
+		if( is_array($prompt) ){
+			return spClass($prompt[0])->{$prompt[1]}();
+		}else{
+			return call_user_func_array($prompt);
+		}
+	}
+	
+	/**
+	 * 默认的无权限提示跳转
+	 */
+	public function def_prompt()
 	{
 		$url = spUrl(); // 跳转到首页，在强制权限的情况下，请将该页面设置成可以进入。
-		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"{$msg}\");location.href=\"{$url}\";}</script></head><body onload=\"sptips()\"></body></html>";
+		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"Access Failed!\");location.href=\"{$url}\";}</script></head><body onload=\"sptips()\"></body></html>";
 		exit;
 	}
 
 	/**
 	 * 设置当前用户，内部使用SESSION记录
 	 * 
-	 * @param name    用户标识：可以是组名或用户名
+	 * @param acl_name    用户标识：可以是组名或用户名
 	 */
-	public function set($name)
+	public function set($acl_name)
 	{
-		$_SESSION["SpAclSession"] = $name;
+		$_SESSION["SpAclSession"] = $acl_name;
 	}
 }
 
-/**
- * 权限判断的数据接口，开发者可以修改spAcl的接口设置以便使用自定义的接口。
+ define("SPANONYMOUS","SPANONYMOUS"); // 无权限设置的角色名称
+ /**
+ * ACL操作类，通过数据表确定用户权限
  * 表结构：
  * CREATE TABLE acl
  * (
  * 	aclid int NOT NULL AUTO_INCREMENT,
- * 	name VARCHAR(200),
- * 	controller VARCHAR(50),
- * 	action VARCHAR(50),
- * 	acl_name VARCHAR(50),
+ * 	name VARCHAR(200) NOT NULL,
+ * 	controller VARCHAR(50) NOT NULL,
+ * 	action VARCHAR(50) NOT NULL,
+ * 	acl_name VARCHAR(50) NOT NULL,
  * 	PRIMARY KEY (aclid)
  * ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci
  */
-class spAclPlus extends spModel
+class spAclModel extends spModel
 {
 
 	public $pk = 'aclid';
@@ -119,20 +147,20 @@ class spAclPlus extends spModel
 	 * 返回1是通过检查，0是不能通过检查（控制器及动作存在但用户标识没有记录）
 	 * 返回-1是无该权限控制（即该控制器及动作不存在于权限表中）
 	 * 
-	 * @param name    用户标识：可以是组名或是用户名
+	 * @param acl_name    用户标识：可以是组名或是用户名
 	 * @param controller    控制器名称
 	 * @param action    动作名称
 	 */
-	public function check($name = null, $controller, $action)
+	public function check($acl_name = SPANONYMOUS, $controller, $action)
 	{
 		$rows = array('controller' => $controller, 'action' => $action );
-		if( FALSE == $this->find($rows) )return -1;
-		if( null != $name ){
-			$rows = array( 'name' => $name, 'controller' => $controller, 'action' => $action );
-			if( FALSE != $this->find($rows) )return 1;
+		if( $acl = $this->findAll($rows) ){
+			foreach($acl as $v){
+				if($v["acl_name"] == SPANONYMOUS || $v["acl_name"] == $acl_name)return 1;
+			}
+			return 0;
+		}else{
+			return -1;
 		}
-		return 0;
 	}
-
 }
-?>
