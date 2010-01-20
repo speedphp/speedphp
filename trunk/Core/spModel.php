@@ -44,7 +44,7 @@ class spModel {
 	/**
 	 * 数据驱动程序
 	 */
-	private $_db;
+	protected $_db;
 
 	/**
 	 * 构造函数
