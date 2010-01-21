@@ -10,6 +10,15 @@
 /////////////////////////////////////////////////////////////////////////////
 
 /**
+ * 将pwinput注册到smarty模板中使用
+ * 请注意spAcl文件并非自动加载，所以在smarty中使用pwinput前，需要在控制器中用import("spAcl.php");来载入文件
+ *
+ * 在smarty中可以用：<{pwinput id=mypw add="class=pwform name=mypwname"}>来生成该输入框
+ */
+spAddViewFunction('pwinput', array("spAcl", "smarty_pwinput"));
+
+
+/**
  * 基于组的用户权限判断机制
  * 要使用该权限控制程序，需要在应用程序配置中做以下配置：
  * 有限控制的情况，在配置中使用	'launch' => array( 'router_prefilter' => array( array('spAcl','mincheck'), ), )
@@ -120,17 +129,25 @@ class spAcl
 	/**
 	 * 获取安全加密的密码输入框，开发者将需要在HTML中form标签上加入<code>onsubmit="aclcode();"</code>来触发加密
 	 *
-	 * @param additems    在input框内的其他内容，包括name，id，class均可。
+	 * @param id    在input框的id值。
+	 * @param add    在input框内的其他内容，除id外，name，class等均可。
 	 */
-	public function pwinput($id, $additems = null)
+	public function pwinput($id, $add = null)
 	{
 		$raphash = substr(md5(mt_rand(10000,99999)),2,12);
 		$html = "<script type='text/javascript'>".spAcl::getmd5()."</script>";
 		$html .= "<script type='text/javascript'>function aclcode(){aclpwinput=document.getElementById('{$id}');document.getElementById('{$raphash}').value = hex_md5(aclpwinput.value);aclpwinput.value = '0000000000000000';}</script>";
-		$html .= "<input type='password' id='{$id}' {$additems}>";
+		$html .= "<input type='password' id='{$id}' {$add}>";
 		$html .= "<input type='hidden' id='{$raphash}' name='{$raphash}'>";
 		$_SESSION["SpAclInputHash"] = $raphash;
-		return $html;
+		return $html;		
+	}
+	/**
+	 * 辅助pwinput的函数，让pwinput可在模板中使用。
+	 * @param params 传入的参数
+	 */
+	public function smarty_pwinput($params){
+		return spAcl::pwinput($params["id"],$params["add"]);
 	}
 	/**
 	 * 获取加密后的密码，该密码为MD5加密后的字符串
