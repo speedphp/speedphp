@@ -39,19 +39,11 @@ function getsource($file, $line){
 	$returns = array();
 	for ($i = $start; $i <= $end; $i++) {
 		if( $i == $line ){
-			$returns[] = "<div id='current'>".$i.".&nbsp;".highlight_code($data[$i - 1], TRUE)."</div>";
+			$returns[] = "<div id='current'>".$i.".&nbsp;".highlight_string($data[$i - 1], TRUE)."</div>";
 		}else{
-			$returns[] = $i.".&nbsp;".highlight_code($data[$i - 1], TRUE);
+			$returns[] = $i.".&nbsp;".highlight_string($data[$i - 1], TRUE);
 		}
 	}
 	return $returns;
 }
-function highlight_code($code){
-    if (ereg("<\?(php)?[^[:graph:]]", $code)) {
-        $code = highlight_string($code, TRUE);
-    } else {
-        $code = ereg_replace("(&lt;\?php&nbsp;)+", "", highlight_string("<?php ".$code, TRUE));
-    }
-    return $code;
-}
-?>
+?>]
