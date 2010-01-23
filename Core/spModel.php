@@ -44,24 +44,20 @@ class spModel {
 	/**
 	 * 数据驱动程序
 	 */
-	protected $_db;
+	private $_db;
+
 
 	/**
 	 * 构造函数
 	 */
-	public function __construct()
+	public function __construct($params = null)
 	{
 		if( null == $this->tbl_name )$this->tbl_name = $GLOBALS['G_SP']['db']['prefix'] . $this->table;
 		$this->_db = spClass($GLOBALS['G_SP']['db']['driver'], $GLOBALS['G_SP']['db'], $GLOBALS['G_SP']['sp_core_path'].$GLOBALS['G_SP']['db_driver_path']);
 	}
 
 	/**
-	 * 从数据表中查找一条记录
-	 *
-	 * @param conditions    查找条件，数组array("字段名"=>"查找值")或字符串，
-	 * 请注意在使用字符串时将需要开发者自行使用__val_escape来对输入值进行过滤
-	 * @param sort    排序，等同于“ORDER BY ”
-	 * @param fields    返回的字段范围，默认为返回全部字段的值
+	 * 查找一条记录
 	 */
 	public function find($conditions = null, $sort = null, $fields = null)
 	{
@@ -73,13 +69,7 @@ class spModel {
 	}
 	
 	/**
-	 * 从数据表中查找记录
-	 *
-	 * @param conditions    查找条件，数组array("字段名"=>"查找值")或字符串，
-	 * 请注意在使用字符串时将需要开发者自行使用__val_escape来对输入值进行过滤
-	 * @param sort    排序，等同于“ORDER BY ”
-	 * @param fields    返回的字段范围，默认为返回全部字段的值
-	 * @param limit    返回的结果数量限制，等同于“LIMIT ”，如$limit = " 3, 5"，即是从第3条记录开始获取，共获取5条记录
+	 * 查找全部记录
 	 */
 	public function findAll($conditions = null, $sort = null, $fields = null, $limit = null)
 	{
@@ -102,8 +92,6 @@ class spModel {
 	}
 	/**
 	 * 过滤转义字符
-	 *
-	 * @param value 需要进行过滤的值
 	 */
 	public function __val_escape($value)
 	{
@@ -112,9 +100,7 @@ class spModel {
 
 
 	/**
-	 * 使用SQL语句进行查找操作，等于进行find，findAll等操作
-	 *
-	 * @param sql 字符串，需要进行查找的SQL语句
+	 * 根据SQL查询记录
 	 */
 	public function findSql($sql)
 	{
@@ -122,9 +108,7 @@ class spModel {
 	}
 
 	/**
-	 * 在数据表中新增一行数据
-	 *
-	 * @param row 数组形式，数组的键是数据表中的字段名，键对应的值是需要新增的数据。
+	 * 创建记录
 	 */
 	public function create($row)
 	{
@@ -150,9 +134,7 @@ class spModel {
 	}
 
 	/**
-	 * 在数据表中新增多条记录
-	 *
-	 * @param rows 数组形式，每项均为create的$row的一个数组
+	 * 创建多条记录
 	 */
 	public function createAll($rows)
 	{
@@ -160,9 +142,20 @@ class spModel {
 	}
 
 	/**
-	 * 按条件删除记录
-	 *
-	 * @param conditions 数组形式，查找条件，此参数的格式用法与find/findAll的查找条件参数是相同的。
+	 * 按表字段调整适合的字段
+	 */
+	public function __prepera_format($rows)
+	{
+		$columns = $this->_db->getTable($this->tbl_name);
+		$newcol = array();
+		foreach( $columns as $col ){
+			$newcol[$col['Field']] = $col['Field'];
+		}
+		return array_intersect_key($rows,$newcol);
+	}
+	
+	/**
+	 * 删除记录
 	 */
 	public function delete($conditions)
 	{
@@ -183,9 +176,6 @@ class spModel {
 
 	/**
 	 * 按字段值查找一条记录
-	 *
-	 * @param field 字符串，对应数据表中的字段名
-	 * @param value 字符串，对应的值
 	 */
 	public function findBy($field, $value)
 	{
@@ -193,11 +183,7 @@ class spModel {
 	}
 
 	/**
-	 * 按字段值修改一条记录
-	 *
-	 * @param conditions 数组形式，查找条件，此参数的格式用法与find/findAll的查找条件参数是相同的。
-	 * @param field 字符串，对应数据表中的需要修改的字段名
-	 * @param value 字符串，新值
+	 * 更新符合条件的记录中的某字段值
 	 */
 	public function updateField($conditions, $field, $value)
 	{
@@ -205,9 +191,7 @@ class spModel {
 	}
 
 	/**
-	 * 执行SQL语句，相等于执行新增，修改，删除等操作。
-	 *
-	 * @param sql 字符串，需要执行的SQL语句
+	 * 直接执行SQL语句
 	 */
 	public function query($sql)
 	{
@@ -215,18 +199,17 @@ class spModel {
 	}
 
 	/**
-	 * 返回最后执行的SQL语句供分析
+	 * 返回当前执行的SQL语句
 	 */
 	public function dumpSql()
 	{
 		return end( $this->_db->arrSql );
 	}
 
+
+
 	/**
-	 * 计算符合条件的记录数量
-	 *
-	 * @param conditions 查找条件，数组array("字段名"=>"查找值")或字符串，
-	 * 请注意在使用字符串时将需要开发者自行使用__val_escape来对输入值进行过滤
+	 * 按条件查找记录总数
 	 */
 	public function findCount($conditions = null)
 	{
@@ -259,11 +242,10 @@ class spModel {
 	}
 
 	/**
-	 * 修改数据，该函数将根据参数中设置的条件而更新表中数据
+	 * 更新记录
 	 * 
-	 * @param conditions    数组形式，查找条件，此参数的格式用法与find/findAll的查找条件参数是相同的。
-	 * @param row    数组形式，修改的数据，
-	 *  此参数的格式用法与create的$row是相同的。在符合条件的记录中，将对$row设置的字段的数据进行修改。
+	 * @param conditions    更新的条件
+	 * @param row    更新的数据，数组形式
 	 */
 	public function update($conditions, $row)
 	{
@@ -290,28 +272,13 @@ class spModel {
 	}
 
 	/**
-	 * 按给定的数据表的主键删除记录
-	 *
-	 * @param pk    字符串或数字，数据表主键的值。
+	 * 按主键删除记录
 	 */
 	public function deleteByPk($pk)
 	{
 		return $this->delete(array($this->pk=>intval($pk)));
 	}
 
-	/**
-	 * 按表字段调整适合的字段
-	 * @param rows    输入的表字段
-	 */
-	private function __prepera_format($rows)
-	{
-		$columns = $this->_db->getTable($this->tbl_name);
-		$newcol = array();
-		foreach( $columns as $col ){
-			$newcol[$col['Field']] = $col['Field'];
-		}
-		return array_intersect_key($rows,$newcol);
-	}
 }
 
 
@@ -332,17 +299,13 @@ class spPager {
 	 * 调用时输入的参数
 	 */
 	private $input_args = null;
-	/** 
-	 * 函数式使用模型辅助类的输入函数
-	 */
+	
     public function __input(& $obj, $args){
 		$this->model_obj = $obj;
 		$this->input_args = $args;
 		return $this;
 	}
-	/** 
-	 * 魔术函数，支持多重函数式使用类的方法
-	 */
+	
 	public function __call($func_name, $func_args){
 		if( ('spLinker' == $func_name || 'findAll' == $func_name || 'findSql' == $func_name ) && 0 != $this->input_args[0]){
 			return $this->runpager($func_name, $func_args);
@@ -352,16 +315,11 @@ class spPager {
 			return call_user_func_array(array($this->model_obj, $func_name), $func_args);
 		}
 	}
-	/** 
-	 * 获取分页数据
-	 */
+	
 	public function getPager(){
 		return $this->pageData;
 	}
 	
-	/** 
-	 * 生成分页数据
-	 */
 	private function runpager($func_name, $func_args){
 		$page = $this->input_args[0];
 		$pageSize = $this->input_args[1];
@@ -410,12 +368,12 @@ class spVerifier {
 	private $add_rules = null;
 	
 	/** 
-	 * 验证规则
+	 * 验证规则与信息
 	 */
 	private $verifier = null;
 	
 	/** 
-	 * 验证时返回的提示信息
+	 * 验证返回信息记录
 	 */
 	private $messages = null;
 	
@@ -423,9 +381,7 @@ class spVerifier {
 	 * 待验证字段
 	 */
 	private $checkvalues = null;
-	/** 
-	 * 函数式使用模型辅助类的输入函数
-	 */
+	
     public function __input(& $obj, $args){
 		$this->verifier = (null != $obj->verifier) ? $obj->verifier : array();
 		if(isset($args[1]) && is_array($args[1])){
@@ -437,22 +393,10 @@ class spVerifier {
 		return is_array($args[0]) ? $this->checkrules($args[0]) : TRUE; // TRUE为不通过验证
 	}
 	
-	/** 
-	 * 加入附加的验证规则
-	 * 
-	 * @param rule_name    验证规则名称
-	 * @param checker    验证器，验证器可以有两种方式：
-	 * 第一种是  '验证函数名'，这是当函数是一个单纯的函数时使用
-	 * 第二种是 array('类名', '方法函数名')，这是当函数是一个类的某个方法函数时候使用。
-	 */
 	public function addrules($rule_name, $checker){
 		$this->add_rules[$rule_name] = $checker;
 	}
-	/** 
-	 * 按规则验证数据
-	 * 
-	 * @param values    验证值
-	 */
+	
 	private function checkrules($values){ 
 		$this->checkvalues = $values;
 		foreach( $this->verifier["rules"] as $rkey => $rval ){
@@ -475,48 +419,21 @@ class spVerifier {
 		// 返回FALSE则通过验证，返回数组则未能通过验证，返回的是提示信息。
 		return (null == $this->messages) ? FALSE : $this->messages; 
 	}
-	/** 
-	 * 内置验证器，检查字符串非空
-	 * @param val    待验证字符串
-	 * @param right    正确值
-	 */
+
 	private function notnull($val, $right){return $right === ( isset($val) && !empty($val) && "" != $val );}
-	/** 
-	 * 内置验证器，检查字符串是否小于指定长度
-	 * @param val    待验证字符串
-	 * @param right    正确值
-	 */
+
 	private function minlength($val, $right){return $this->cn_strlen($val) >= $right;}
-	/** 
-	 * 内置验证器，检查字符串是否大于指定长度
-	 * @param val    待验证字符串
-	 * @param right    正确值
-	 */
+
 	private function maxlength($val, $right){return $this->cn_strlen($val) <= $right;}
-	/** 
-	 * 内置验证器，检查字符串是否等于另一个验证字段的值
-	 * @param val    待验证字符串
-	 * @param right    正确值
-	 */
+	
 	private function equalto($val, $right){return $val == $this->checkvalues[$right];}
-	/** 
-	 * 内置验证器，检查字符串是否正确的时间格式
-	 * @param val    待验证字符串
-	 * @param right    正确值
-	 */
+	
 	private function istime($val, $right){$test = @strtotime($val);return $right == ( $test !== -1 && $test !== false );}
-	/** 
-	 * 内置验证器，检查字符串是否正确的电子邮件格式
-	 * @param val    待验证字符串
-	 * @param right    正确值
-	 */	
+		
 	private function email($val, $right){
 		return $right == ( preg_match('/^[A-Za-z0-9]+([._\-\+]*[A-Za-z0-9]+)*@([A-Za-z0-9]+[-A-Za-z0-9]*[A-Za-z0-9]+\.)+[A-Za-z0-9]+$/', $val) != 0 );
 	}
-	/** 
-	 * 计算字符串长度，支持包括汉字在内的字符串
-	 * @param val    待计算的字符串
-	 */
+	
 	public function cn_strlen($val){
 		while($i<strlen($val)){$clen = ( strlen("快速") == 4 ) ? 2 : 3;
 			if(preg_match("/^[".chr(0xa1)."-".chr(0xff)."]+$/",$val[$i])){$i+=$clen;}else{$i+=1;}$n+=1;}
@@ -526,7 +443,7 @@ class spVerifier {
 
 /**
  * spCache
- * 函数和数据缓存实现
+ * 函数缓存程序
  */
 class spCache {
 	
@@ -546,31 +463,20 @@ class spCache {
 	 * 调用时输入的参数
 	 */
 	private $input_args = null;
-	/** 
-	 * 函数式使用模型辅助类的输入函数
-	 */
+	
     public function __input(& $obj, $args){
 		$this->model_obj = $obj;
 		$this->input_args = $args;
 		return $this;
 	}
-	/** 
-	 * 魔术函数，支持多重函数式使用类的方法
-	 */
+	
 	public function __call($func_name, $func_args){
 		if( isset($this->input_args[0]) && -1 == $this->input_args[0] ){
 			return $this->clear( $this->model_obj , $func_name, $func_args);
 		}
 		return $this->cache_obj( $this->model_obj , $func_name, $func_args, $this->input_args[0]);
 	}
-	/** 
-	 * 执行spModel子类对象的方法，并对返回结果进行缓存。
-	 *
-	 * @param obj    引用的spModel子类对象
-	 * @param func_name    需要执行的函数名称
-	 * @param func_args    函数的参数
-	 * @param life_time    缓存生存时间
-	 */
+
 	public function cache_obj(& $obj, $func_name, $func_args = null, $life_time = null ){
 		$cache_id = get_class($obj) . md5($func_name);
 		if( null != $func_args )$cache_id .= md5(serialize($func_args));
@@ -590,14 +496,7 @@ class spCache {
 		}
 		return $run_result;
 	}
-	/** 
-	 * 清除单个函数缓存的数据
-	 *
-	 * @param obj    引用的spModel子类对象
-	 * @param func_name    需要执行的函数名称
-	 * @param func_args    函数的参数，在默认不输入参数的情况下，将清除全部该函数生成的缓存。
-	 * 如果func_args有设置，将只会清除该参数产生的缓存。
-	 */
+
 	public function clear(& $obj, $func_name, $func_args = null){
 		$cache_id = get_class($obj) . md5($func_name);
 		if( null != $func_args )$cache_id .= md5(serialize($func_args));
@@ -615,10 +514,7 @@ class spCache {
 		}
 		return TRUE;
 	}
-	/** 
-	 * 清除全部函数缓存的数据
-	 *
-	 */
+
 	public function clear_all(){
 		if( $cache_list = spAccess('r', 'sp_cache_list') ){
 			$cache_list = explode("\n",$cache_list);
@@ -658,20 +554,14 @@ class spLinker
 	 * 是否启用全部关联
 	 */
 	public $enabled = TRUE;
-	/** 
-	 * 函数式使用模型辅助类的输入函数
-	 */
+	
     public function __input(& $obj, $args = null){
 		$this->linker = ((null != $args) ? $args[0] : array()) + ((null != $obj->linker) ? $obj->linker : array());
 		if( !is_array($this->linker) or empty($this->linker) or (null != $args && FALSE == $args[0]) )$this->enabled = FALSE;
 		$this->model_obj = $obj;
 		return $this;
 	}
-	/** 
-	 * 魔术函数，支持多重函数式使用类的方法
-	 *
-	 * 在spLinker类中，__call执行了spModel继承类的相关操作，以及按关联的描述进行了对关联数据模型类的操作。
-	 */
+	
 	public function __call($func_name, $func_args){
 		if( in_array( $func_name, $this->methods ) && FALSE != $this->enabled ){
 			if( 'delete' == $func_name || 'deleteByPk' == $func_name )$maprecords = $this->prepare_delete($func_name, $func_args);
@@ -703,20 +593,11 @@ class spLinker
 			return call_user_func_array(array($this->model_obj, $func_name), $func_args);
 		}
 	}
-	/** 
-	 * 准备执行结果
-	 * @param run_result    函数或方法执行后返回的数据
-	 */
 	public function prepare_result($run_result = null){
 		unset($this->prepare_result);$this->prepare_result = null;
 		$this->prepare_result = $run_result;
 		return $this;
 	}
-	/** 
-	 * 私有函数，辅助删除数据操作
-	 * @param func_name    需要执行的函数名称
-	 * @param func_args    函数的参数
-	 */
 	private function prepare_delete($func_name, $func_args)
 	{
 		if('deleteByPk'==$func_name){
@@ -725,11 +606,6 @@ class spLinker
 			return $this->model_obj->findAll($func_args[0]);
 		}
 	}
-	/** 
-	 * 私有函数，进行关联删除数据操作
-	 * @param thelinker    关联的描述
-	 * @param maprecords    对应的记录
-	 */
 	private function do_delete( $thelinker, $maprecords ){
 		if( FALSE == $maprecords )return FALSE;
 		foreach( $maprecords as $singlerecord ){
@@ -746,11 +622,6 @@ class spLinker
 		}
 		return $returns;
 	}
-	/** 
-	 * 私有函数，进行关联更新数据操作
-	 * @param thelinker    关联的描述
-	 * @param func_args    进行操作的参数
-	 */
 	private function do_update( $thelinker, $func_args ){
 		if( !is_array($func_args[1][$thelinker['map']]) )return FALSE;
 		if( !$maprecords = $this->model_obj->findAll($func_args[0]))return FALSE;
@@ -768,12 +639,6 @@ class spLinker
 		}
 		return $returns;
 	}
-	/** 
-	 * 私有函数，进行关联新增数据操作
-	 * @param thelinker    关联的描述
-	 * @param newid    主表新增记录后的关联ID
-	 * @param func_args    进行操作的参数
-	 */
 	private function do_create( $thelinker, $newid, $func_args ){
 		if( !is_array($func_args[0][$thelinker['map']]) )return FALSE;
 		if('hasone'==$thelinker['type']){
@@ -795,11 +660,6 @@ class spLinker
 			}
 		}
 	}
-	/** 
-	 * 私有函数，进行关联查找数据操作
-	 * @param thelinker    关联的描述
-	 * @param run_result    主表执行查找后返回的结果
-	 */
 	private function do_select( $thelinker, $run_result ){
 		if( FALSE == $thelinker['enabled'] )return FALSE;
 		if(empty($thelinker['mapkey']))$thelinker['mapkey'] = $this->model_obj->pk;

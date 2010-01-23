@@ -13,17 +13,13 @@
  * spView 基础视图类
  */
 class spView {
-	/**
-	 * smarty实例
-	 */
+
 	private $smarty = null;
-	/**
-	 * 模板是否已输出
-	 */
+	
 	private $displayed = FALSE;
 
 	/**
-	 * 构造函数，进行Smarty类的实例化操作
+	 * 构造函数
 	 */
 	public function __construct()
 	{
@@ -42,7 +38,6 @@ class spView {
 
 	/**
 	 * 输出页面
-	 * @param tplname 模板文件路径
 	 */
 	public function display($tplname)
 	{
@@ -52,18 +47,13 @@ class spView {
 		$this->smarty->display($tplname);
 	}
 
-	/**
-	 * 获取Smarty的实例
-	 */	
+		
 	public function getView()
 	{
 		$this->addfuncs();
 		return $this->smarty;
 	}
-	/**
-	 * 自动输出页面
-	 * @param tplname 模板文件路径
-	 */
+
 	public function auto_display($tplname)
 	{
 		if( TRUE != $this->displayed && 
@@ -85,10 +75,7 @@ class spView {
 			}
 		}
 	}
-	/**
-	 * 辅助spUrl的函数，让spUrl可在模板中使用。
-	 * @param params 传入的参数
-	 */
+
 	public function __smarty_spUrl($params)
 	{
 		$controller = $GLOBALS['G_SP']["default_controller"];
@@ -108,10 +95,7 @@ class spView {
 		}
 		return spUrl($controller, $action, $args, $anchor);
 	}
-	/**
-	 * 辅助T的函数，让T可在模板中使用。
-	 * @param params 传入的参数
-	 */
+
 	public function __smarty_T($params)
 	{
 		return T($params['w']);
@@ -119,16 +103,15 @@ class spView {
 }
 
 /**
- * spHtml
- * 静态HTML生成类
+ * spHtml静态工具
  */
 class spHtml
 {
 	/**
-	 * 生成单个静态页面
+	 * 制造单个静态页面
 	 * 
-	 * @param spurl spUrl的参数
-	 * @param alias_url 生成HTML文件的名称，如果不设置alias_url，将使用年月日生成目录及随机数为文件名的形式生成HTML文件。
+	 * @param spurl
+	 * @param alias_url
 	 * @param update_mode    更新模式，默认2为同时更新列表及文件
 	 * 0是仅更新列表
 	 * 1是仅更新文件
@@ -137,31 +120,32 @@ class spHtml
 	{
 		$spurl = array_pad($spurl, 4, null);$spurl[] = TRUE;
 		if( '*' == $spurl[1] or '*' == $spurl[2] )return FALSE;
-		if( $url_item = call_user_func_array($GLOBALS['G_SP']['html']['url_getter'],$spurl) ){
-			list($baseuri, $realfile) = $url_item;
+		$cachedata = file_get_contents('http://'.$_SERVER["SERVER_NAME"].call_user_func_array('spUrl',$spurl));
+		if( $url_item = call_user_func_array(array(& $this, 'getUrl'),$spurl) ){
+			if( '/' == substr($url_item, 0, 1) ){$url_item = substr($url_item,1);}
+			$filedir = dirname($url_item).'/';
+			$filename = basename($url_item);
 		}else{
 			if( null == $alias_url ){
 				$filedir = $GLOBALS['G_SP']['html']['file_root_name'].'/'.date('Y/n/d').'/';
 				$filename = substr(time(),3,10).substr(mt_rand(100000, substr(time(),3,10)),4).".html";
 			}else{
+				if( '/' == substr($alias_url, 0, 1) ){$alias_url = substr($alias_url,1);}
 				$filedir = $GLOBALS['G_SP']['html']['file_root_name'].'/'.dirname($alias_url) . '/';
 				$filename = basename($alias_url);
 			}
-			$baseuri = rtrim(dirname($GLOBALS['G_SP']['url']["url_path_base"]), '/\\')."/".$filedir.$filename;
-			$realfile = dirname($_SERVER['SCRIPT_FILENAME'])."/".$filedir.$filename;
 		}
-		if( 0 == $update_mode or 2 == $update_mode )
-			call_user_func_array($GLOBALS['G_SP']['html']['url_setter'], array($spurl, $baseuri, $realfile));
+		$baseuri = str_replace("\\","/",dirname($GLOBALS['G_SP']['url']["url_path_base"])).$filedir.$filename;
+		$realfile = dirname($_SERVER["SCRIPT_FILENAME"]).'/'.$filedir.$filename;
+		if( 0 == $update_mode or 2 == $update_mode )call_user_func_array($GLOBALS['G_SP']['html']['url_setter'], array($spurl, $baseuri));
 		if( 1 == $update_mode or 2 == $update_mode ){
-			@__mkdirs(dirname($realfile));
-			$cachedata = @file_get_contents('http://'.$_SERVER["SERVER_NAME"].call_user_func_array("spUrl",$spurl));
+			__mkdirs($filedir);
 			@file_put_contents($realfile, $cachedata);
 		}
 	}
 	
 	/**
-	 * 批量生成静态页面
-	 * @param spurls 数组形式，每项是一个make()的全部参数
+	 * 制造多个静态页面
 	 */
 	public function makeAll($spurls)
 	{
@@ -177,12 +161,7 @@ class spHtml
 
 	/**
 	 * 获取url的列表程序，可以按配置开启是否检查文件存在
-	 * @param controller    控制器名称，默认为配置'default_controller'
-	 * @param action    动作名称，默认为配置'default_action' 
-	 * @param args    传递的参数，数组形式
-	 * @param anchor    跳转锚点
-	 * @param force_no_check    是否检查物理文件是否存在
-	 * 
+     *
 	 */
 	public function getUrl($controller = null, $action = null, $args = null, $anchor = null, $force_no_check = FALSE)
 	{
@@ -193,11 +172,12 @@ class spHtml
 			foreach( $url_list as $url ){
 				if( substr($url,0,strlen($url_input)) == $url_input )
 				{
-					$url_item = explode("|",substr($url,strlen($url_input)));
 					if( TRUE == $GLOBALS['G_SP']['html']['safe_check_file_exists'] && TRUE != $force_no_check ){
-						if( !is_readable($url_item[1]) )return FALSE;
+						$realfile = dirname($_SERVER["SCRIPT_FILENAME"]).'/'.substr($url,strlen($url_input));
+						if( is_readable($realfile) )return substr($url,strlen($url_input));
+					}else{
+						return substr($url,strlen($url_input));
 					}
-					return $url_item;
 				}
 			}
 		}
@@ -206,16 +186,13 @@ class spHtml
 	
 	/**
 	 * 写入url的列表程序，在make生成页面后，将spUrl参数及页面地址写入列表中
-	 *
-	 * @param spurl spUrl的参数
-	 * @param baseuri URL地址对应的静态HTML文件访问地址
      *
 	 */
-	public function setUrl($spurl, $baseuri, $realfile)
+	public function setUrl($spurl, $baseuri)
 	{
 		@list($controller, $action, $args, $anchor) = $spurl;
 		$args = (is_array($args) && !empty($args)) ? serialize($args) : null;
-		$url_input = "{$controller}|{$action}|{$args}|$anchor|$baseuri|$realfile";
+		$url_input = "{$controller}|{$action}|{$args}|$anchor|$baseuri";
 		$this->clear($controller, $action, $args, $anchor, FALSE);
 		if( $url_list = spAccess('r', 'sp_url_list') ){
 			spAccess('w', 'sp_url_list', $url_list."\n".$url_input);
@@ -227,17 +204,8 @@ class spHtml
 	/**
 	 * 清除静态文件
 	 * 
-	 * @param controller    需要清除HTML文件的控制器名称
-	 * @param action    需要清除HTML文件的动作名称，默认为清除该控制器全部动作产生的HTML文件
-	 * 如果设置了action将仅清除该action产生的HTML文件
-	 *
-	 * @param args    传递的参数，默认为空将清除该动作任何参数产生的HTML文件
-	 * 如果设置了args将仅清除该动作执行参数args而产生的HTML文件
-	 *
-	 * @param anchor    跳转锚点，默认为空将清除该动作任何锚点产生的HTML文件
-	 * 如果设置了anchor将仅清除该动作跳转到锚点anchor产生的HTML文件
-	 *
-	 * @param delete_file    是否删除物理文件，FALSH将只删除列表中该静态文件的地址，而不删除物理文件。
+	 * @param controller    控制器名称
+	 * @param action    动作名称
 	 */
 	public function clear($controller, $action = null, $args = null, $anchor = null, $delete_file = TRUE)
 	{
@@ -268,7 +236,6 @@ class spHtml
 	/**
 	 * 清除全部静态文件
 	 * 
-	 * @param delete_file    是否删除物理文件，FALSH将只删除列表中该静态文件的地址，而不删除物理文件。
 	 */
 	public function clearAll($delete_file = FALSE)
 	{
@@ -285,3 +252,31 @@ class spHtml
 		spAccess('c', 'sp_url_list');
 	}
 }
+
+/**
+ * __mkdirs
+ *
+ * 循环建立目录的辅助函数
+ *
+ */
+function __mkdirs($dir, $mode = 0777)
+{
+	if (!is_dir($dir)) {
+		__mkdirs(dirname($dir), $mode);
+		return mkdir($dir, $mode);
+	}
+	return true;
+}
+
+/**
+ * spAddViewFunction
+ *
+ * 将函数注册到模板内使用，该函数可以是对象的方法，类的方法或是函数。
+ *
+ */
+function spAddViewFunction($alias, $callback_function)
+{
+	return $GLOBALS['G_SP']["view_registered_functions"][$alias] = $callback_function;
+}
+
+
