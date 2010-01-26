@@ -9,7 +9,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-define('SP_VERSION', '2.2.986'); // 当前框架版本
+define('SP_VERSION', '2.2.989'); // 当前框架版本
 
 /**
  * spCore
@@ -51,9 +51,9 @@ if (SP_DEBUG) {
 if($GLOBALS['G_SP']['auto_session'])session_start();
 
 // 载入核心MVC架构文件
-import($GLOBALS['G_SP']["sp_core_path"]."/spController.php", FALSE);
-import($GLOBALS['G_SP']["sp_core_path"]."/spModel.php", FALSE);
-import($GLOBALS['G_SP']["sp_core_path"]."/spView.php", FALSE);
+import($GLOBALS['G_SP']["sp_core_path"]."/spController.php", FALSE, TRUE);
+import($GLOBALS['G_SP']["sp_core_path"]."/spModel.php", FALSE, TRUE);
+import($GLOBALS['G_SP']["sp_core_path"]."/spView.php", FALSE, TRUE);
 
 // 当在二级目录中使用SpeedPHP框架时，自动获取当前访问的文件名
 if("/index.php" == $GLOBALS['G_SP']['url']["url_path_base"]){
