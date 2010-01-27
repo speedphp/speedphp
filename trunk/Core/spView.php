@@ -36,8 +36,8 @@ class spView {
 				if( isset($this->smarty->{$key}) )$this->smarty->{$key} = $value;
 			}
 		}
-		spAddViewFunction('T', array(& $this, '__smarty_T'));
-		spAddViewFunction('spUrl', array(& $this, '__smarty_spUrl'));
+		spAddViewFunction('T', array( $this, '__smarty_T'));
+		spAddViewFunction('spUrl', array( $this, '__smarty_spUrl'));
 	}
 
 	/**
@@ -153,7 +153,7 @@ class spHtml
 		if( 0 == $update_mode or 2 == $update_mode )
 			call_user_func_array($GLOBALS['G_SP']['html']['url_setter'], array($spurl, $baseuri, $realfile));
 		if( 1 == $update_mode or 2 == $update_mode ){
-			@__mkdirs(dirname($realfile));
+			__mkdirs(dirname($realfile));
 			$cachedata = @file_get_contents('http://'.$_SERVER["SERVER_NAME"].call_user_func_array("spUrl",$spurl));
 			@file_put_contents($realfile, $cachedata);
 		}

@@ -119,7 +119,7 @@ function spClass($class_name, $args = null, $sdir = null)
 		}
 	}
 	if(FALSE != $has_define){
-		$GLOBALS['G_SP']["inst_class"][$class_name] = & new $class_name($args);
+		$GLOBALS['G_SP']["inst_class"][$class_name] = new $class_name($args);
 		return $GLOBALS['G_SP']["inst_class"][$class_name];
 	}
 	spError($class_name."类定义不存在，请检查。");
@@ -139,6 +139,16 @@ function spError($msg, $output = TRUE, $stop = TRUE){
 	$bufferabove = ob_get_clean();
 	require($notice_html."/notice.php");
 	if(TRUE == $stop)exit;
+}
+/**
+ * spErrorHandler 系统错误提示函数
+ * @param errno    出错类型
+ * @param errstr    错误信息
+ * @param errfile    出错的文件
+ * @param errline    出错语句行号
+ */
+function spErrorHandler($errno, $errstr, $errfile, $errline) {
+	if( E_ERROR == $errno || E_WARNING == $errno || E_PARSE == $errno )spError($errstr);
 }
 
 /**
@@ -227,7 +237,7 @@ function __mkdirs($dir, $mode = 0777)
 {
 	if (!is_dir($dir)) {
 		__mkdirs(dirname($dir), $mode);
-		return mkdir($dir, $mode);
+		return @mkdir($dir, $mode);
 	}
 	return true;
 }

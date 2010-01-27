@@ -111,7 +111,7 @@ class spController {
 	/**
 	 * 获取视图对象
 	 */
-	public function & getView()
+	public function getView()
 	{
 		return $this->v->getView();
 	}
