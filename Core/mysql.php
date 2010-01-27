@@ -93,7 +93,7 @@ class mysql {
 		if(is_bool($value))return $value ? 1 : 0;
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
-		if(get_magic_quotes_gpc())$value = stripslashes($value);
+		if(@get_magic_quotes_gpc())$value = stripslashes($value);
 		return mysql_real_escape_string($value, $this->conn);
 	}
 

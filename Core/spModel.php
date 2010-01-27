@@ -456,7 +456,7 @@ class spVerifier {
 	private function checkrules($values){ 
 		$this->checkvalues = $values;
 		foreach( $this->verifier["rules"] as $rkey => $rval ){
-			$inputval = $values[$rkey];
+			$inputval = isset($values[$rkey]) ? $values[$rkey] : '';
 			foreach( $rval as $rule => $rightval ){
 				if(method_exists($this, $rule)){
 					if(TRUE == $this->$rule($inputval, $rightval))continue;
@@ -517,7 +517,7 @@ class spVerifier {
 	 * 计算字符串长度，支持包括汉字在内的字符串
 	 * @param val    待计算的字符串
 	 */
-	public function cn_strlen($val){
+	public function cn_strlen($val){$i=0;$n=0;
 		while($i<strlen($val)){$clen = ( strlen("快速") == 4 ) ? 2 : 3;
 			if(preg_match("/^[".chr(0xa1)."-".chr(0xff)."]+$/",$val[$i])){$i+=$clen;}else{$i+=1;}$n+=1;}
 		return $n;
