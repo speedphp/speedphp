@@ -102,7 +102,7 @@ class spAcl
 		if( is_array($prompt) ){
 			return spClass($prompt[0])->{$prompt[1]}();
 		}else{
-			return call_user_func_array($prompt);
+			return call_user_func_array($prompt,array());
 		}
 	}
 	
