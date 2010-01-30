@@ -148,7 +148,7 @@ function spError($msg, $output = TRUE, $stop = TRUE){
  * @param errline    出错语句行号
  */
 function spErrorHandler($errno, $errstr, $errfile, $errline) {
-	if( E_ERROR == $errno || E_WARNING == $errno || E_PARSE == $errno )spError($errstr);
+	if( E_ERROR == $errno || E_PARSE == $errno )spError($errstr);
 }
 
 /**
