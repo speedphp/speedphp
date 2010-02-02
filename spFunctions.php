@@ -186,7 +186,7 @@ function T($w) {
 		return ( $tmp = spClass($method[0])->{$method[1]}($w) ) ? $tmp : $w;
 	}elseif( file_exists($method) ){
 		$dict = require($method);
-		return $dict[$w];
+		return isset($dict[$w]) ? $dict[$w] : $w;
 	}else{
 		return $w;
 	}
