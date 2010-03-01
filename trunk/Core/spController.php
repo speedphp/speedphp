@@ -162,8 +162,7 @@ class spArgs {
 	}
 	
 	/**
-	 * 获取应用程序请求变量值，获取顺序是由：$_SESSION -> $_GET -> $_POST-> $_COOKIE -> $_SERVER ->
-	 * $_FILES -> $_ENV。 同时也可以指定获取的变量所属。
+	 * 获取应用程序请求变量值，同时也可以指定获取的变量所属。
 	 * 
 	 * @param name    获取的变量名称，如果为空，则返回全部的请求变量
 	 * @param default    当前获取的变量不存在的时候，将返回的默认值
@@ -190,6 +189,17 @@ class spArgs {
 		}else{
 			return $this->args;
 		}
+	}
+
+	/**
+	 * 设置（增加）环境变量值，该名称将覆盖原来的环境变量名称
+	 * 
+	 * @param name    环境变量名称
+	 * @param value    环境变量值
+	 */
+	public function set($name, $value)
+	{
+		$this->args[$name] = $value;
 	}
 
 	/**
