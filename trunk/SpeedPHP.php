@@ -75,15 +75,15 @@ $__action = isset($_REQUEST[$GLOBALS['G_SP']["url_action"]]) ?
 	$_REQUEST[$GLOBALS['G_SP']["url_action"]] : 
 	$GLOBALS['G_SP']["default_action"];
 
+// 对路由进行自动执行相关操作
+spLaunch("router_prefilter");
+
 $handle_controller = spClass($__controller, null, $GLOBALS['G_SP']["controller_path"].'/'.$__controller.".php");
 // 调用控制器出错将调用路由错误处理函数
 if(!is_object($handle_controller) || !method_exists($handle_controller, $__action)){
 	eval($GLOBALS['G_SP']["dispatcher_error"]);
 	exit;
 }
-
-// 对路由进行自动执行相关操作
-spLaunch("router_prefilter");
 
 // 执行用户代码
 $handle_controller->$__action();
