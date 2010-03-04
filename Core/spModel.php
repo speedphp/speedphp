@@ -676,7 +676,8 @@ class spLinker
 	 * 开发者可以通过spLinker()->fun($result)对已经返回的数据进行关联findAll查找
 	 * @param result    返回的数据
 	 */
-    public function run($result){
+    public function run($result = FALSE){
+    	if( FALSE == $result )return FALSE;
 		$this->run_result = $result;
 		return $this->__call('run', null);
 	}
