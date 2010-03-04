@@ -344,7 +344,7 @@ class spPager {
 	 * 魔术函数，支持多重函数式使用类的方法
 	 */
 	public function __call($func_name, $func_args){
-		if( ('spLinker' == $func_name || 'findAll' == $func_name || 'findSql' == $func_name ) && 0 != $this->input_args[0]){
+		if( ( 'findAll' == $func_name || 'findSql' == $func_name ) && 0 != $this->input_args[0]){
 			return $this->runpager($func_name, $func_args);
 		}elseif(method_exists($this,$func_name)){
 			return call_user_func_array(array($this, $func_name), $func_args);
@@ -390,8 +390,6 @@ class spPager {
 		}
 		if('findSql'==$func_name){
 			return $this->model_obj->findSql($conditions);
-		}elseif('spLinker' == $func_name){
-			return $this->model_obj->spLinker()->prepare_result($this->model_obj->findAll($conditions, $sort, $fields, $limit));
 		}else{
 			return $this->model_obj->findAll($conditions, $sort, $fields, $limit);
 		}
@@ -692,8 +690,6 @@ class spLinker
 			if( 'delete' == $func_name || 'deleteByPk' == $func_name )$maprecords = $this->prepare_delete($func_name, $func_args);
 			if( null != $this->run_result ){
 				$run_result = $this->run_result;
-			}elseif( null != $this->prepare_result ){
-				$run_result = $this->prepare_result;$this->prepare_result();
 			}elseif( !$run_result = call_user_func_array(array($this->model_obj, $func_name), $func_args) ){
 				if( 'update' != $func_name )return FALSE;
 			}
@@ -720,15 +716,7 @@ class spLinker
 			return call_user_func_array(array($this->model_obj, $func_name), $func_args);
 		}
 	}
-	/** 
-	 * 准备执行结果
-	 * @param run_result    函数或方法执行后返回的数据
-	 */
-	public function prepare_result($run_result = null){
-		unset($this->prepare_result);$this->prepare_result = null;
-		$this->prepare_result = $run_result;
-		return $this;
-	}
+
 	/** 
 	 * 私有函数，辅助删除数据操作
 	 * @param func_name    需要执行的函数名称
