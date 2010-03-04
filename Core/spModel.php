@@ -511,7 +511,7 @@ class spVerifier {
 	 * @param right    正确值
 	 */	
 	private function email($val, $right){
-		return $right == ( preg_match('/^[A-Za-z0-9]+([._\-\+]*[A-Za-z0-9]+)*@([A-Za-z0-9]+[-A-Za-z0-9]*[A-Za-z0-9]+\.)+[A-Za-z0-9]+$/', $val) != 0 );
+		return $right == ( preg_match('/^[A-Za-z0-9]+([._\-\+]*[A-Za-z0-9]+)*@([A-Za-z0-9-]+\.)+[A-Za-z0-9]+$/', $val) != 0 );
 	}
 	/** 
 	 * 计算字符串长度，支持包括汉字在内的字符串
