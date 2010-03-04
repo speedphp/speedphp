@@ -373,6 +373,7 @@ class spPager {
 		}
 		if($total_count > $pageSize){
 			$total_page = ceil( $total_count / $pageSize );
+			$page = min(intval(max($page, 1)), $total_count); // 对页码进行规范运算
 			$this->pageData = array(
 				"total_count" => $total_count,                                 // 总记录数
 				"page_size"   => $pageSize,                                    // 分页大小
