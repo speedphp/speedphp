@@ -650,10 +650,15 @@ class spLinker
 	 */
 	private $prepare_result = null;
 	
+	/** 
+	 * 运行的结果
+	 */
+	private $run_result = null;
+	
 	/**
 	 * 可支持的关联方法
 	 */
-	private $methods = array('find','findBy','findAll','spPager','create','delete','deleteByPk','update');
+	private $methods = array('find','findBy','findAll','run','create','delete','deleteByPk','update');
 	/**
 	 * 是否启用全部关联
 	 */
@@ -667,6 +672,16 @@ class spLinker
 		$this->model_obj = $obj;
 		return $this;
 	}
+	
+	/** 
+	 * 开发者可以通过spLinker()->fun($result)对已经返回的数据进行关联findAll查找
+	 * @param result    返回的数据
+	 */
+    public function run($result){
+		$this->run_result = $result;
+		return $this->__call('run', null);
+	}
+	
 	/** 
 	 * 魔术函数，支持多重函数式使用类的方法
 	 *
@@ -675,7 +690,9 @@ class spLinker
 	public function __call($func_name, $func_args){
 		if( in_array( $func_name, $this->methods ) && FALSE != $this->enabled ){
 			if( 'delete' == $func_name || 'deleteByPk' == $func_name )$maprecords = $this->prepare_delete($func_name, $func_args);
-			if( null != $this->prepare_result ){
+			if( null != $this->run_result ){
+				$run_result = $this->run_result;
+			}elseif( null != $this->prepare_result ){
 				$run_result = $this->prepare_result;$this->prepare_result();
 			}elseif( !$run_result = call_user_func_array(array($this->model_obj, $func_name), $func_args) ){
 				if( 'update' != $func_name )return FALSE;
@@ -686,7 +703,7 @@ class spLinker
 					$thelinker['type'] = strtolower($thelinker['type']);
 					if( 'find' == $func_name || 'findBy' == $func_name ){
 						$run_result[$thelinker['map']] = $this->do_select( $thelinker, $run_result );
-					}elseif( 'findAll' == $func_name ){
+					}elseif( 'findAll' == $func_name || 'run' == $func_name ){
 						foreach( $run_result as $single_key => $single_result )
 							$run_result[$single_key][$thelinker['map']] = $this->do_select( $thelinker, $single_result );
 					}elseif( 'create' == $func_name ){
