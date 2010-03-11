@@ -20,6 +20,11 @@ class spController {
 	public $v;
 	
 	/**
+	 * 赋值到模板的变量
+	 */
+	private $__template_vals = array();
+	
+	/**
 	 * 构造函数
 	 */
 	public function __construct()
@@ -78,6 +83,19 @@ class spController {
 		if(TRUE == $GLOBALS['G_SP']['view']['enabled']){
 			$this->v->getView()->assign(array($name=>$value));
 		}
+		$this->__template_vals[$name] = $value;
+	}
+	
+
+	/**
+	 * 魔术函数，返回已赋值的变量值
+	 */
+	public function __get($name)
+	{
+		if( array_key_exists($name, $this->__template_vals) ){
+			return $this->__template_vals[$name];
+		}
+		spError("变量未定义！");
 	}
 	
 	/**
