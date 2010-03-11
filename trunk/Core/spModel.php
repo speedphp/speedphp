@@ -254,7 +254,7 @@ class spModel {
 		if(in_array($name, $GLOBALS['G_SP']["auto_load_model"])){
 			return spClass($name)->__input($this, $args);
 		}elseif(!method_exists( $this, $name )){
-			spError("method {$name} not defined");
+			spError("方法 {$name} 未定义");
 		}
 	}
 
@@ -432,7 +432,7 @@ class spVerifier {
 			$this->verifier["messages"] = isset($args[1]["messages"]) ? ( $this->verifier["messages"] + $args[1]["messages"] ) : $this->verifier["messages"];
 		}
 		if(is_array($obj->addrules) && !empty($obj->addrules) ){foreach($obj->addrules as $addrule => $addveri)$this->addrules($addrule, $addveri);}
-		if(empty($this->verifier["rules"]))spError("no verifier rules!");
+		if(empty($this->verifier["rules"]))spError("无对应的验证规则！");
 		return is_array($args[0]) ? $this->checkrules($args[0]) : TRUE; // TRUE为不通过验证
 	}
 	
@@ -466,7 +466,7 @@ class spVerifier {
 						if(TRUE == spClass($this->add_rules[$rule][0])->{$this->add_rules[$rule][1]}($inputval, $rightval, $values))continue;
 					}
 				}else{
-					spError("unkown rules");
+					spError("未知规则！");
 				}
 				$this->messages[$rkey][] = (isset($this->verifier["messages"][$rkey][$rule])) ? $this->verifier["messages"][$rkey][$rule] : "{$rule}";
 			}
