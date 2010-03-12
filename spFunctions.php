@@ -160,9 +160,9 @@ function spLaunch($configname){
 	if( isset($GLOBALS['G_SP']['launch'][$configname]) && is_array($GLOBALS['G_SP']['launch'][$configname]) ){
 		foreach( $GLOBALS['G_SP']['launch'][$configname] as $launch ){
 			if( is_array($launch) ){
-				spClass($launch[0])->{$launch[1]}();
+				return spClass($launch[0])->{$launch[1]}();
 			}else{
-				call_user_func($launch);
+				return call_user_func($launch);
 			}
 		}
 	}
