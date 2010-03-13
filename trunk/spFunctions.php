@@ -73,6 +73,8 @@ function import($sfilename, $auto_search = TRUE, $auto_error = FALSE)
  */
 function spAccess($method, $name, $value = NULL, $life_time = -1)
 {
+	// 使用挂靠点
+	if( $launch = spLaunch("function_access") )return $launch;
 	if(!is_dir($GLOBALS['G_SP']['sp_cache']))__mkdirs($GLOBALS['G_SP']['sp_cache']);
 	$sfile = $GLOBALS['G_SP']['sp_cache'].'/'.md5($name).".php";
 	if('w' == $method){ // 写数据
@@ -166,6 +168,7 @@ function spLaunch($configname){
 			}
 		}
 	}
+	return false;
 }
 /**
  *
@@ -212,6 +215,8 @@ function spUrl($controller = null, $action = null, $args = null, $anchor = null,
 	}
 	$controller = ( null != $controller ) ? $controller : $GLOBALS['G_SP']["default_controller"];
 	$action = ( null != $action ) ? $action : $GLOBALS['G_SP']["default_action"];
+	// 使用挂靠点
+	if( $launch = spLaunch("function_url") )return $launch;
 	if( TRUE == $GLOBALS['G_SP']['url']["url_path_info"] ){ // 使用path_info方式
 		$url = $GLOBALS['G_SP']['url']["url_path_base"]."/{$controller}/{$action}";
 		if(null != $args)foreach($args as $key => $arg) $url .= "/{$key}/{$arg}";
