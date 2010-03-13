@@ -19,9 +19,8 @@ return array(
 	'mode' => 'debug', // 应用程序模式，默认为调试模式
 	'sp_core_path' => SP_PATH.'/Core', // 框架MVC核心目录
 	'sp_include_path' => array( SP_PATH.'/Extensions' ), // 框架扩展功能载入路径
-	'mark_launch' => array( // 自动执行点的根节点
-		'router_prefilter' => FALSE, // 路由自动执行函数
-	),
+	'launch' => array(), // 自动执行点的根节点
+	
 	'auto_load_controller' => array('spArgs'), // 控制器自动加载的扩展类名
 	'auto_load_model' => array('spPager','spVerifier','spCache','spLinker'), // 模型自动加载的扩展类名
 	
