@@ -96,3 +96,5 @@ if(FALSE != $GLOBALS['G_SP']['view']['auto_display']){
 	$handle_controller->v->auto_display($__tplname);
 }
 
+// 对路由进行后续相关操作
+spLaunch("router_postfilter");
