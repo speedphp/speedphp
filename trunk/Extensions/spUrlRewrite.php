@@ -1,6 +1,6 @@
 <?php
 /**
- * spUrlRewrite 类，以扩展形式支持SpeedPHP框架URL_WRITE的扩展。
+ * spUrlRewrite 类，以扩展形式支持SpeedPHP框架URL_REWRITE的扩展。
  *
  * 该扩展的使用，首先要确定服务器开启URL_REWRITE功能，并且在.htaccess中已经有以下的内容
  *
