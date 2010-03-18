@@ -74,7 +74,7 @@ function import($sfilename, $auto_search = TRUE, $auto_error = FALSE)
 function spAccess($method, $name, $value = NULL, $life_time = -1)
 {
 	// 使用挂靠点
-	if( $launch = spLaunch("function_access", array('method'=>$method, 'name'=>$name, 'value'=>$value, 'life_time'=>$life_time)) )return $launch;
+	if( $launch = spLaunch("function_access", array('method'=>$method, 'name'=>$name, 'value'=>$value, 'life_time'=>$life_time), TRUE) )return $launch;
 	if(!is_dir($GLOBALS['G_SP']['sp_cache']))__mkdirs($GLOBALS['G_SP']['sp_cache']);
 	$sfile = $GLOBALS['G_SP']['sp_cache'].'/'.md5($name).".php";
 	if('w' == $method){ // 写数据
@@ -157,15 +157,18 @@ function spErrorHandler($errno, $errstr, $errfile, $errline) {
  * spLaunch  执行挂靠程序
  * 
  * @param configname    挂靠程序设置点名称
+ * @param launchargs    挂靠参数
+ * @param return    是否存在返回数据，如需要返回，则该挂靠点仅能有一个挂靠操作
  */
-function spLaunch($configname, $launchargs = null ){
+function spLaunch($configname, $launchargs = null, $returns = FALSE ){
 	if( isset($GLOBALS['G_SP']['launch'][$configname]) && is_array($GLOBALS['G_SP']['launch'][$configname]) ){
 		foreach( $GLOBALS['G_SP']['launch'][$configname] as $launch ){
 			if( is_array($launch) ){
-				return spClass($launch[0])->{$launch[1]}($launchargs);
+				$reval = spClass($launch[0])->{$launch[1]}($launchargs);
 			}else{
-				return call_user_func_array($launch, $launchargs);
+				$reval = call_user_func_array($launch, $launchargs);
 			}
+			if( TRUE == $returns )return $reval;
 		}
 	}
 	return false;
@@ -216,7 +219,7 @@ function spUrl($controller = null, $action = null, $args = null, $anchor = null,
 	$controller = ( null != $controller ) ? $controller : $GLOBALS['G_SP']["default_controller"];
 	$action = ( null != $action ) ? $action : $GLOBALS['G_SP']["default_action"];
 	// 使用挂靠点
-	if( $launch = spLaunch("function_url", array('controller'=>$controller, 'action'=>$action, 'args'=>$args, 'anchor'=>$anchor, 'no_sphtml'=>$no_sphtml)) )return $launch;
+	if( $launch = spLaunch("function_url", array('controller'=>$controller, 'action'=>$action, 'args'=>$args, 'anchor'=>$anchor, 'no_sphtml'=>$no_sphtml), TRUE ))return $launch;
 	if( TRUE == $GLOBALS['G_SP']['url']["url_path_info"] ){ // 使用path_info方式
 		$url = $GLOBALS['G_SP']['url']["url_path_base"]."/{$controller}/{$action}";
 		if(null != $args)foreach($args as $key => $arg) $url .= "/{$key}/{$arg}";
