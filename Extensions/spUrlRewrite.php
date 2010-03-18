@@ -60,8 +60,12 @@ class spUrlRewrite
 		GLOBAL $__controller, $__action;
 
 		$uri = substr($_SERVER["REQUEST_URI"], strlen(dirname($GLOBALS['G_SP']['url']['url_path_base'])));
-		
-		$lasturi = stristr($uri,$this->params['suffix']);
+		if( empty($uri) || '/' == $uri ){
+			$__controller = $GLOBALS['G_SP']['default_controller'];
+			$__action = $GLOBALS['G_SP']['default_action'];
+			return ;
+		}
+		$lasturi = stristr($uri,$this->params['suffix']);if( false == $lasturi )return ;
 		$firsturi = explode('/',trim(substr($uri, 0, -strlen($lasturi)),"\/\\"));
 		if( true == $this->params['hide_default'] && !isset($firsturi[1]) ){ // 开启隐藏默认名称
 			$__controller = $GLOBALS['G_SP']['default_controller'];
@@ -95,16 +99,16 @@ class spUrlRewrite
 	 */
 	public function getReWrite($urlargs = array())
 	{
-		$url = dirname($GLOBALS['G_SP']['url']["url_path_base"]);
+		$url = trim(dirname($GLOBALS['G_SP']['url']["url_path_base"]),"\/\\");
+		if( empty($url) ){$url = '/';}else{$url = '/'.$url.'/';}
 		if( $GLOBALS['G_SP']["default_controller"] == $urlargs['controller'] && $GLOBALS['G_SP']["default_action"] == $urlargs['action'] ){
-			// 空操作
 		}elseif( true == $this->params['hide_default'] && $GLOBALS['G_SP']["default_controller"] == $urlargs['controller'] ){ // 开启隐藏默认名称
-			$url .= '/'.(null != $urlargs['action'] ? $urlargs['action'] : $GLOBALS['G_SP']["default_action"]).$this->params['suffix'];
+			$url .= (null != $urlargs['action'] ? $urlargs['action'] : $GLOBALS['G_SP']["default_action"]).$this->params['suffix'];
 		}else{
 			// 不开启
 			$controller = (null != $urlargs['controller']) ? $urlargs['controller'] : $GLOBALS['G_SP']["default_controller"];
 			$action = (null != $urlargs['action']) ? $urlargs['action']: $GLOBALS['G_SP']["default_action"];
-			$url .= "/{$controller}/{$action}".$this->params['suffix'];
+			$url .= "{$controller}/{$action}".$this->params['suffix'];
 		}
 		if(null != $urlargs['args']){
 			if(true == $this->params['args_path_info']){
