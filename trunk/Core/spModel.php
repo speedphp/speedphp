@@ -288,6 +288,42 @@ class spModel {
 		$sql = "UPDATE {$this->tbl_name} SET {$values} {$where}";
 		return $this->_db->exec($sql);
 	}
+	
+	
+	/**
+	 * 为设定的字段值增加
+	 * @param conditions    数组形式，查找条件，此参数的格式用法与find/findAll的查找条件参数是相同的。
+	 * @param field    字符串，需要增加的字段名称，该字段务必是数值类型
+	 * @param optval    增加的值
+	 */
+	public function incrField($conditions, $field, $optval = 1)
+	{
+		$where = "";
+		if(is_array($conditions)){
+			$join = array();
+			foreach( $conditions as $key => $condition ){
+				$condition = $this->__val_escape($condition);
+				$join[] = "{$key} = '{$condition}'";
+			}
+			$where = "WHERE ".join(" AND ",$join);
+		}else{
+			if(null != $conditions)$where = "WHERE ".$conditions;
+		}
+		$values = "{$this->tbl_name}.{$field} = {$this->tbl_name}.{$field} + {$optval}";
+		$sql = "UPDATE {$this->tbl_name} SET {$values} {$where}";
+		return $this->_db->exec($sql);
+	}
+	
+	/**
+	 * 为设定的字段值减少
+	 * @param conditions    数组形式，查找条件，此参数的格式用法与find/findAll的查找条件参数是相同的。
+	 * @param field    字符串，需要减少的字段名称，该字段务必是数值类型
+	 * @param optval    减少的值
+	 */
+	public function decrField($conditions, $field, $optval = 1)
+	{
+		return $this->incrField($conditions, $field, - $optval);
+	}
 
 	/**
 	 * 按给定的数据表的主键删除记录
@@ -312,6 +348,7 @@ class spModel {
 		}
 		return array_intersect_key($rows,$newcol);
 	}
+
 }
 
 
