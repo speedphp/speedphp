@@ -332,7 +332,7 @@ class spModel {
 	 */
 	public function deleteByPk($pk)
 	{
-		return $this->delete(array($this->pk=>intval($pk)));
+		return $this->delete(array($this->pk=>$pk));
 	}
 
 	/**
