@@ -13,7 +13,7 @@
  * RewriteRule ^(.*)$ index.php?$1 [L]
  * </IfModule>
  *
- * 本扩展要求SpeedPHP框架2.3.8版本(不含2.3.8)以上，以支持对spUrl函数的挂靠程序。
+ * 本扩展要求SpeedPHP框架2.5版本以上，以支持对spUrl函数的挂靠程序。
  *
  * 应用程序配置中需要使用到路由挂靠点以及spUrl挂靠点
  * 'launch' => array( 
@@ -36,7 +36,7 @@
  * ),
  *
  */
-
+if( SP_VERSION < 2.5 )spError('spUrlRewrite扩展要求SpeedPHP框架版本2.5以上。');
 class spUrlRewrite
 {
 	var $params = array(
