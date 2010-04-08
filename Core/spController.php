@@ -109,6 +109,7 @@ class spController {
 		if(TRUE == $GLOBALS['G_SP']['view']['enabled']){
 			$this->v->display($tplname, $output);
 		}else{
+			extract($this->__template_vals);
 			require($tplname);
 		}
 		if( TRUE != $output )return ob_get_clean();
