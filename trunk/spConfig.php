@@ -18,6 +18,7 @@
 return array(
 	'mode' => 'debug', // 应用程序模式，默认为调试模式
 	'sp_core_path' => SP_PATH.'/Core', // 框架MVC核心目录
+	'sp_drivers_path' => SP_PATH.'/Drivers', // 框架各类驱动文件目录
 	'sp_include_path' => array( SP_PATH.'/Extensions' ), // 框架扩展功能载入路径
 	'launch' => array(), // 自动执行点的根节点
 	
@@ -71,7 +72,7 @@ return array(
 		),
 		'debugging' => FALSE, // 是否开启视图调试功能，在部署模式下无法开启视图调试功能
 		'engine_name' => 'smarty', // 视图驱动名称
-		'engine_path' => SP_PATH.'/Core/Smarty/Smarty.class.php', // smarty类库路径
+		'engine_path' => SP_PATH.'/Drivers/Smarty/Smarty.class.php', // smarty类库路径
 		'auto_ob_start' => TRUE, // 是否自动开启缓存输出控制
 		'auto_display' => FALSE, // 是否使用自动输出模板功能
 		'auto_display_sep' => '/', // 自动输出模板的拼装模式，/为按目录方式拼装，_为按下划线方式，以此类推
