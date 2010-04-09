@@ -52,7 +52,7 @@ class spModel {
 	public function __construct()
 	{
 		if( null == $this->tbl_name )$this->tbl_name = $GLOBALS['G_SP']['db']['prefix'] . $this->table;
-		$this->_db = spClass($GLOBALS['G_SP']['db']['driver'], $GLOBALS['G_SP']['db'], $GLOBALS['G_SP']['sp_core_path'].$GLOBALS['G_SP']['db_driver_path']);
+		$this->_db = spClass($GLOBALS['G_SP']['db']['driver'], $GLOBALS['G_SP']['db'], $GLOBALS['G_SP']['sp_drivers_path'].$GLOBALS['G_SP']['db_driver_path']);
 	}
 
 	/**
