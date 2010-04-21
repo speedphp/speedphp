@@ -10,9 +10,9 @@
 /////////////////////////////////////////////////////////////////////////////
 
 /**
- * mysql MySQL数据库的驱动支持 
+ * db_mysql MySQL数据库的驱动支持 
  */
-class mysql {
+class db_mysql {
 	/**
 	 * 数据库链接句柄
 	 */
@@ -40,11 +40,19 @@ class mysql {
 	}
 	
 	/**
-	 * 返回下一个插入的主键ID
+	 * 返回当前插入记录的主键ID
 	 */
 	public function newinsertid()
 	{
 		return mysql_insert_id($this->conn);
+	}
+	
+	/**
+	 * 格式化带limit的SQL语句
+	 */
+	public function setlimit($sql, $limit)
+	{
+		return $sql. " LIMIT {$limit}";
 	}
 
 	/**
@@ -69,7 +77,7 @@ class mysql {
 	 */
 	public function getTable($tbl_name)
 	{
-		return $this->getArray("DESCRIBE {$tbl_name}", $this->conn);
+		return $this->getArray("DESCRIBE {$tbl_name}");
 	}
 
 	/**
@@ -79,7 +87,8 @@ class mysql {
 	 */
 	public function __construct($dbConfig)
 	{
-		$this->conn = mysql_connect($dbConfig['host'].":".$dbConfig['port'], $dbConfig['login'], $dbConfig['password']) or spError("数据库链接错误 : " . mysql_error()); 
+		$linkfunction = ( TRUE == $dbConfig['persistent'] ) ? 'mysql_pconnect' : 'mysql_connect';
+		$this->conn = $linkfunction($dbConfig['host'].":".$dbConfig['port'], $dbConfig['login'], $dbConfig['password']) or spError("数据库链接错误 : " . mysql_error()); 
 		mysql_select_db($dbConfig['database'], $this->conn) or spError("无法找到数据库，请确认数据库名称正确！");
 		$this->exec("SET NAMES UTF8");
 	}
@@ -102,7 +111,7 @@ class mysql {
 	 */
 	public function __destruct()
 	{
-		@mysql_close($this->conn);
+		if( TRUE != $dbConfig['persistent'] )@mysql_close($this->conn);
 	}
 }
 
