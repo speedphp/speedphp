@@ -9,7 +9,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-define('SP_VERSION', '2.5.25'); // 当前框架版本
+define('SP_VERSION', '2.7.55'); // 当前框架版本
 
 /**
  * spCore
@@ -90,8 +90,7 @@ $handle_controller->$__action();
 
 // 控制器程序运行完毕，进行模板的自动输出
 if(FALSE != $GLOBALS['G_SP']['view']['auto_display']){
-	$__tplname = $GLOBALS['G_SP']['view']['config']['template_dir']."/".
-		$__controller.$GLOBALS['G_SP']['view']['auto_display_sep'].
+	$__tplname = $__controller.$GLOBALS['G_SP']['view']['auto_display_sep'].
 			$__action.$GLOBALS['G_SP']['view']['auto_display_suffix'];
 	$handle_controller->v->auto_display($__tplname);
 }
