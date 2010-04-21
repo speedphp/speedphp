@@ -276,28 +276,6 @@ function spAddViewFunction($alias, $callback_function)
 }
 
 /**
- * spDB 函数（全称：SpeedPHP DataBase），简化数据库操作的函数。
- *
- * spDB可以达到简单使用spModel子类的快捷方式，在没有spModel子类定义的情况下，直接对该表(spModel拥有的)操作。
- * spDB仅提供spModel子类的简便使用方式，如需要强大或丰富的spModel子类功能，请仍然对子类进行定义并使用该子类。
- *
- * 开发者可以方便地：
- * 1. 初始化一个spModel的子类，即使这个子类的定义不存在
- * 2. 调用该对象的继承spModel而来的全部方法
- *
- * @param tbl_name    表全名 或 表名称，开发者可在配置中的db_spdb_full_tblname设置符合自己使用习惯的方式。
- *                    表全名是默认值，db_spdb_full_tblname = true，tbl_name值将是（表前缀 + 表名称）
- *                    表名称，db_spdb_full_tblname = false，这时候框架将使用db配置中的表前缀prefix。
- * @param pk    主键（可选），在无需使用到主键的情况下，可以忽略。(使用到主键的情况：create，deleteByPk，findAll)
- */
-function spDB($tbl_name, $pk = 'id'){
-	$modelObj = spClass("spModel");
-	$modelObj->tbl_name = (TRUE == $GLOBALS['G_SP']["db_spdb_full_tblname"]) ? $tbl_name :	$GLOBALS['G_SP']['db']['prefix'] . $tbl_name;
-	$modelObj->pk = $pk;
-	return $modelObj;
-}
-
-/**
  * json_decode/json_encode
  *
  * 兼容在未配置JSON扩展的情况下使用Services_JSON类
@@ -322,7 +300,7 @@ if ( !function_exists('json_encode') ){
  * @param preconfig    默认配置
  * @param useconfig    用户配置
  */
-function spConfigReady( $preconfig, $useconfig = null){
+function & spConfigReady(&$preconfig, &$useconfig = null){
 	$nowconfig = $preconfig;
 	if (is_array($useconfig)){
 		foreach ($useconfig as $key => $val){

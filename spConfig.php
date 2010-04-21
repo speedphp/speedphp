@@ -18,7 +18,6 @@
 return array(
 	'mode' => 'debug', // 应用程序模式，默认为调试模式
 	'sp_core_path' => SP_PATH.'/Core', // 框架MVC核心目录
-	'sp_drivers_path' => SP_PATH.'/Drivers', // 框架各类驱动文件目录
 	'sp_include_path' => array( SP_PATH.'/Extensions' ), // 框架扩展功能载入路径
 	'launch' => array(), // 自动执行点的根节点
 	
@@ -39,7 +38,7 @@ return array(
 	'url_action' => 'a',  // 请求时使用的动作变量标识
 
 	'auto_session' => TRUE, // 是否自动开启SESSION支持
-	'dispatcher_error' => "spError('路由错误，请检查控制器目录下是否存在该控制器/动作。');", // 定义处理路由错误的函数
+	'dispatcher_error' => "spError('路由错误，请检查是否存在该函数。');", // 定义处理路由错误的函数
 	
 	'sp_cache' => APP_PATH.'/tmp', // 框架临时文件夹目录
 	'controller_path' => APP_PATH.'/controller', // 用户控制器程序的路径定义
@@ -54,14 +53,12 @@ return array(
 		'driver' => 'mysql',   // 驱动类型
 		'host' => 'localhost', // 数据库地址
 		'port' => 3306,        // 端口
-		'login' => 'root',     // 用户名
+		'login' => 'root',       // 用户名
 		'password' => '',      // 密码
 		'database' => '',      // 库名称
 		'prefix' => '',           // 表前缀
-		'persistent' => FALSE,    // 是否使用长链接
 	),
-	'db_driver_path' => '', // 自定义数据库驱动文件地址
-	'db_spdb_full_tblname' => TRUE, // spDB是否使用表全名
+	'db_driver_path' => '/mysql.php', // 数据库驱动文件
 	
 	'view' => array( // 视图配置
 		'enabled' => TRUE, // 开启视图
@@ -73,8 +70,8 @@ return array(
 			'right_delimiter' => '}', // smarty右限定符
 		),
 		'debugging' => FALSE, // 是否开启视图调试功能，在部署模式下无法开启视图调试功能
-		'engine_name' => 'Smarty', // 模板引擎的类名称，默认为Smarty
-		'engine_path' => SP_PATH.'/Drivers/Smarty/Smarty.class.php', // 模板引擎主类路径
+		'engine_name' => 'smarty', // 视图驱动名称
+		'engine_path' => SP_PATH.'/Core/Smarty/Smarty.class.php', // smarty类库路径
 		'auto_ob_start' => TRUE, // 是否自动开启缓存输出控制
 		'auto_display' => FALSE, // 是否使用自动输出模板功能
 		'auto_display_sep' => '/', // 自动输出模板的拼装模式，/为按目录方式拼装，_为按下划线方式，以此类推

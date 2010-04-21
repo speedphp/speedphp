@@ -81,7 +81,7 @@ class spController {
 	public function __set($name, $value)
 	{
 		if(TRUE == $GLOBALS['G_SP']['view']['enabled']){
-			$this->v->engine->assign(array($name=>$value));
+			$this->v->getView()->assign(array($name=>$value));
 		}
 		$this->__template_vals[$name] = $value;
 	}
@@ -92,7 +92,10 @@ class spController {
 	 */
 	public function __get($name)
 	{
-		return $this->__template_vals[$name];
+		if( array_key_exists($name, $this->__template_vals) ){
+			return $this->__template_vals[$name];
+		}
+		spError("变量未定义！");
 	}
 	
 	/**
@@ -104,9 +107,8 @@ class spController {
 	public function display($tplname, $output = TRUE)
 	{
 		if(TRUE == $GLOBALS['G_SP']['view']['enabled']){
-			$this->v->display($tplname);
+			$this->v->display($tplname, $output);
 		}else{
-			extract($this->__template_vals);
 			require($tplname);
 		}
 		if( TRUE != $output )return ob_get_clean();
@@ -120,17 +122,16 @@ class spController {
 		if(in_array($name, $GLOBALS['G_SP']["auto_load_controller"])){
 			return spClass($name)->__input($args);
 		}elseif(!method_exists( $this, $name )){
-			spError("方法 {$name}未定义！<br />请检查是否控制器类与数据模型类重名？");
+			spError("方法 {$name}未定义！");
 		}
 	}
 
 	/**
-	 * 获取模板引擎实例
+	 * 获取视图对象
 	 */
 	public function getView()
 	{
-		$this->v->addfuncs();
-		return $this->v->engine;
+		return $this->v->getView();
 	}
 	/**
 	 * 设置当前用户的语言
@@ -185,7 +186,7 @@ class spArgs {
 	 * @param default    当前获取的变量不存在的时候，将返回的默认值
 	 * @param method    获取位置，取值GET，POST，COOKIE
 	 */
-	public function get($name = null, $default = FALSE, $method = null)
+	public function get($name = null, $default = null, $method = null)
 	{
 		if(null != $name){
 			if( $this->has($name) ){
@@ -201,7 +202,7 @@ class spArgs {
 				}
 				return $this->args[$name];
 			}else{
-				return (FALSE === $default) ? FALSE : $default;
+				return (null === $default) ? FALSE : $default;
 			}
 		}else{
 			return $this->args;

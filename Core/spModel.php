@@ -39,12 +39,12 @@ class spModel {
 	/**
 	 * 表全名
 	 */
-	public $tbl_name = null;
+	protected $tbl_name = null;
 	
 	/**
 	 * 数据驱动程序
 	 */
-	public $_db;
+	protected $_db;
 
 	/**
 	 * 构造函数
@@ -52,10 +52,7 @@ class spModel {
 	public function __construct()
 	{
 		if( null == $this->tbl_name )$this->tbl_name = $GLOBALS['G_SP']['db']['prefix'] . $this->table;
-		if( '' == $GLOBALS['G_SP']['db_driver_path'] ){
-			$GLOBALS['G_SP']['db_driver_path'] = $GLOBALS['G_SP']['sp_drivers_path'].'/'.$GLOBALS['G_SP']['db']['driver'].'.php';
-		}
-		$this->_db = spClass('db_'.$GLOBALS['G_SP']['db']['driver'], $GLOBALS['G_SP']['db'], $GLOBALS['G_SP']['db_driver_path']);
+		$this->_db = spClass($GLOBALS['G_SP']['db']['driver'], $GLOBALS['G_SP']['db'], $GLOBALS['G_SP']['sp_core_path'].$GLOBALS['G_SP']['db_driver_path']);
 	}
 
 	/**
@@ -82,8 +79,7 @@ class spModel {
 	 * 请注意在使用字符串时将需要开发者自行使用__val_escape来对输入值进行过滤
 	 * @param sort    排序，等同于“ORDER BY ”
 	 * @param fields    返回的字段范围，默认为返回全部字段的值
-	 * @param limit    返回的结果数量限制，等同于“LIMIT ”，如$limit = " 3, 5"，即是从第3条记录（从0开始计算）开始获取，共获取5条记录
-	 *                 如果limit值只有一个数字，则是指代从0条记录开始。
+	 * @param limit    返回的结果数量限制，等同于“LIMIT ”，如$limit = " 3, 5"，即是从第3条记录开始获取，共获取5条记录
 	 */
 	public function findAll($conditions = null, $sort = null, $fields = null, $limit = null)
 	{
@@ -99,13 +95,9 @@ class spModel {
 		}else{
 			if(null != $conditions)$where = "WHERE ".$conditions;
 		}
-		if(null != $sort){
-			$sort = "ORDER BY {$sort}";
-		}else{
-			$sort = "ORDER BY {$this->pk}";
-		}
-		$sql = "SELECT {$this->tbl_name}.{$fields} FROM {$this->tbl_name} {$where} {$sort}";
-		if(null != $limit)$sql = $this->_db->setlimit($sql, $limit);
+		if(null != $sort)$sort = "ORDER BY {$sort}";
+		if(null != $limit)$limit = "LIMIT {$limit}";
+		$sql = "SELECT {$this->tbl_name}.{$fields} FROM {$this->tbl_name} {$where} {$sort} {$limit}";
 		return $this->_db->getArray($sql);
 	}
 	/**
@@ -401,9 +393,7 @@ class spPager {
 	 * 获取分页数据
 	 */
 	public function getPager(){
-		$tmppageData = $this->pageData;
-		$this->pageData = null;
-		return $tmppageData;
+		return $this->pageData;
 	}
 	
 	/** 
@@ -434,7 +424,7 @@ class spPager {
 			);
 			for($i=1; $i <= $total_page; $i++)$this->pageData['all_pages'][] = $i;
 			$limit = ($page - 1) * $pageSize . "," . $pageSize;
-			if('findSql'==$func_name)$conditions = $this->model_obj->_db->setlimit($conditions, $limit);
+			if('findSql'==$func_name)$conditions .= " LIMIT {$limit}";
 		}
 		if('findSql'==$func_name){
 			return $this->model_obj->findSql($conditions);

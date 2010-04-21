@@ -10,9 +10,9 @@
 /////////////////////////////////////////////////////////////////////////////
 
 /**
- * db_sqlite Sqlite数据库的驱动支持 
+ * mysql MySQL数据库的驱动支持 
  */
-class db_sqlite {
+class mysql {
 	/**
 	 * 数据库链接句柄
 	 */
@@ -29,24 +29,22 @@ class db_sqlite {
 	 */
 	public function getArray($sql)
 	{
+		if( ! $result = $this->exec($sql) )return FALSE;
+		if( ! mysql_num_rows($result) )return FALSE;
+		$rows = array();
+		while($rows[] = mysql_fetch_array($result,MYSQL_ASSOC)){}
+		mysql_free_result($result);
 		$this->arrSql[] = $sql;
-		return sqlite_array_query($this->conn, $sql, SQLITE_ASSOC);
+		array_pop($rows);
+		return $rows;
 	}
 	
 	/**
-	 * 返回当前插入记录的主键ID
+	 * 返回下一个插入的主键ID
 	 */
 	public function newinsertid()
 	{
-		return sqlite_last_insert_rowid($this->conn);
-	}
-	
-	/**
-	 * 格式化带limit的SQL语句
-	 */
-	public function setlimit($sql, $limit)
-	{
-		return $sql. " LIMIT {$limit}";
+		return mysql_insert_id($this->conn);
 	}
 
 	/**
@@ -57,10 +55,10 @@ class db_sqlite {
 	public function exec($sql)
 	{
 		$this->arrSql[] = $sql;
-		if( $result = sqlite_query($this->conn, $sql, SQLITE_ASSOC, $sqliteerror) ){
+		if( $result = mysql_query($sql, $this->conn) ){
 			return $result;
 		}else{
-			spError("{$sql}<br />执行错误: " . $sqliteerror);
+			spError("{$sql}<br />执行错误: " . mysql_error());
 		}
 	}
 
@@ -71,12 +69,7 @@ class db_sqlite {
 	 */
 	public function getTable($tbl_name)
 	{
-		$cols = sqlite_fetch_column_types($tbl_name, $this->conn, SQLITE_ASSOC);
-		$columns = array();
-		foreach ($cols as $column => $type) {
-		    $columns[] = array('Field'=>$column);
-		}
-		return $columns;
+		return $this->getArray("DESCRIBE {$tbl_name}", $this->conn);
 	}
 
 	/**
@@ -86,9 +79,9 @@ class db_sqlite {
 	 */
 	public function __construct($dbConfig)
 	{
-		if(!function_exists('sqlite_open'))spError('PHP环境未安装Sqlite函数库！');
-		$linkfunction = ( TRUE == $dbConfig['persistent'] ) ? 'sqlite_popen' : 'sqlite_open';
-		if (! $this->conn = $linkfunction($dbConfig['database'], 0666, $sqliteerror))spError('数据库链接错误/无法找到数据库 : '. $sqliteerror);
+		$this->conn = mysql_connect($dbConfig['host'].":".$dbConfig['port'], $dbConfig['login'], $dbConfig['password']) or spError("数据库链接错误 : " . mysql_error()); 
+		mysql_select_db($dbConfig['database'], $this->conn) or spError("无法找到数据库，请确认数据库名称正确！");
+		$this->exec("SET NAMES UTF8");
 	}
 	/**
 	 * 对特殊字符进行过滤
@@ -101,7 +94,7 @@ class db_sqlite {
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
-		return sqlite_escape_string($value);
+		return mysql_real_escape_string($value, $this->conn);
 	}
 
 	/**
@@ -109,7 +102,7 @@ class db_sqlite {
 	 */
 	public function __destruct()
 	{
-		if( TRUE != $dbConfig['persistent'] )sqlite_close($this->conn);
+		@mysql_close($this->conn);
 	}
 }
 
