@@ -14,30 +14,31 @@
  */
 class spView {
 	/**
-	 * smarty实例
+	 * 模板引擎实例
 	 */
-	private $smarty = null;
+	public $engine = null;
 	/**
 	 * 模板是否已输出
 	 */
 	private $displayed = FALSE;
 
 	/**
-	 * 构造函数，进行Smarty类的实例化操作
+	 * 构造函数，进行模板引擎的实例化操作
 	 */
 	public function __construct()
 	{
 		if(FALSE == $GLOBALS['G_SP']['view']['enabled'])return FALSE;
 		if(FALSE != $GLOBALS['G_SP']['view']['auto_ob_start'])ob_start();
-		$this->smarty = spClass($GLOBALS['G_SP']['view']['engine_name'],null,$GLOBALS['G_SP']['view']['engine_path']);
+		$this->engine = spClass($GLOBALS['G_SP']['view']['engine_name'],null,$GLOBALS['G_SP']['view']['engine_path']);
 		$configs = $GLOBALS['G_SP']['view']['config'];
 		if( is_array($configs) ){
+			$engine_vars = get_class_vars(get_class($this->engine));
 			foreach( $configs as $key => $value ){
-				if( isset($this->smarty->{$key}) )$this->smarty->{$key} = $value;
+				if( array_key_exists($key,$engine_vars) )$this->engine->{$key} = $value;
 			}
 		}
-		spAddViewFunction('T', array( $this, '__smarty_T'));
-		spAddViewFunction('spUrl', array( $this, '__smarty_spUrl'));
+		spAddViewFunction('T', array( $this, '__template_T'));
+		spAddViewFunction('spUrl', array( $this, '__template_spUrl'));
 	}
 
 	/**
@@ -48,17 +49,8 @@ class spView {
 	{
 		$this->addfuncs();
 		$this->displayed = TRUE;
-		if($GLOBALS['G_SP']['view']['debugging'] && SP_DEBUG)$this->smarty->debugging = TRUE;
-		$this->smarty->display($tplname);
-	}
-
-	/**
-	 * 获取Smarty的实例
-	 */	
-	public function getView()
-	{
-		$this->addfuncs();
-		return $this->smarty;
+		if($GLOBALS['G_SP']['view']['debugging'] && SP_DEBUG)$this->engine->debugging = TRUE;
+		$this->engine->display($tplname);
 	}
 	/**
 	 * 自动输出页面
@@ -66,10 +58,9 @@ class spView {
 	 */
 	public function auto_display($tplname)
 	{
-		if( TRUE != $this->displayed && 
-			FALSE != $GLOBALS['G_SP']['view']['auto_display'] &&
-			TRUE == $this->smarty->template_exists($tplname)){
-			$this->display($tplname);
+		if( TRUE != $this->displayed && FALSE != $GLOBALS['G_SP']['view']['auto_display']){
+			if( !method_exists($this->engine, 'template_exists') || TRUE == $this->engine->template_exists($tplname) )
+				$this->display($tplname);
 		}
 	}
 	
@@ -78,18 +69,17 @@ class spView {
 	 */
 	public function addfuncs()
 	{
-		if( is_array($GLOBALS['G_SP']["view_registered_functions"]) ){
+		if( is_array($GLOBALS['G_SP']["view_registered_functions"]) && 
+			method_exists($this->engine, 'register_function') ){
 			foreach( $GLOBALS['G_SP']["view_registered_functions"] as $alias => $func )
-			{
-				$this->smarty->register_function($alias, $func);
-			}
+				$this->engine->register_function($alias, $func);
 		}
 	}
 	/**
 	 * 辅助spUrl的函数，让spUrl可在模板中使用。
 	 * @param params 传入的参数
 	 */
-	public function __smarty_spUrl($params)
+	public function __template_spUrl($params)
 	{
 		$controller = $GLOBALS['G_SP']["default_controller"];
 		$action = $GLOBALS['G_SP']["default_action"];
@@ -112,7 +102,7 @@ class spView {
 	 * 辅助T的函数，让T可在模板中使用。
 	 * @param params 传入的参数
 	 */
-	public function __smarty_T($params)
+	public function __template_T($params)
 	{
 		return T($params['w']);
 	}
@@ -136,7 +126,6 @@ class spHtml
 	public function make($spurl, $alias_url = null, $update_mode = 2)
 	{
 		$spurl = array_pad($spurl, 4, null);$spurl[] = TRUE;
-		if( '*' == $spurl[1] or '*' == $spurl[2] )return FALSE;
 		if( $url_item = call_user_func_array($GLOBALS['G_SP']['html']['url_getter'],$spurl) ){
 			list($baseuri, $realfile) = $url_item;
 		}else{
@@ -148,16 +137,45 @@ class spHtml
 				$filename = basename($alias_url);
 			}
 			$baseuri = rtrim(dirname($GLOBALS['G_SP']['url']["url_path_base"]), '/\\')."/".$filedir.$filename;
-			$realfile = dirname($_SERVER['SCRIPT_FILENAME'])."/".$filedir.$filename;
+			$realfile = APP_PATH."/".$filedir.$filename;
+		}
+		if( 1 == $update_mode or 2 == $update_mode ){
+			$remoteurl = 'http://'.$_SERVER["SERVER_NAME"].':'.$_SERVER['SERVER_PORT'].
+										'/'.ltrim(call_user_func_array("spUrl",$spurl), '/\\');
+			$cachedata = file_get_contents(urlencode($remoteurl));
+			if( FALSE === $cachedata ){
+				$cachedata = $this->curl_get_file_contents($remoteurl);
+				if( FALSE === $cachedata ){
+					if( strtolower(ini_get('allow_url_fopen')) != 'on' ){
+						spError("无法从网络获取页面数据，PHP环境已禁止远程访问！<br />请设置php.ini的allow_url_fopen为On");
+					}else{
+						spError("无法从网络获取页面数据，请检查spUrl生成地址是否正确！");
+					}
+				}
+			}
+			__mkdirs(dirname($realfile));
+			file_put_contents($realfile, $cachedata);
 		}
 		if( 0 == $update_mode or 2 == $update_mode )
 			call_user_func_array($GLOBALS['G_SP']['html']['url_setter'], array($spurl, $baseuri, $realfile));
-		if( 1 == $update_mode or 2 == $update_mode ){
-			__mkdirs(dirname($realfile));
-			$cachedata = @file_get_contents('http://'.$_SERVER["SERVER_NAME"].call_user_func_array("spUrl",$spurl));
-			@file_put_contents($realfile, $cachedata);
-		}
+
 	}
+	/**
+	 * 当file_get_contents失效时，程序将调用CURL函数来进行网络数据获取
+	 * @param url 访问地址
+	 */
+	function curl_get_file_contents($url)
+    {
+    	if(!function_exists('curl_init'))
+    		spError("CURL函数库无法使用，程序无法从网络获取页面数据！<br />请设置php.ini的allow_url_fopen为On 或 安装CURL函数库");
+        $c = curl_init();
+        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($c, CURLOPT_URL, $url);
+        $contents = curl_exec($c);
+        curl_close($c);
+        if (FALSE === $contents)return FALSE;
+        return $contents;
+    }
 	
 	/**
 	 * 批量生成静态页面
@@ -188,11 +206,10 @@ class spHtml
 	{
 		if( $url_list = spAccess('r', 'sp_url_list') ){
 			$url_list = explode("\n",$url_list);
-			$args = (is_array($args) && !empty($args) ) ? serialize($args) : null;
+			$args = (is_array($args) && !empty($args) ) ? serialize($args) : "";
 			$url_input = "{$controller}|{$action}|{$args}|$anchor|";
 			foreach( $url_list as $url ){
-				if( substr($url,0,strlen($url_input)) == $url_input )
-				{
+				if( substr($url,0,strlen($url_input)) == $url_input ){
 					$url_item = explode("|",substr($url,strlen($url_input)));
 					if( TRUE == $GLOBALS['G_SP']['html']['safe_check_file_exists'] && TRUE != $force_no_check ){
 						if( !is_readable($url_item[1]) )return FALSE;
@@ -214,9 +231,9 @@ class spHtml
 	public function setUrl($spurl, $baseuri, $realfile)
 	{
 		@list($controller, $action, $args, $anchor) = $spurl;
-		$args = (is_array($args) && !empty($args)) ? serialize($args) : null;
-		$url_input = "{$controller}|{$action}|{$args}|$anchor|$baseuri|$realfile";
 		$this->clear($controller, $action, $args, $anchor, FALSE);
+		$args = ('' !== $args) ? serialize($args) : '';
+		$url_input = "{$controller}|{$action}|{$args}|{$anchor}|{$baseuri}|{$realfile}";
 		if( $url_list = spAccess('r', 'sp_url_list') ){
 			spAccess('w', 'sp_url_list', $url_list."\n".$url_input);
 		}else{
@@ -237,24 +254,23 @@ class spHtml
 	 * @param anchor    跳转锚点，默认为空将清除该动作任何锚点产生的HTML文件
 	 * 如果设置了anchor将仅清除该动作跳转到锚点anchor产生的HTML文件
 	 *
-	 * @param delete_file    是否删除物理文件，FALSH将只删除列表中该静态文件的地址，而不删除物理文件。
+	 * @param delete_file    是否删除物理文件，FALSE将只删除列表中该静态文件的地址，而不删除物理文件。
 	 */
-	public function clear($controller, $action = null, $args = null, $anchor = null, $delete_file = TRUE)
+	public function clear($controller, $action = null, $args = FALSE, $anchor = '', $delete_file = TRUE)
 	{
 		if( $url_list = spAccess('r', 'sp_url_list') ){
 			$url_list = explode("\n",$url_list);$re_url_list = array();
-			if( '*' == $action ){
-				$url_input = "{$controller}|";
-			}elseif( '*' == $args ){
-				$url_input = "{$controller}|{$action}|";
+			if( null == $action ){
+				$prep = "{$controller}|";
+			}elseif( null == $args ){
+				$prep = "{$controller}|{$action}|";
 			}else{
-				$url_input = "{$controller}|{$action}|{$args}|$anchor|";
+				$args = (FALSE !== $args) ? serialize($args) : '';
+				$prep = "{$controller}|{$action}|{$args}|{$anchor}|";
 			}
 			foreach( $url_list as $url ){
-				if( substr($url,0,strlen($url_input)) == $url_input )
-				{
-					$url_tmp = explode("|",$url);$baseuri = $url_tmp[4];
-					$realfile = dirname($_SERVER["SCRIPT_FILENAME"]).'/'.$baseuri;
+				if( substr($url,0,strlen($prep)) == $prep ){
+					$url_tmp = explode("|",$url);$realfile = $url_tmp[5];
 					if( TRUE == $delete_file )@unlink($realfile);
 				}else{
 					$re_url_list[] = $url;
@@ -276,8 +292,7 @@ class spHtml
 			if( $url_list = spAccess('r', 'sp_url_list') ){
 				$url_list = explode("\n",$url_list);
 				foreach( $url_list as $url ){
-					$url_tmp = explode("|",$url);$baseuri = $url_tmp[4];
-					$realfile = dirname($_SERVER["SCRIPT_FILENAME"]).'/'.$baseuri;
+					$url_tmp = explode("|",$url);$realfile = $url_tmp[5];
 					@unlink($realfile);
 				}
 			}
