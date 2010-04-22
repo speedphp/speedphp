@@ -37,8 +37,8 @@ class spView {
 				if( array_key_exists($key,$engine_vars) )$this->engine->{$key} = $value;
 			}
 		}
-		spAddViewFunction('T', array( $this, '__template_T'));
-		spAddViewFunction('spUrl', array( $this, '__template_spUrl'));
+		spAddViewFunction('T', array( 'spView', '__template_T'));
+		spAddViewFunction('spUrl', array( 'spView', '__template_spUrl'));
 	}
 
 	/**
@@ -71,8 +71,10 @@ class spView {
 	{
 		if( is_array($GLOBALS['G_SP']["view_registered_functions"]) && 
 			method_exists($this->engine, 'register_function') ){
-			foreach( $GLOBALS['G_SP']["view_registered_functions"] as $alias => $func )
+			foreach( $GLOBALS['G_SP']["view_registered_functions"] as $alias => $func ){
+				if( is_array($func) )$func = array(spClass($func[0]),$func[1]);
 				$this->engine->register_function($alias, $func);
+			}
 		}
 	}
 	/**
