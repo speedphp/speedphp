@@ -137,9 +137,8 @@ function spClass($class_name, $args = null, $sdir = null)
 function spError($msg, $output = TRUE, $stop = TRUE){
 	if(TRUE != SP_DEBUG)exit;
 	$traces = debug_backtrace();
-	$notice_html = SP_PATH."/Misc";
 	$bufferabove = ob_get_clean();
-	require($notice_html."/notice.php");
+	require($GLOBALS['G_SP']['sp_notice_php']);
 	if(TRUE == $stop)exit;
 }
 /**

@@ -44,6 +44,7 @@ return array(
 	'sp_cache' => APP_PATH.'/tmp', // 框架临时文件夹目录
 	'controller_path' => APP_PATH.'/controller', // 用户控制器程序的路径定义
 	'model_path' => APP_PATH.'/model', // 用户模型程序的路径定义
+	'sp_notice_php' => SP_PATH."/Misc/notice.php", // 框架默认的错误提示程序
 
 	'url' => array( // URL设置
 		'url_path_info' => FALSE, // 是否使用path_info方式的URL
