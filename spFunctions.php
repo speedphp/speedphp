@@ -327,9 +327,9 @@ function spConfigReady( $preconfig, $useconfig = null){
 	if (is_array($useconfig)){
 		foreach ($useconfig as $key => $val){
 			if (is_array($useconfig[$key])){
-				$nowconfig[$key] = is_array($nowconfig[$key]) ? spConfigReady($nowconfig[$key], $useconfig[$key]) : $useconfig[$key];
+				@$nowconfig[$key] = is_array($nowconfig[$key]) ? spConfigReady($nowconfig[$key], $useconfig[$key]) : $useconfig[$key];
 			}else{
-				$nowconfig[$key] = $val;
+				@$nowconfig[$key] = $val;
 			}
 		}
 	}
