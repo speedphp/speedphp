@@ -120,7 +120,7 @@ class spController {
 		if(in_array($name, $GLOBALS['G_SP']["auto_load_controller"])){
 			return spClass($name)->__input($args);
 		}elseif(!method_exists( $this, $name )){
-			spError("方法 {$name}未定义！<br />请检查是否控制器类与数据模型类重名？");
+			spError("方法 {$name}未定义！<br />请检查是否控制器类(".get_class($this).")与数据模型类重名？");
 		}
 	}
 
