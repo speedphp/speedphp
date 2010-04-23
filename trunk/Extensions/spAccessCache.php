@@ -22,7 +22,7 @@
  * 
  * 本扩展要求SpeedPHP框架2.5版本以上，以支持对spAccess函数的挂靠程序。
  */
-if( SP_VERSION < 2.5 )spError('spUrlRewrite扩展要求SpeedPHP框架版本2.5以上。');
+if( SP_VERSION < 2.5 )spError('spAccessCache扩展要求SpeedPHP框架版本2.5以上。');
 class spAccessCache{
 	/**
 	 * 魔术函数  通过函数名来调用不同的缓存驱动类
