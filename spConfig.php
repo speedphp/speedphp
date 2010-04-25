@@ -48,7 +48,7 @@ return array(
 
 	'url' => array( // URL设置
 		'url_path_info' => FALSE, // 是否使用path_info方式的URL
-		'url_path_base' => '/index.php', // URL的根目录访问地址
+		'url_path_base' => '', // URL的根目录访问地址，默认为空则是入口文件index.php
 	),
 	
 	'db' => array(  // 数据库连接配置
