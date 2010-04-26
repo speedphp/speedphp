@@ -208,7 +208,7 @@ class spHtml
 	{
 		if( $url_list = spAccess('r', 'sp_url_list') ){
 			$url_list = explode("\n",$url_list);
-			$args = (is_array($args) && !empty($args) ) ? serialize($args) : "";
+			$args = (is_array($args) && !empty($args) ) ? json_encode($args) : "";
 			$url_input = "{$controller}|{$action}|{$args}|$anchor|";
 			foreach( $url_list as $url ){
 				if( substr($url,0,strlen($url_input)) == $url_input ){
@@ -234,7 +234,7 @@ class spHtml
 	{
 		@list($controller, $action, $args, $anchor) = $spurl;
 		$this->clear($controller, $action, $args, $anchor, FALSE);
-		$args = ('' !== $args) ? serialize($args) : '';
+		$args = ('' !== $args) ? json_encode($args) : '';
 		$url_input = "{$controller}|{$action}|{$args}|{$anchor}|{$baseuri}|{$realfile}";
 		if( $url_list = spAccess('r', 'sp_url_list') ){
 			spAccess('w', 'sp_url_list', $url_list."\n".$url_input);
@@ -267,7 +267,7 @@ class spHtml
 			}elseif( null == $args ){
 				$prep = "{$controller}|{$action}|";
 			}else{
-				$args = (FALSE !== $args) ? serialize($args) : '';
+				$args = (FALSE !== $args) ? json_encode($args) : '';
 				$prep = "{$controller}|{$action}|{$args}|{$anchor}|";
 			}
 			foreach( $url_list as $url ){
