@@ -10,6 +10,37 @@
 /////////////////////////////////////////////////////////////////////////////
 
 /**
+ * spRun  执行用户代码
+ * 
+ */
+function spRun()
+{
+	GLOBAL $__controller, $__action;
+	// 对路由进行自动执行相关操作
+	spLaunch("router_prefilter");
+
+	$handle_controller = spClass($__controller, null, $GLOBALS['G_SP']["controller_path"].'/'.$__controller.".php");
+	// 调用控制器出错将调用路由错误处理函数
+	if(!is_object($handle_controller) || !method_exists($handle_controller, $__action)){
+		eval($GLOBALS['G_SP']["dispatcher_error"]);
+		exit;
+	}
+
+	// 路由并执行用户代码
+	$handle_controller->$__action();
+
+	// 控制器程序运行完毕，进行模板的自动输出
+	if(FALSE != $GLOBALS['G_SP']['view']['auto_display']){
+		$__tplname = $__controller.$GLOBALS['G_SP']['view']['auto_display_sep'].
+				$__action.$GLOBALS['G_SP']['view']['auto_display_suffix'];
+		$handle_controller->v->auto_display($__tplname);
+	}
+
+	// 对路由进行后续相关操作
+	spLaunch("router_postfilter");
+}
+
+/**
  * dump  格式化输出变量程序
  * 
  * @param vars    变量
