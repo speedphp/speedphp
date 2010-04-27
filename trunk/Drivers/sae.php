@@ -68,6 +68,14 @@ class db_sae {
 		if( $this->conn->errno() )spError("{$sql}<br />执行错误: " . $this->conn->error());
 		return $result;
 	}
+	
+	/**
+	 * 返回影响行数
+	 */
+	public function affected_rows()
+	{
+		return FALSE; // SAE环境暂时无法获取影响行数
+	}
 
 	/**
 	 * 获取数据表结构

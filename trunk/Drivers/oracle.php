@@ -21,6 +21,10 @@ class db_oracle {
 	 * 执行的SQL语句记录
 	 */
 	public $arrSql;
+	/**
+	 * exec执行影响行数
+	 */
+	private $num_rows;
 
 	/**
 	 * 按SQL语句获取记录结果，返回数组
@@ -29,6 +33,7 @@ class db_oracle {
 	 */
 	public function getArray($sql)
 	{
+		$this->arrSql[] = $sql;
 		$result = $this->exec($sql);
 		oci_fetch_all($result, $res, null, null, OCI_FETCHSTATEMENT_BY_ROW);
 		oci_free_statement($result);
@@ -66,7 +71,17 @@ class db_oracle {
 		if( !$result or !oci_execute($result) ){
 			$e = oci_error();spError('{$sql}<br />执行错误: ' . strip_tags($e['message']));
 		}
+		$this->num_rows = oci_num_rows($result);
 		return $result;
+	}
+	
+	
+	/**
+	 * 返回影响行数
+	 */
+	public function affected_rows()
+	{
+		return $this->num_rows;
 	}
 
 	/**

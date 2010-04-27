@@ -229,7 +229,14 @@ class spModel {
 	{
 		return end( $this->_db->arrSql );
 	}
-
+	
+	/**
+	 * 返回上次执行update,create,delete,exec的影响行数
+	 */
+	public function affectedRows()
+	{
+		return $this->_db->affected_rows();
+	}
 	/**
 	 * 计算符合条件的记录数量
 	 *

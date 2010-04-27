@@ -55,6 +55,10 @@ class db_pdo {
 	 * 执行的SQL语句记录
 	 */
 	public $arrSql;
+	/**
+	 * exec执行影响行数
+	 */
+	private $num_rows;
 
 	/**
 	 * 按SQL语句获取记录结果，返回数组
@@ -95,10 +99,19 @@ class db_pdo {
 		$this->arrSql[] = $sql;
 		$result = $this->conn->exec($sql);
 		if( FALSE !== $result ){
+			$this->num_rows = $result;
 			return $result;
 		}else{
 			spError("{$sql}<br />执行错误: " .$this->conn->errorInfo());
 		}
+	}
+	
+	/**
+	 * 返回影响行数
+	 */
+	public function affected_rows()
+	{
+		return $this->num_rows;
 	}
 
 	/**
