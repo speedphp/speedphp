@@ -118,17 +118,6 @@ class spModel {
 		return $this->_db->__val_escape($value);
 	}
 
-
-	/**
-	 * 使用SQL语句进行查找操作，等于进行find，findAll等操作
-	 *
-	 * @param sql 字符串，需要进行查找的SQL语句
-	 */
-	public function findSql($sql)
-	{
-		return $this->_db->getArray($sql);
-	}
-
 	/**
 	 * 在数据表中新增一行数据
 	 *
@@ -213,14 +202,26 @@ class spModel {
 	}
 
 	/**
+	 * 使用SQL语句进行查找操作，等于进行find，findAll等操作
+	 *
+	 * @param sql 字符串，需要进行查找的SQL语句
+	 */
+	public function findSql($sql)
+	{
+		return $this->_db->getArray($sql);
+	}
+
+	/**
 	 * 执行SQL语句，相等于执行新增，修改，删除等操作。
 	 *
 	 * @param sql 字符串，需要执行的SQL语句
 	 */
-	public function query($sql)
+	public function runSql($sql)
 	{
 		return $this->_db->exec($sql);
 	}
+	// query是runSql的别名，向前兼容
+	public function query($sql){return $this->runSql($sql);}
 
 	/**
 	 * 返回最后执行的SQL语句供分析
