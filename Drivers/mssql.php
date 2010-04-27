@@ -29,12 +29,12 @@ class db_mssql {
 	 */
 	public function getArray($sql)
 	{
+		$this->arrSql[] = $sql;
 		if( ! $result = $this->exec($sql) )return FALSE;
 		if( ! mssql_num_rows($result) )return FALSE;
 		$rows = array();
 		while($rows[] = mssql_fetch_array($result,MSSQL_ASSOC)){}
 		mssql_free_result($result);
-		$this->arrSql[] = $sql;
 		array_pop($rows);
 		return $rows;
 	}
@@ -71,6 +71,14 @@ class db_mssql {
 		}else{
 			spError("{$sql}<br />执行错误: " . mssql_get_last_message());
 		}
+	}
+	
+	/**
+	 * 返回影响行数
+	 */
+	public function affected_rows()
+	{
+		return mssql_rows_affected($this->conn);
 	}
 
 	/**

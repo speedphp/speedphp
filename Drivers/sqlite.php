@@ -63,6 +63,14 @@ class db_sqlite {
 			spError("{$sql}<br />执行错误: " . $sqliteerror);
 		}
 	}
+	
+	/**
+	 * 返回影响行数
+	 */
+	public function affected_rows()
+	{
+		return sqlite_changes($this->conn);
+	}
 
 	/**
 	 * 获取数据表结构
