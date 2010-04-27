@@ -16,7 +16,7 @@ class db_mysql {
 	/**
 	 * 数据库链接句柄
 	 */
-	private $conn;
+	public $conn;
 	/**
 	 * 执行的SQL语句记录
 	 */
