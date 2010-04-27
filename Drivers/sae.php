@@ -105,7 +105,7 @@ class db_sae {
 	 * @param value  值
 	 */
 	public function __val_escape($value) {
-		if(is_null($value))return 'NULL';
+		if(is_null($value))return null;
 		if(is_bool($value))return $value ? 1 : 0;
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
