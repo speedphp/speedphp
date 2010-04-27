@@ -40,6 +40,7 @@ return array(
 
 	'auto_session' => TRUE, // 是否自动开启SESSION支持
 	'dispatcher_error' => "spError('路由错误，请检查控制器目录下是否存在该控制器/动作。');", // 定义处理路由错误的函数
+	'auto_sp_run' => FALSE, // 是否自动执行spRun函数
 	
 	'sp_cache' => APP_PATH.'/tmp', // 框架临时文件夹目录
 	'controller_path' => APP_PATH.'/controller', // 用户控制器程序的路径定义
