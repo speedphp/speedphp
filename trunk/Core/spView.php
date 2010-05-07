@@ -116,6 +116,7 @@ class spView {
  */
 class spHtml
 {
+	private $spurls = null;
 	/**
 	 * 生成单个静态页面
 	 * 
@@ -127,6 +128,7 @@ class spHtml
 	 */
 	public function make($spurl, $alias_url = null, $update_mode = 2)
 	{
+		if(1 == spAccess('r','sp_html_making')){$this->spurls[] = array($spurl, $alias_url); return;}
 		@list($controller, $action, $args, $anchor) = $spurl;
 		if( $url_item = spHtml::getUrl($controller, $action, $args, $anchor, TRUE) ){
 			@list($baseuri, $realfile) = $url_item;
@@ -143,8 +145,8 @@ class spHtml
 			$baseuri = rtrim(dirname($GLOBALS['G_SP']['url']["url_path_base"]), '/\\')."/".$filedir.$filename;
 			$realfile = APP_PATH."/".$filedir.$filename;
 		}
-		if( 1 == $update_mode or 2 == $update_mode )spHtml::setUrl($spurl, $baseuri, $realfile);
-		if( 0 == $update_mode or 2 == $update_mode ){
+		if( 0 == $update_mode or 2 == $update_mode )spHtml::setUrl($spurl, $baseuri, $realfile);
+		if( 1 == $update_mode or 2 == $update_mode ){
 			$remoteurl = 'http://'.$_SERVER["SERVER_NAME"].':'.$_SERVER['SERVER_PORT'].
 										'/'.ltrim(spUrl($controller, $action, $args, $anchor, TRUE), '/\\');
 			$cachedata = file_get_contents($remoteurl);
@@ -187,7 +189,10 @@ class spHtml
 			list($spurl, $alias_url) = $single;
 			$this->make($spurl, $alias_url, 1);
 		}
-	}	
+	}
+	
+	public function start(){spAccess('w','sp_html_making',1);$this->spurls = null;}
+	public function commit(){spAccess('c','sp_html_making');$this->makeAll($this->spurls);}
 
 	/**
 	 * 获取url的列表程序，可以按配置开启是否检查文件存在
