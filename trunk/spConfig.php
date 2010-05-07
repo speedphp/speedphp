@@ -86,8 +86,6 @@ return array(
 	'html' => array( 
 		'enabled' => FALSE, // 是否开启真实静态HTML文件生成器
 		'file_root_name' => 'topic', // 静态文件生成的根目录名称，设置为空则是直接在入口文件的同级目录生成
-		'url_setter' => array("spHtml","setUrl"), // 写入URL的列表接口设置，这里同时还可以设置成单独的函数名称
-		'url_getter' => array('spHtml','getUrl'), // 获取URL的列表接口设置
 		'safe_check_file_exists' => FALSE, // 获取URL时，检查物理HTML文件是否存在，如文件不存在，则返回安全的动态地址
 	),
 	

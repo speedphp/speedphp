@@ -243,8 +243,7 @@ function T($w) {
 function spUrl($controller = null, $action = null, $args = null, $anchor = null, $no_sphtml = FALSE) {
 	if(TRUE == $GLOBALS['G_SP']['html']["enabled"] && TRUE != $no_sphtml){
 		// 当开启HTML生成时，将查找HTML列表获取静态文件名称。
-		$realhtml = spClass($GLOBALS['G_SP']['html']['url_getter'][0])->{$GLOBALS['G_SP']['html']['url_getter'][1]}($controller, $action, $args, $anchor);
-		if(isset($realhtml[0]))return $realhtml[0];
+		$realhtml = spHtml::getUrl($controller, $action, $args, $anchor);if(isset($realhtml[0]))return $realhtml[0];
 	}
 	$controller = ( null != $controller ) ? $controller : $GLOBALS['G_SP']["default_controller"];
 	$action = ( null != $action ) ? $action : $GLOBALS['G_SP']["default_action"];
