@@ -72,7 +72,7 @@ class spView {
 		if( is_array($GLOBALS['G_SP']["view_registered_functions"]) && 
 			method_exists($this->engine, 'register_function') ){
 			foreach( $GLOBALS['G_SP']["view_registered_functions"] as $alias => $func ){
-				if( is_array($func) )$func = array(spClass($func[0]),$func[1]);
+				if( is_array($func) && !is_object($func[0]) )$func = array(spClass($func[0]),$func[1]);
 				$this->engine->register_function($alias, $func);
 			}
 		}
@@ -127,49 +127,43 @@ class spHtml
 	 */
 	public function make($spurl, $alias_url = null, $update_mode = 2)
 	{
-		$spurl = array_pad($spurl, 4, null);$spurl[] = TRUE;
-		if( $url_item = call_user_func_array($GLOBALS['G_SP']['html']['url_getter'],$spurl) ){
-			list($baseuri, $realfile) = $url_item;
+		@list($controller, $action, $args, $anchor) = $spurl;
+		if( $url_item = spHtml::getUrl($controller, $action, $args, $anchor, TRUE) ){
+			@list($baseuri, $realfile) = $url_item;
 		}else{
+			$file_root_name = ( '' == $GLOBALS['G_SP']['html']['file_root_name'] ) ? 
+									'' : $GLOBALS['G_SP']['html']['file_root_name'].'/';
 			if( null == $alias_url ){
-				$filedir = $GLOBALS['G_SP']['html']['file_root_name'].'/'.date('Y/n/d').'/';
+				$filedir = $file_root_name .date('Y/n/d').'/';
 				$filename = substr(time(),3,10).substr(mt_rand(100000, substr(time(),3,10)),4).".html";
 			}else{
-				$filedir = $GLOBALS['G_SP']['html']['file_root_name'].'/'.dirname($alias_url) . '/';
+				$filedir = $file_root_name.dirname($alias_url) . '/';
 				$filename = basename($alias_url);
 			}
 			$baseuri = rtrim(dirname($GLOBALS['G_SP']['url']["url_path_base"]), '/\\')."/".$filedir.$filename;
 			$realfile = APP_PATH."/".$filedir.$filename;
 		}
-		if( 1 == $update_mode or 2 == $update_mode ){
+		if( 1 == $update_mode or 2 == $update_mode )spHtml::setUrl($spurl, $baseuri, $realfile);
+		if( 0 == $update_mode or 2 == $update_mode ){
 			$remoteurl = 'http://'.$_SERVER["SERVER_NAME"].':'.$_SERVER['SERVER_PORT'].
-										'/'.ltrim(call_user_func_array("spUrl",$spurl), '/\\');
-			$cachedata = file_get_contents(urlencode($remoteurl));
+										'/'.ltrim(spUrl($controller, $action, $args, $anchor, TRUE), '/\\');
+			$cachedata = file_get_contents($remoteurl);
 			if( FALSE === $cachedata ){
 				$cachedata = $this->curl_get_file_contents($remoteurl);
-				if( FALSE === $cachedata ){
-					if( strtolower(ini_get('allow_url_fopen')) != 'on' ){
-						spError("无法从网络获取页面数据，PHP环境已禁止远程访问！<br />请设置php.ini的allow_url_fopen为On");
-					}else{
-						spError("无法从网络获取页面数据，请检查spUrl生成地址是否正确！");
-					}
-				}
+				if( FALSE === $cachedata )spError("无法从网络获取页面数据，请检查：<br />1. spUrl生成地址是否正确！<a href='{$remoteurl}' target='_blank'>点击这里测试</a>。<br />2. 设置php.ini的allow_url_fopen为On。<br />3. 检查是否防火墙阻止了APACHE/PHP访问网络。<br />4. 建议安装CURL函数库。");
 			}
 			__mkdirs(dirname($realfile));
 			file_put_contents($realfile, $cachedata);
 		}
-		if( 0 == $update_mode or 2 == $update_mode )
-			call_user_func_array($GLOBALS['G_SP']['html']['url_setter'], array($spurl, $baseuri, $realfile));
-
 	}
+	
 	/**
 	 * 当file_get_contents失效时，程序将调用CURL函数来进行网络数据获取
 	 * @param url 访问地址
 	 */
 	function curl_get_file_contents($url)
     {
-    	if(!function_exists('curl_init'))
-    		spError("CURL函数库无法使用，程序无法从网络获取页面数据！<br />请设置php.ini的allow_url_fopen为On 或 安装CURL函数库");
+    	if(!function_exists('curl_init'))return FALSE;
         $c = curl_init();
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($c, CURLOPT_URL, $url);
@@ -202,14 +196,13 @@ class spHtml
 	 * @param args    传递的参数，数组形式
 	 * @param anchor    跳转锚点
 	 * @param force_no_check    是否检查物理文件是否存在
-	 * 
 	 */
 	public function getUrl($controller = null, $action = null, $args = null, $anchor = null, $force_no_check = FALSE)
 	{
 		if( $url_list = spAccess('r', 'sp_url_list') ){
 			$url_list = explode("\n",$url_list);
-			$args = (is_array($args) && !empty($args) ) ? json_encode($args) : "";
-			$url_input = "{$controller}|{$action}|{$args}|$anchor|";
+			$args_en = !empty($args) ? json_encode($args) : "";
+			$url_input = "{$controller}|{$action}|{$args_en}|$anchor|";
 			foreach( $url_list as $url ){
 				if( substr($url,0,strlen($url_input)) == $url_input ){
 					$url_item = explode("|",substr($url,strlen($url_input)));
@@ -234,7 +227,7 @@ class spHtml
 	{
 		@list($controller, $action, $args, $anchor) = $spurl;
 		$this->clear($controller, $action, $args, $anchor, FALSE);
-		$args = ('' !== $args) ? json_encode($args) : '';
+		$args = !empty($args) ? json_encode($args) : '';
 		$url_input = "{$controller}|{$action}|{$args}|{$anchor}|{$baseuri}|{$realfile}";
 		if( $url_list = spAccess('r', 'sp_url_list') ){
 			spAccess('w', 'sp_url_list', $url_list."\n".$url_input);
@@ -264,10 +257,10 @@ class spHtml
 			$url_list = explode("\n",$url_list);$re_url_list = array();
 			if( null == $action ){
 				$prep = "{$controller}|";
-			}elseif( null == $args ){
+			}elseif( FALSE === $args ){
 				$prep = "{$controller}|{$action}|";
 			}else{
-				$args = (FALSE !== $args) ? json_encode($args) : '';
+				$args = !empty($args) ? json_encode($args) : '';
 				$prep = "{$controller}|{$action}|{$args}|{$anchor}|";
 			}
 			foreach( $url_list as $url ){
