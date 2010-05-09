@@ -39,7 +39,7 @@ set_error_handler("spErrorHandler");
 @set_magic_quotes_runtime(0);
 
 // 自动开启SESSION
-if($GLOBALS['G_SP']['auto_session'])session_start();
+if($GLOBALS['G_SP']['auto_session'])@session_start();
 
 // 载入核心MVC架构文件
 import($GLOBALS['G_SP']["sp_core_path"]."/spController.php", FALSE, TRUE);
