@@ -3,39 +3,34 @@
 //
 // SpeedPHP - 快速的中文PHP框架
 //
-// Copyright (c) 2008 - 2009 SpeedPHP.com All rights reserved.
+// Copyright (c) 2008 - 2010 SpeedPHP.com All rights reserved.
 //
-// 许可协议请查看 http://www.speedphp.com/
+// 许可协议请查看 http://speedphp.com/
 //
 /////////////////////////////////////////////////////////////////////////////
 
 /**
  * spRun  执行用户代码
- * 
  */
-function spRun()
-{
+function spRun(){
 	GLOBAL $__controller, $__action;
 	// 对路由进行自动执行相关操作
 	spLaunch("router_prefilter");
-
+	// 对将要访问的控制器类进行实例化
 	$handle_controller = spClass($__controller, null, $GLOBALS['G_SP']["controller_path"].'/'.$__controller.".php");
 	// 调用控制器出错将调用路由错误处理函数
 	if(!is_object($handle_controller) || !method_exists($handle_controller, $__action)){
 		eval($GLOBALS['G_SP']["dispatcher_error"]);
 		exit;
 	}
-
 	// 路由并执行用户代码
 	$handle_controller->$__action();
-
 	// 控制器程序运行完毕，进行模板的自动输出
 	if(FALSE != $GLOBALS['G_SP']['view']['auto_display']){
 		$__tplname = $__controller.$GLOBALS['G_SP']['view']['auto_display_sep'].
-				$__action.$GLOBALS['G_SP']['view']['auto_display_suffix'];
+				$__action.$GLOBALS['G_SP']['view']['auto_display_suffix']; // 拼装模板路径
 		$handle_controller->v->auto_display($__tplname);
 	}
-
 	// 对路由进行后续相关操作
 	spLaunch("router_postfilter");
 }
@@ -47,17 +42,16 @@ function spRun()
  * @param output    是否将内容输出
  * @param show_trace    是否将使用spError对变量进行追踪输出
  */
-function dump($vars, $output = TRUE, $show_trace = FALSE)
-{
+function dump($vars, $output = TRUE, $show_trace = FALSE){
+	// 部署模式下同时不允许查看调试信息的情况，直接退出。
 	if(TRUE != SP_DEBUG && TRUE != $GLOBALS['G_SP']['allow_trace_onrelease'])exit;
-	if( TRUE == $show_trace ){
+	if( TRUE == $show_trace ){ // 显示变量运行路径
 		$content = spError(htmlspecialchars(print_r($vars, true)), TRUE, FALSE);
 	}else{
 		$content = "<div align=left><pre>\n" . htmlspecialchars(print_r($vars, true)) . "\n</pre></div>\n";
 	}
-    if(TRUE != $output) { return $content; }
-    echo $content;
-    return null;
+    if(TRUE != $output) { return $content; } // 直接返回，不输出。 
+    echo $content; return;
 }
 
 /**
@@ -67,30 +61,28 @@ function dump($vars, $output = TRUE, $show_trace = FALSE)
  * @param auto_search    载入文件找不到时是否搜索系统路径或文件，搜索路径的顺序为：应用程序包含目录 -> 应用程序Model目录 -> sp框架包含文件目录
  * @param auto_error    自动提示扩展类载入出错信息
  */
-function import($sfilename, $auto_search = TRUE, $auto_error = FALSE)
-{
-	if(isset($GLOBALS['G_SP']["import_file"][md5($sfilename)]))return TRUE;
+function import($sfilename, $auto_search = TRUE, $auto_error = FALSE){
+	if(isset($GLOBALS['G_SP']["import_file"][md5($sfilename)]))return TRUE; // 已包含载入，返回
+	// 检查$sfilename是否直接可读
 	if( TRUE == @is_readable($sfilename) ){
-		require($sfilename);
-		$GLOBALS['G_SP']['import_file'][md5($sfilename)] = TRUE;
+		require($sfilename); // 载入文件
+		$GLOBALS['G_SP']['import_file'][md5($sfilename)] = TRUE; // 对该文件进行标识为已载入
 		return TRUE;
 	}else{
-		if(TRUE == $auto_search){
-			foreach(array_merge( $GLOBALS['G_SP']['sp_include_path'],
-										array($GLOBALS['G_SP']['model_path']), 
-										 $GLOBALS['G_SP']['include_path'] ) as $sp_include_path){
+		if(TRUE == $auto_search){ // 需要搜索文件
+			// 按“应用程序包含目录 -> 应用程序Model目录 -> sp框架包含文件目录”的顺序搜索文件
+			foreach(array_merge( $GLOBALS['G_SP']['sp_include_path'], array($GLOBALS['G_SP']['model_path']), $GLOBALS['G_SP']['include_path'] ) as $sp_include_path){
+				// 检查当前搜索路径中，该文件是否已经载入
 				if(isset($GLOBALS['G_SP']["import_file"][md5($sp_include_path.'/'.$sfilename)]))return TRUE;
 				if( is_readable( $sp_include_path.'/'.$sfilename ) ){
-					require($sp_include_path.'/'.$sfilename);
-					$GLOBALS['G_SP']['import_file'][md5($sp_include_path.'/'.$sfilename)] = TRUE;
+					require($sp_include_path.'/'.$sfilename);// 载入文件
+					$GLOBALS['G_SP']['import_file'][md5($sp_include_path.'/'.$sfilename)] = TRUE;// 对该文件进行标识为已载入
 					return TRUE;
 				}
 			}
 		}
 	}
-	if( TRUE == $auto_error ){
-		spError('未能找到名为：{$sfilename}的文件');
-	}
+	if( TRUE == $auto_error )spError('未能找到名为：{$sfilename}的文件');
 	return FALSE;
 }
 
@@ -102,26 +94,32 @@ function import($sfilename, $auto_search = TRUE, $auto_error = FALSE)
  * @param value    存入的值，在读取数据和删除数据的模式下均为NULL
  * @param life_time    变量的生存时间，默认为永久保存
  */
-function spAccess($method, $name, $value = NULL, $life_time = -1)
-{
-	// 使用挂靠点
+function spAccess($method, $name, $value = NULL, $life_time = -1){
+	// 使用function_access挂靠点
 	if( $launch = spLaunch("function_access", array('method'=>$method, 'name'=>$name, 'value'=>$value, 'life_time'=>$life_time), TRUE) )return $launch;
+	// 准备缓存目录和缓存文件名称，缓存文件名称为$name的MD5值，文件后缀为php
 	if(!is_dir($GLOBALS['G_SP']['sp_cache']))__mkdirs($GLOBALS['G_SP']['sp_cache']);
 	$sfile = $GLOBALS['G_SP']['sp_cache'].'/'.md5($name).".php";
-	if('w' == $method){ // 写数据
+	// 对$method进行判断，分别进行读写删的操作
+	if('w' == $method){ 
+		// 写数据，在$life_time为-1的时候，将增大$life_time值以令$life_time不过期
 		$life_time = ( -1 == $life_time ) ? '300000000' : $life_time;
-		$value = '<?php die();?>'.( time() + $life_time ).serialize($value);
+		// 准备存入缓存文件的数据，缓存文件使用PHP的die();函数以便保证内容安全，
+		$value = '<?php die();?>'.( time() + $life_time ).serialize($value); // 数据被序列化后保存
 		return file_put_contents($sfile, $value);
-	}elseif('c' == $method){ // 清除数据
+	}elseif('c' == $method){
+		// 清除数据，直接移除改缓存文件
 		return @unlink($sfile);
-	}else{ // 读数据
+	}else{
+		// 读数据，检查文件是否可读，同时将去除缓存数据前部的内容以返回
 		if( !is_readable($sfile) )return FALSE;
 		$arg_data = file_get_contents($sfile);
+		// 获取文件保存的$life_time，检查缓存是否过期
 		if( substr($arg_data, 14, 10) < time() ){
-			spAccess('c', $name);
+			@unlink($sfile); // 过期则移除缓存文件，返回FALSE
 			return FALSE;
 		}
-		return unserialize(substr($arg_data, 24));
+		return unserialize(substr($arg_data, 24)); // 数据反序列化后返回
 	}
 }
 
@@ -132,18 +130,16 @@ function spAccess($method, $name, $value = NULL, $life_time = -1)
  * @param args   类初始化时使用的参数，数组形式
  * @param sdir 载入类定义文件的路径，可以是目录+文件名的方式，也可以单独是目录。sdir的值将传入import()进行载入
  */
-function spClass($class_name, $args = null, $sdir = null)
-{
+function spClass($class_name, $args = null, $sdir = null){
+	// 检查类名称是否正确，以保证类定义文件载入的安全性
 	if(preg_match('/[^a-z0-9\-_.]/i', $class_name))spError($class_name."类名称错误，请检查。");
 	// 检查是否该类已经实例化，直接返回已实例对象，避免再次实例化
-	if(isset($GLOBALS['G_SP']["inst_class"][$class_name])){
-		return $GLOBALS['G_SP']["inst_class"][$class_name];
-	}
+	if(isset($GLOBALS['G_SP']["inst_class"][$class_name]))return $GLOBALS['G_SP']["inst_class"][$class_name];
 	// 如果$sdir不能读取，则测试是否仅路径
 	if(null != $sdir && !import($sdir) && !import($sdir.'/'.$class_name.'.php'))return FALSE;
-
+	
 	$has_define = FALSE;
-	// 类定义存在
+	// 检查类定义是否存在
 	if(class_exists($class_name, false) || interface_exists($class_name, false)){
 		$has_define = TRUE;
 	}else{
@@ -166,7 +162,10 @@ function spClass($class_name, $args = null, $sdir = null)
  * @param stop    是否停止程序
  */
 function spError($msg, $output = TRUE, $stop = TRUE){
-	if(TRUE != SP_DEBUG)exit;
+	if(TRUE != SP_DEBUG){
+		error_log($msg);
+		if(TRUE == $stop)exit;
+	}
 	$traces = debug_backtrace();
 	$bufferabove = ob_get_clean();
 	require($GLOBALS['G_SP']['sp_notice_php']);
