@@ -131,7 +131,7 @@ class spHtml
 		if(1 == spAccess('r','sp_html_making')){$this->spurls[] = array($spurl, $alias_url); return;}
 		@list($controller, $action, $args, $anchor) = $spurl;
 		if( $url_item = spHtml::getUrl($controller, $action, $args, $anchor, TRUE) ){
-			@list($baseuri, $realfile) = $url_item;
+			@list($baseuri, $realfile) = $url_item;$update_mode = 1;
 		}else{
 			$file_root_name = ( '' == $GLOBALS['G_SP']['html']['file_root_name'] ) ? 
 									'' : $GLOBALS['G_SP']['html']['file_root_name'].'/';
