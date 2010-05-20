@@ -409,15 +409,14 @@ class spPager {
 	 * 获取分页数据
 	 */
 	public function getPager(){
-		$tmppageData = $this->pageData;
-		$this->pageData = null;
-		return $tmppageData;
+		return $this->pageData;
 	}
 	
 	/** 
 	 * 生成分页数据
 	 */
 	private function runpager($func_name, $func_args){
+		$this->pageData = null;
 		$page = $this->input_args[0];
 		$pageSize = $this->input_args[1];
 		@list($conditions, $sort, $fields ) = $func_args;
