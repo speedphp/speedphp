@@ -305,6 +305,22 @@ class spModel {
 		return $this->_db->exec($sql);
 	}
 	
+	/**
+	 * 替换数据，根据条件替换存在的记录，如记录不存在，则将条件与替换数据相加并新增一条记录。
+	 * 
+	 * @param conditions    数组形式，查找条件，请注意，仅能使用数组作为该条件！
+	 * @param row    数组形式，修改的数据
+	 */
+	public function replace($conditions, $row)
+	{
+		$result = $this->update($conditions, $row);
+		if( $this->affectedRows() < 1 ){
+			if( !is_array($conditions) )spError('replace方法的条件务必是数组形式！');
+			$rows = spConfigReady($conditions, $row);
+			return $this->create($rows);
+		}
+		return $result;
+	}
 	
 	/**
 	 * 为设定的字段值增加
