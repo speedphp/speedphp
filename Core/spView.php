@@ -1,23 +1,23 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPä¸­æ–‡PHPæ¡†æž¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPÖÐÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * spView åŸºç¡€è§†å›¾ç±»
+ * spView »ù´¡ÊÓÍ¼Àà
  */
 class spView {
 	/**
-	 * æ¨¡æ¿å¼•æ“Žå®žä¾‹
+	 * Ä£°åÒýÇæÊµÀý
 	 */
 	public $engine = null;
 	/**
-	 * æ¨¡æ¿æ˜¯å¦å·²è¾“å‡º
+	 * Ä£°åÊÇ·ñÒÑÊä³ö
 	 */
 	private $displayed = FALSE;
 
 	/**
-	 * æž„é€ å‡½æ•°ï¼Œè¿›è¡Œæ¨¡æ¿å¼•æ“Žçš„å®žä¾‹åŒ–æ“ä½œ
+	 * ¹¹Ôìº¯Êý£¬½øÐÐÄ£°åÒýÇæµÄÊµÀý»¯²Ù×÷
 	 */
 	public function __construct()
 	{
@@ -36,8 +36,8 @@ class spView {
 	}
 
 	/**
-	 * è¾“å‡ºé¡µé¢
-	 * @param tplname æ¨¡æ¿æ–‡ä»¶è·¯å¾„
+	 * Êä³öÒ³Ãæ
+	 * @param tplname Ä£°åÎÄ¼þÂ·¾¶
 	 */
 	public function display($tplname)
 	{
@@ -47,8 +47,8 @@ class spView {
 		$this->engine->display($tplname);
 	}
 	/**
-	 * è‡ªåŠ¨è¾“å‡ºé¡µé¢
-	 * @param tplname æ¨¡æ¿æ–‡ä»¶è·¯å¾„
+	 * ×Ô¶¯Êä³öÒ³Ãæ
+	 * @param tplname Ä£°åÎÄ¼þÂ·¾¶
 	 */
 	public function auto_display($tplname)
 	{
@@ -59,7 +59,7 @@ class spView {
 	}
 	
 	/**
-	 * æ³¨å†Œå·²æŒ‚é çš„è§†å›¾å‡½æ•°
+	 * ×¢²áÒÑ¹Ò¿¿µÄÊÓÍ¼º¯Êý
 	 */
 	public function addfuncs()
 	{
@@ -72,8 +72,8 @@ class spView {
 		}
 	}
 	/**
-	 * è¾…åŠ©spUrlçš„å‡½æ•°ï¼Œè®©spUrlå¯åœ¨æ¨¡æ¿ä¸­ä½¿ç”¨ã€‚
-	 * @param params ä¼ å…¥çš„å‚æ•°
+	 * ¸¨ÖúspUrlµÄº¯Êý£¬ÈÃspUrl¿ÉÔÚÄ£°åÖÐÊ¹ÓÃ¡£
+	 * @param params ´«ÈëµÄ²ÎÊý
 	 */
 	public function __template_spUrl($params)
 	{
@@ -95,8 +95,8 @@ class spView {
 		return spUrl($controller, $action, $args, $anchor);
 	}
 	/**
-	 * è¾…åŠ©Tçš„å‡½æ•°ï¼Œè®©Tå¯åœ¨æ¨¡æ¿ä¸­ä½¿ç”¨ã€‚
-	 * @param params ä¼ å…¥çš„å‚æ•°
+	 * ¸¨ÖúTµÄº¯Êý£¬ÈÃT¿ÉÔÚÄ£°åÖÐÊ¹ÓÃ¡£
+	 * @param params ´«ÈëµÄ²ÎÊý
 	 */
 	public function __template_T($params)
 	{
@@ -106,19 +106,19 @@ class spView {
 
 /**
  * spHtml
- * é™æ€HTMLç”Ÿæˆç±»
+ * ¾²Ì¬HTMLÉú³ÉÀà
  */
 class spHtml
 {
 	private $spurls = null;
 	/**
-	 * ç”Ÿæˆå•ä¸ªé™æ€é¡µé¢
+	 * Éú³Éµ¥¸ö¾²Ì¬Ò³Ãæ
 	 * 
-	 * @param spurl spUrlçš„å‚æ•°
-	 * @param alias_url ç”ŸæˆHTMLæ–‡ä»¶çš„åç§°ï¼Œå¦‚æžœä¸è®¾ç½®alias_urlï¼Œå°†ä½¿ç”¨å¹´æœˆæ—¥ç”Ÿæˆç›®å½•åŠéšæœºæ•°ä¸ºæ–‡ä»¶åçš„å½¢å¼ç”ŸæˆHTMLæ–‡ä»¶ã€‚
-	 * @param update_mode    æ›´æ–°æ¨¡å¼ï¼Œé»˜è®¤2ä¸ºåŒæ—¶æ›´æ–°åˆ—è¡¨åŠæ–‡ä»¶
-	 * 0æ˜¯ä»…æ›´æ–°åˆ—è¡¨
-	 * 1æ˜¯ä»…æ›´æ–°æ–‡ä»¶
+	 * @param spurl spUrlµÄ²ÎÊý
+	 * @param alias_url Éú³ÉHTMLÎÄ¼þµÄÃû³Æ£¬Èç¹û²»ÉèÖÃalias_url£¬½«Ê¹ÓÃÄêÔÂÈÕÉú³ÉÄ¿Â¼¼°Ëæ»úÊýÎªÎÄ¼þÃûµÄÐÎÊ½Éú³ÉHTMLÎÄ¼þ¡£
+	 * @param update_mode    ¸üÐÂÄ£Ê½£¬Ä¬ÈÏ2ÎªÍ¬Ê±¸üÐÂÁÐ±í¼°ÎÄ¼þ
+	 * 0ÊÇ½ö¸üÐÂÁÐ±í
+	 * 1ÊÇ½ö¸üÐÂÎÄ¼þ
 	 */
 	public function make($spurl, $alias_url = null, $update_mode = 2)
 	{
@@ -146,7 +146,7 @@ class spHtml
 			$cachedata = file_get_contents($remoteurl);
 			if( FALSE === $cachedata ){
 				$cachedata = $this->curl_get_file_contents($remoteurl);
-				if( FALSE === $cachedata )spError("æ— æ³•ä»Žç½‘ç»œèŽ·å–é¡µé¢æ•°æ®ï¼Œè¯·æ£€æŸ¥ï¼š<br />1. spUrlç”Ÿæˆåœ°å€æ˜¯å¦æ­£ç¡®ï¼<a href='{$remoteurl}' target='_blank'>ç‚¹å‡»è¿™é‡Œæµ‹è¯•</a>ã€‚<br />2. è®¾ç½®php.iniçš„allow_url_fopenä¸ºOnã€‚<br />3. æ£€æŸ¥æ˜¯å¦é˜²ç«å¢™é˜»æ­¢äº†APACHE/PHPè®¿é—®ç½‘ç»œã€‚<br />4. å»ºè®®å®‰è£…CURLå‡½æ•°åº“ã€‚");
+				if( FALSE === $cachedata )spError("ÎÞ·¨´ÓÍøÂç»ñÈ¡Ò³ÃæÊý¾Ý£¬Çë¼ì²é£º<br />1. spUrlÉú³ÉµØÖ·ÊÇ·ñÕýÈ·£¡<a href='{$remoteurl}' target='_blank'>µã»÷ÕâÀï²âÊÔ</a>¡£<br />2. ÉèÖÃphp.iniµÄallow_url_fopenÎªOn¡£<br />3. ¼ì²éÊÇ·ñ·À»ðÇ½×èÖ¹ÁËAPACHE/PHP·ÃÎÊÍøÂç¡£<br />4. ½¨Òé°²×°CURLº¯Êý¿â¡£");
 			}
 			__mkdirs(dirname($realfile));
 			file_put_contents($realfile, $cachedata);
@@ -154,8 +154,8 @@ class spHtml
 	}
 	
 	/**
-	 * å½“file_get_contentså¤±æ•ˆæ—¶ï¼Œç¨‹åºå°†è°ƒç”¨CURLå‡½æ•°æ¥è¿›è¡Œç½‘ç»œæ•°æ®èŽ·å–
-	 * @param url è®¿é—®åœ°å€
+	 * µ±file_get_contentsÊ§Ð§Ê±£¬³ÌÐò½«µ÷ÓÃCURLº¯ÊýÀ´½øÐÐÍøÂçÊý¾Ý»ñÈ¡
+	 * @param url ·ÃÎÊµØÖ·
 	 */
 	function curl_get_file_contents($url)
     {
@@ -170,8 +170,8 @@ class spHtml
     }
 	
 	/**
-	 * æ‰¹é‡ç”Ÿæˆé™æ€é¡µé¢
-	 * @param spurls æ•°ç»„å½¢å¼ï¼Œæ¯é¡¹æ˜¯ä¸€ä¸ªmake()çš„å…¨éƒ¨å‚æ•°
+	 * ÅúÁ¿Éú³É¾²Ì¬Ò³Ãæ
+	 * @param spurls Êý×éÐÎÊ½£¬Ã¿ÏîÊÇÒ»¸ömake()µÄÈ«²¿²ÎÊý
 	 */
 	public function makeAll($spurls)
 	{
@@ -189,12 +189,12 @@ class spHtml
 	public function commit(){spAccess('c','sp_html_making');$this->makeAll($this->spurls);}
 
 	/**
-	 * èŽ·å–urlçš„åˆ—è¡¨ç¨‹åºï¼Œå¯ä»¥æŒ‰é…ç½®å¼€å¯æ˜¯å¦æ£€æŸ¥æ–‡ä»¶å­˜åœ¨
-	 * @param controller    æŽ§åˆ¶å™¨åç§°ï¼Œé»˜è®¤ä¸ºé…ç½®'default_controller'
-	 * @param action    åŠ¨ä½œåç§°ï¼Œé»˜è®¤ä¸ºé…ç½®'default_action' 
-	 * @param args    ä¼ é€’çš„å‚æ•°ï¼Œæ•°ç»„å½¢å¼
-	 * @param anchor    è·³è½¬é”šç‚¹
-	 * @param force_no_check    æ˜¯å¦æ£€æŸ¥ç‰©ç†æ–‡ä»¶æ˜¯å¦å­˜åœ¨
+	 * »ñÈ¡urlµÄÁÐ±í³ÌÐò£¬¿ÉÒÔ°´ÅäÖÃ¿ªÆôÊÇ·ñ¼ì²éÎÄ¼þ´æÔÚ
+	 * @param controller    ¿ØÖÆÆ÷Ãû³Æ£¬Ä¬ÈÏÎªÅäÖÃ'default_controller'
+	 * @param action    ¶¯×÷Ãû³Æ£¬Ä¬ÈÏÎªÅäÖÃ'default_action' 
+	 * @param args    ´«µÝµÄ²ÎÊý£¬Êý×éÐÎÊ½
+	 * @param anchor    Ìø×ªÃªµã
+	 * @param force_no_check    ÊÇ·ñ¼ì²éÎïÀíÎÄ¼þÊÇ·ñ´æÔÚ
 	 */
 	public function getUrl($controller = null, $action = null, $args = null, $anchor = null, $force_no_check = FALSE)
 	{
@@ -216,10 +216,10 @@ class spHtml
 	}
 	
 	/**
-	 * å†™å…¥urlçš„åˆ—è¡¨ç¨‹åºï¼Œåœ¨makeç”Ÿæˆé¡µé¢åŽï¼Œå°†spUrlå‚æ•°åŠé¡µé¢åœ°å€å†™å…¥åˆ—è¡¨ä¸­
+	 * Ð´ÈëurlµÄÁÐ±í³ÌÐò£¬ÔÚmakeÉú³ÉÒ³Ãæºó£¬½«spUrl²ÎÊý¼°Ò³ÃæµØÖ·Ð´ÈëÁÐ±íÖÐ
 	 *
-	 * @param spurl spUrlçš„å‚æ•°
-	 * @param baseuri URLåœ°å€å¯¹åº”çš„é™æ€HTMLæ–‡ä»¶è®¿é—®åœ°å€
+	 * @param spurl spUrlµÄ²ÎÊý
+	 * @param baseuri URLµØÖ·¶ÔÓ¦µÄ¾²Ì¬HTMLÎÄ¼þ·ÃÎÊµØÖ·
      *
 	 */
 	public function setUrl($spurl, $baseuri, $realfile)
@@ -236,19 +236,19 @@ class spHtml
 	}
 
 	/**
-	 * æ¸…é™¤é™æ€æ–‡ä»¶
+	 * Çå³ý¾²Ì¬ÎÄ¼þ
 	 * 
-	 * @param controller    éœ€è¦æ¸…é™¤HTMLæ–‡ä»¶çš„æŽ§åˆ¶å™¨åç§°
-	 * @param action    éœ€è¦æ¸…é™¤HTMLæ–‡ä»¶çš„åŠ¨ä½œåç§°ï¼Œé»˜è®¤ä¸ºæ¸…é™¤è¯¥æŽ§åˆ¶å™¨å…¨éƒ¨åŠ¨ä½œäº§ç”Ÿçš„HTMLæ–‡ä»¶
-	 * å¦‚æžœè®¾ç½®äº†actionå°†ä»…æ¸…é™¤è¯¥actionäº§ç”Ÿçš„HTMLæ–‡ä»¶
+	 * @param controller    ÐèÒªÇå³ýHTMLÎÄ¼þµÄ¿ØÖÆÆ÷Ãû³Æ
+	 * @param action    ÐèÒªÇå³ýHTMLÎÄ¼þµÄ¶¯×÷Ãû³Æ£¬Ä¬ÈÏÎªÇå³ý¸Ã¿ØÖÆÆ÷È«²¿¶¯×÷²úÉúµÄHTMLÎÄ¼þ
+	 * Èç¹ûÉèÖÃÁËaction½«½öÇå³ý¸Ãaction²úÉúµÄHTMLÎÄ¼þ
 	 *
-	 * @param args    ä¼ é€’çš„å‚æ•°ï¼Œé»˜è®¤ä¸ºç©ºå°†æ¸…é™¤è¯¥åŠ¨ä½œä»»ä½•å‚æ•°äº§ç”Ÿçš„HTMLæ–‡ä»¶
-	 * å¦‚æžœè®¾ç½®äº†argså°†ä»…æ¸…é™¤è¯¥åŠ¨ä½œæ‰§è¡Œå‚æ•°argsè€Œäº§ç”Ÿçš„HTMLæ–‡ä»¶
+	 * @param args    ´«µÝµÄ²ÎÊý£¬Ä¬ÈÏÎª¿Õ½«Çå³ý¸Ã¶¯×÷ÈÎºÎ²ÎÊý²úÉúµÄHTMLÎÄ¼þ
+	 * Èç¹ûÉèÖÃÁËargs½«½öÇå³ý¸Ã¶¯×÷Ö´ÐÐ²ÎÊýargs¶ø²úÉúµÄHTMLÎÄ¼þ
 	 *
-	 * @param anchor    è·³è½¬é”šç‚¹ï¼Œé»˜è®¤ä¸ºç©ºå°†æ¸…é™¤è¯¥åŠ¨ä½œä»»ä½•é”šç‚¹äº§ç”Ÿçš„HTMLæ–‡ä»¶
-	 * å¦‚æžœè®¾ç½®äº†anchorå°†ä»…æ¸…é™¤è¯¥åŠ¨ä½œè·³è½¬åˆ°é”šç‚¹anchoräº§ç”Ÿçš„HTMLæ–‡ä»¶
+	 * @param anchor    Ìø×ªÃªµã£¬Ä¬ÈÏÎª¿Õ½«Çå³ý¸Ã¶¯×÷ÈÎºÎÃªµã²úÉúµÄHTMLÎÄ¼þ
+	 * Èç¹ûÉèÖÃÁËanchor½«½öÇå³ý¸Ã¶¯×÷Ìø×ªµ½Ãªµãanchor²úÉúµÄHTMLÎÄ¼þ
 	 *
-	 * @param delete_file    æ˜¯å¦åˆ é™¤ç‰©ç†æ–‡ä»¶ï¼ŒFALSEå°†åªåˆ é™¤åˆ—è¡¨ä¸­è¯¥é™æ€æ–‡ä»¶çš„åœ°å€ï¼Œè€Œä¸åˆ é™¤ç‰©ç†æ–‡ä»¶ã€‚
+	 * @param delete_file    ÊÇ·ñÉ¾³ýÎïÀíÎÄ¼þ£¬FALSE½«Ö»É¾³ýÁÐ±íÖÐ¸Ã¾²Ì¬ÎÄ¼þµÄµØÖ·£¬¶ø²»É¾³ýÎïÀíÎÄ¼þ¡£
 	 */
 	public function clear($controller, $action = null, $args = FALSE, $anchor = '', $delete_file = TRUE)
 	{
@@ -276,9 +276,9 @@ class spHtml
 	
 
 	/**
-	 * æ¸…é™¤å…¨éƒ¨é™æ€æ–‡ä»¶
+	 * Çå³ýÈ«²¿¾²Ì¬ÎÄ¼þ
 	 * 
-	 * @param delete_file    æ˜¯å¦åˆ é™¤ç‰©ç†æ–‡ä»¶ï¼ŒFALSHå°†åªåˆ é™¤åˆ—è¡¨ä¸­è¯¥é™æ€æ–‡ä»¶çš„åœ°å€ï¼Œè€Œä¸åˆ é™¤ç‰©ç†æ–‡ä»¶ã€‚
+	 * @param delete_file    ÊÇ·ñÉ¾³ýÎïÀíÎÄ¼þ£¬FALSH½«Ö»É¾³ýÁÐ±íÖÐ¸Ã¾²Ì¬ÎÄ¼þµÄµØÖ·£¬¶ø²»É¾³ýÎïÀíÎÄ¼þ¡£
 	 */
 	public function clearAll($delete_file = FALSE)
 	{

@@ -1,139 +1,139 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * spRun  æ‰§è¡Œç”¨æˆ·ä»£ç 
+ * spRun  Ö´ĞĞÓÃ»§´úÂë
  */
 function spRun(){
 	GLOBAL $__controller, $__action;
-	// å¯¹è·¯ç”±è¿›è¡Œè‡ªåŠ¨æ‰§è¡Œç›¸å…³æ“ä½œ
+	// ¶ÔÂ·ÓÉ½øĞĞ×Ô¶¯Ö´ĞĞÏà¹Ø²Ù×÷
 	spLaunch("router_prefilter");
-	// å¯¹å°†è¦è®¿é—®çš„æ§åˆ¶å™¨ç±»è¿›è¡Œå®ä¾‹åŒ–
+	// ¶Ô½«Òª·ÃÎÊµÄ¿ØÖÆÆ÷Àà½øĞĞÊµÀı»¯
 	$handle_controller = spClass($__controller, null, $GLOBALS['G_SP']["controller_path"].'/'.$__controller.".php");
-	// è°ƒç”¨æ§åˆ¶å™¨å‡ºé”™å°†è°ƒç”¨è·¯ç”±é”™è¯¯å¤„ç†å‡½æ•°
+	// µ÷ÓÃ¿ØÖÆÆ÷³ö´í½«µ÷ÓÃÂ·ÓÉ´íÎó´¦Àíº¯Êı
 	if(!is_object($handle_controller) || !method_exists($handle_controller, $__action)){
 		eval($GLOBALS['G_SP']["dispatcher_error"]);
 		exit;
 	}
-	// è·¯ç”±å¹¶æ‰§è¡Œç”¨æˆ·ä»£ç 
+	// Â·ÓÉ²¢Ö´ĞĞÓÃ»§´úÂë
 	$handle_controller->$__action();
-	// æ§åˆ¶å™¨ç¨‹åºè¿è¡Œå®Œæ¯•ï¼Œè¿›è¡Œæ¨¡æ¿çš„è‡ªåŠ¨è¾“å‡º
+	// ¿ØÖÆÆ÷³ÌĞòÔËĞĞÍê±Ï£¬½øĞĞÄ£°åµÄ×Ô¶¯Êä³ö
 	if(FALSE != $GLOBALS['G_SP']['view']['auto_display']){
 		$__tplname = $__controller.$GLOBALS['G_SP']['view']['auto_display_sep'].
-				$__action.$GLOBALS['G_SP']['view']['auto_display_suffix']; // æ‹¼è£…æ¨¡æ¿è·¯å¾„
+				$__action.$GLOBALS['G_SP']['view']['auto_display_suffix']; // Æ´×°Ä£°åÂ·¾¶
 		$handle_controller->v->auto_display($__tplname);
 	}
-	// å¯¹è·¯ç”±è¿›è¡Œåç»­ç›¸å…³æ“ä½œ
+	// ¶ÔÂ·ÓÉ½øĞĞºóĞøÏà¹Ø²Ù×÷
 	spLaunch("router_postfilter");
 }
 
 /**
- * dump  æ ¼å¼åŒ–è¾“å‡ºå˜é‡ç¨‹åº
+ * dump  ¸ñÊ½»¯Êä³ö±äÁ¿³ÌĞò
  * 
- * @param vars    å˜é‡
- * @param output    æ˜¯å¦å°†å†…å®¹è¾“å‡º
- * @param show_trace    æ˜¯å¦å°†ä½¿ç”¨spErrorå¯¹å˜é‡è¿›è¡Œè¿½è¸ªè¾“å‡º
+ * @param vars    ±äÁ¿
+ * @param output    ÊÇ·ñ½«ÄÚÈİÊä³ö
+ * @param show_trace    ÊÇ·ñ½«Ê¹ÓÃspError¶Ô±äÁ¿½øĞĞ×·×ÙÊä³ö
  */
 function dump($vars, $output = TRUE, $show_trace = FALSE){
-	// éƒ¨ç½²æ¨¡å¼ä¸‹åŒæ—¶ä¸å…è®¸æŸ¥çœ‹è°ƒè¯•ä¿¡æ¯çš„æƒ…å†µï¼Œç›´æ¥é€€å‡ºã€‚
+	// ²¿ÊğÄ£Ê½ÏÂÍ¬Ê±²»ÔÊĞí²é¿´µ÷ÊÔĞÅÏ¢µÄÇé¿ö£¬Ö±½ÓÍË³ö¡£
 	if(TRUE != SP_DEBUG && TRUE != $GLOBALS['G_SP']['allow_trace_onrelease'])exit;
-	if( TRUE == $show_trace ){ // æ˜¾ç¤ºå˜é‡è¿è¡Œè·¯å¾„
+	if( TRUE == $show_trace ){ // ÏÔÊ¾±äÁ¿ÔËĞĞÂ·¾¶
 		$content = spError(htmlspecialchars(print_r($vars, true)), TRUE, FALSE);
 	}else{
 		$content = "<div align=left><pre>\n" . htmlspecialchars(print_r($vars, true)) . "\n</pre></div>\n";
 	}
-    if(TRUE != $output) { return $content; } // ç›´æ¥è¿”å›ï¼Œä¸è¾“å‡ºã€‚ 
+    if(TRUE != $output) { return $content; } // Ö±½Ó·µ»Ø£¬²»Êä³ö¡£ 
     echo $content; return;
 }
 
 /**
- * import  è½½å…¥åŒ…å«æ–‡ä»¶
+ * import  ÔØÈë°üº¬ÎÄ¼ş
  * 
- * @param filename    éœ€è¦è½½å…¥çš„æ–‡ä»¶åæˆ–è€…æ–‡ä»¶è·¯å¾„
- * @param auto_search    è½½å…¥æ–‡ä»¶æ‰¾ä¸åˆ°æ—¶æ˜¯å¦æœç´¢ç³»ç»Ÿè·¯å¾„æˆ–æ–‡ä»¶ï¼Œæœç´¢è·¯å¾„çš„é¡ºåºä¸ºï¼šåº”ç”¨ç¨‹åºåŒ…å«ç›®å½• -> åº”ç”¨ç¨‹åºModelç›®å½• -> spæ¡†æ¶åŒ…å«æ–‡ä»¶ç›®å½•
- * @param auto_error    è‡ªåŠ¨æç¤ºæ‰©å±•ç±»è½½å…¥å‡ºé”™ä¿¡æ¯
+ * @param filename    ĞèÒªÔØÈëµÄÎÄ¼şÃû»òÕßÎÄ¼şÂ·¾¶
+ * @param auto_search    ÔØÈëÎÄ¼şÕÒ²»µ½Ê±ÊÇ·ñËÑË÷ÏµÍ³Â·¾¶»òÎÄ¼ş£¬ËÑË÷Â·¾¶µÄË³ĞòÎª£ºÓ¦ÓÃ³ÌĞò°üº¬Ä¿Â¼ -> Ó¦ÓÃ³ÌĞòModelÄ¿Â¼ -> sp¿ò¼Ü°üº¬ÎÄ¼şÄ¿Â¼
+ * @param auto_error    ×Ô¶¯ÌáÊ¾À©Õ¹ÀàÔØÈë³ö´íĞÅÏ¢
  */
 function import($sfilename, $auto_search = TRUE, $auto_error = FALSE){
-	if(isset($GLOBALS['G_SP']["import_file"][md5($sfilename)]))return TRUE; // å·²åŒ…å«è½½å…¥ï¼Œè¿”å›
-	// æ£€æŸ¥$sfilenameæ˜¯å¦ç›´æ¥å¯è¯»
+	if(isset($GLOBALS['G_SP']["import_file"][md5($sfilename)]))return TRUE; // ÒÑ°üº¬ÔØÈë£¬·µ»Ø
+	// ¼ì²é$sfilenameÊÇ·ñÖ±½Ó¿É¶Á
 	if( TRUE == @is_readable($sfilename) ){
-		require($sfilename); // è½½å…¥æ–‡ä»¶
-		$GLOBALS['G_SP']['import_file'][md5($sfilename)] = TRUE; // å¯¹è¯¥æ–‡ä»¶è¿›è¡Œæ ‡è¯†ä¸ºå·²è½½å…¥
+		require($sfilename); // ÔØÈëÎÄ¼ş
+		$GLOBALS['G_SP']['import_file'][md5($sfilename)] = TRUE; // ¶Ô¸ÃÎÄ¼ş½øĞĞ±êÊ¶ÎªÒÑÔØÈë
 		return TRUE;
 	}else{
-		if(TRUE == $auto_search){ // éœ€è¦æœç´¢æ–‡ä»¶
-			// æŒ‰â€œåº”ç”¨ç¨‹åºåŒ…å«ç›®å½• -> åº”ç”¨ç¨‹åºModelç›®å½• -> spæ¡†æ¶åŒ…å«æ–‡ä»¶ç›®å½•â€çš„é¡ºåºæœç´¢æ–‡ä»¶
+		if(TRUE == $auto_search){ // ĞèÒªËÑË÷ÎÄ¼ş
+			// °´¡°Ó¦ÓÃ³ÌĞò°üº¬Ä¿Â¼ -> Ó¦ÓÃ³ÌĞòModelÄ¿Â¼ -> sp¿ò¼Ü°üº¬ÎÄ¼şÄ¿Â¼¡±µÄË³ĞòËÑË÷ÎÄ¼ş
 			foreach(array_merge( $GLOBALS['G_SP']['sp_include_path'], array($GLOBALS['G_SP']['model_path']), $GLOBALS['G_SP']['include_path'] ) as $sp_include_path){
-				// æ£€æŸ¥å½“å‰æœç´¢è·¯å¾„ä¸­ï¼Œè¯¥æ–‡ä»¶æ˜¯å¦å·²ç»è½½å…¥
+				// ¼ì²éµ±Ç°ËÑË÷Â·¾¶ÖĞ£¬¸ÃÎÄ¼şÊÇ·ñÒÑ¾­ÔØÈë
 				if(isset($GLOBALS['G_SP']["import_file"][md5($sp_include_path.'/'.$sfilename)]))return TRUE;
 				if( is_readable( $sp_include_path.'/'.$sfilename ) ){
-					require($sp_include_path.'/'.$sfilename);// è½½å…¥æ–‡ä»¶
-					$GLOBALS['G_SP']['import_file'][md5($sp_include_path.'/'.$sfilename)] = TRUE;// å¯¹è¯¥æ–‡ä»¶è¿›è¡Œæ ‡è¯†ä¸ºå·²è½½å…¥
+					require($sp_include_path.'/'.$sfilename);// ÔØÈëÎÄ¼ş
+					$GLOBALS['G_SP']['import_file'][md5($sp_include_path.'/'.$sfilename)] = TRUE;// ¶Ô¸ÃÎÄ¼ş½øĞĞ±êÊ¶ÎªÒÑÔØÈë
 					return TRUE;
 				}
 			}
 		}
 	}
-	if( TRUE == $auto_error )spError('æœªèƒ½æ‰¾åˆ°åä¸ºï¼š{$sfilename}çš„æ–‡ä»¶');
+	if( TRUE == $auto_error )spError('Î´ÄÜÕÒµ½ÃûÎª£º{$sfilename}µÄÎÄ¼ş');
 	return FALSE;
 }
 
 /**
- * spAccess æ•°æ®ç¼“å­˜åŠå­˜å–ç¨‹åº
+ * spAccess Êı¾İ»º´æ¼°´æÈ¡³ÌĞò
  * 
- * @param method    æ•°æ®å­˜å–æ¨¡å¼ï¼Œå–å€¼"w"ä¸ºå­˜å…¥æ•°æ®ï¼Œå–å€¼"r"è¯»å–æ•°æ®ï¼Œå–å€¼"c"ä¸ºåˆ é™¤æ•°æ®
- * @param name    æ ‡è¯†æ•°æ®çš„åç§°
- * @param value    å­˜å…¥çš„å€¼ï¼Œåœ¨è¯»å–æ•°æ®å’Œåˆ é™¤æ•°æ®çš„æ¨¡å¼ä¸‹å‡ä¸ºNULL
- * @param life_time    å˜é‡çš„ç”Ÿå­˜æ—¶é—´ï¼Œé»˜è®¤ä¸ºæ°¸ä¹…ä¿å­˜
+ * @param method    Êı¾İ´æÈ¡Ä£Ê½£¬È¡Öµ"w"Îª´æÈëÊı¾İ£¬È¡Öµ"r"¶ÁÈ¡Êı¾İ£¬È¡Öµ"c"ÎªÉ¾³ıÊı¾İ
+ * @param name    ±êÊ¶Êı¾İµÄÃû³Æ
+ * @param value    ´æÈëµÄÖµ£¬ÔÚ¶ÁÈ¡Êı¾İºÍÉ¾³ıÊı¾İµÄÄ£Ê½ÏÂ¾ùÎªNULL
+ * @param life_time    ±äÁ¿µÄÉú´æÊ±¼ä£¬Ä¬ÈÏÎªÓÀ¾Ã±£´æ
  */
 function spAccess($method, $name, $value = NULL, $life_time = -1){
-	// ä½¿ç”¨function_accessæŒ‚é ç‚¹
+	// Ê¹ÓÃfunction_access¹Ò¿¿µã
 	if( $launch = spLaunch("function_access", array('method'=>$method, 'name'=>$name, 'value'=>$value, 'life_time'=>$life_time), TRUE) )return $launch;
-	// å‡†å¤‡ç¼“å­˜ç›®å½•å’Œç¼“å­˜æ–‡ä»¶åç§°ï¼Œç¼“å­˜æ–‡ä»¶åç§°ä¸º$nameçš„MD5å€¼ï¼Œæ–‡ä»¶åç¼€ä¸ºphp
+	// ×¼±¸»º´æÄ¿Â¼ºÍ»º´æÎÄ¼şÃû³Æ£¬»º´æÎÄ¼şÃû³ÆÎª$nameµÄMD5Öµ£¬ÎÄ¼şºó×ºÎªphp
 	if(!is_dir($GLOBALS['G_SP']['sp_cache']))__mkdirs($GLOBALS['G_SP']['sp_cache']);
 	$sfile = $GLOBALS['G_SP']['sp_cache'].'/'.md5($name).".php";
-	// å¯¹$methodè¿›è¡Œåˆ¤æ–­ï¼Œåˆ†åˆ«è¿›è¡Œè¯»å†™åˆ çš„æ“ä½œ
+	// ¶Ô$method½øĞĞÅĞ¶Ï£¬·Ö±ğ½øĞĞ¶ÁĞ´É¾µÄ²Ù×÷
 	if('w' == $method){ 
-		// å†™æ•°æ®ï¼Œåœ¨$life_timeä¸º-1çš„æ—¶å€™ï¼Œå°†å¢å¤§$life_timeå€¼ä»¥ä»¤$life_timeä¸è¿‡æœŸ
+		// Ğ´Êı¾İ£¬ÔÚ$life_timeÎª-1µÄÊ±ºò£¬½«Ôö´ó$life_timeÖµÒÔÁî$life_time²»¹ıÆÚ
 		$life_time = ( -1 == $life_time ) ? '300000000' : $life_time;
-		// å‡†å¤‡å­˜å…¥ç¼“å­˜æ–‡ä»¶çš„æ•°æ®ï¼Œç¼“å­˜æ–‡ä»¶ä½¿ç”¨PHPçš„die();å‡½æ•°ä»¥ä¾¿ä¿è¯å†…å®¹å®‰å…¨ï¼Œ
-		$value = '<?php die();?>'.( time() + $life_time ).serialize($value); // æ•°æ®è¢«åºåˆ—åŒ–åä¿å­˜
+		// ×¼±¸´æÈë»º´æÎÄ¼şµÄÊı¾İ£¬»º´æÎÄ¼şÊ¹ÓÃPHPµÄdie();º¯ÊıÒÔ±ã±£Ö¤ÄÚÈİ°²È«£¬
+		$value = '<?php die();?>'.( time() + $life_time ).serialize($value); // Êı¾İ±»ĞòÁĞ»¯ºó±£´æ
 		return file_put_contents($sfile, $value);
 	}elseif('c' == $method){
-		// æ¸…é™¤æ•°æ®ï¼Œç›´æ¥ç§»é™¤æ”¹ç¼“å­˜æ–‡ä»¶
+		// Çå³ıÊı¾İ£¬Ö±½ÓÒÆ³ı¸Ä»º´æÎÄ¼ş
 		return @unlink($sfile);
 	}else{
-		// è¯»æ•°æ®ï¼Œæ£€æŸ¥æ–‡ä»¶æ˜¯å¦å¯è¯»ï¼ŒåŒæ—¶å°†å»é™¤ç¼“å­˜æ•°æ®å‰éƒ¨çš„å†…å®¹ä»¥è¿”å›
+		// ¶ÁÊı¾İ£¬¼ì²éÎÄ¼şÊÇ·ñ¿É¶Á£¬Í¬Ê±½«È¥³ı»º´æÊı¾İÇ°²¿µÄÄÚÈİÒÔ·µ»Ø
 		if( !is_readable($sfile) )return FALSE;
 		$arg_data = file_get_contents($sfile);
-		// è·å–æ–‡ä»¶ä¿å­˜çš„$life_timeï¼Œæ£€æŸ¥ç¼“å­˜æ˜¯å¦è¿‡æœŸ
+		// »ñÈ¡ÎÄ¼ş±£´æµÄ$life_time£¬¼ì²é»º´æÊÇ·ñ¹ıÆÚ
 		if( substr($arg_data, 14, 10) < time() ){
-			@unlink($sfile); // è¿‡æœŸåˆ™ç§»é™¤ç¼“å­˜æ–‡ä»¶ï¼Œè¿”å›FALSE
+			@unlink($sfile); // ¹ıÆÚÔòÒÆ³ı»º´æÎÄ¼ş£¬·µ»ØFALSE
 			return FALSE;
 		}
-		return unserialize(substr($arg_data, 24)); // æ•°æ®ååºåˆ—åŒ–åè¿”å›
+		return unserialize(substr($arg_data, 24)); // Êı¾İ·´ĞòÁĞ»¯ºó·µ»Ø
 	}
 }
 
 /**
- * spClass  ç±»å®ä¾‹åŒ–å‡½æ•°  è‡ªåŠ¨è½½å…¥ç±»å®šä¹‰æ–‡ä»¶ï¼Œå®ä¾‹åŒ–å¹¶è¿”å›å¯¹è±¡å¥æŸ„
+ * spClass  ÀàÊµÀı»¯º¯Êı  ×Ô¶¯ÔØÈëÀà¶¨ÒåÎÄ¼ş£¬ÊµÀı»¯²¢·µ»Ø¶ÔÏó¾ä±ú
  * 
- * @param class_name    ç±»åç§°
- * @param args   ç±»åˆå§‹åŒ–æ—¶ä½¿ç”¨çš„å‚æ•°ï¼Œæ•°ç»„å½¢å¼
- * @param sdir è½½å…¥ç±»å®šä¹‰æ–‡ä»¶çš„è·¯å¾„ï¼Œå¯ä»¥æ˜¯ç›®å½•+æ–‡ä»¶åçš„æ–¹å¼ï¼Œä¹Ÿå¯ä»¥å•ç‹¬æ˜¯ç›®å½•ã€‚sdirçš„å€¼å°†ä¼ å…¥import()è¿›è¡Œè½½å…¥
+ * @param class_name    ÀàÃû³Æ
+ * @param args   Àà³õÊ¼»¯Ê±Ê¹ÓÃµÄ²ÎÊı£¬Êı×éĞÎÊ½
+ * @param sdir ÔØÈëÀà¶¨ÒåÎÄ¼şµÄÂ·¾¶£¬¿ÉÒÔÊÇÄ¿Â¼+ÎÄ¼şÃûµÄ·½Ê½£¬Ò²¿ÉÒÔµ¥¶ÀÊÇÄ¿Â¼¡£sdirµÄÖµ½«´«Èëimport()½øĞĞÔØÈë
  */
 function spClass($class_name, $args = null, $sdir = null){
-	// æ£€æŸ¥ç±»åç§°æ˜¯å¦æ­£ç¡®ï¼Œä»¥ä¿è¯ç±»å®šä¹‰æ–‡ä»¶è½½å…¥çš„å®‰å…¨æ€§
-	if(preg_match('/[^a-z0-9\-_.]/i', $class_name))spError($class_name."ç±»åç§°é”™è¯¯ï¼Œè¯·æ£€æŸ¥ã€‚");
-	// æ£€æŸ¥æ˜¯å¦è¯¥ç±»å·²ç»å®ä¾‹åŒ–ï¼Œç›´æ¥è¿”å›å·²å®ä¾‹å¯¹è±¡ï¼Œé¿å…å†æ¬¡å®ä¾‹åŒ–
+	// ¼ì²éÀàÃû³ÆÊÇ·ñÕıÈ·£¬ÒÔ±£Ö¤Àà¶¨ÒåÎÄ¼şÔØÈëµÄ°²È«ĞÔ
+	if(preg_match('/[^a-z0-9\-_.]/i', $class_name))spError($class_name."ÀàÃû³Æ´íÎó£¬Çë¼ì²é¡£");
+	// ¼ì²éÊÇ·ñ¸ÃÀàÒÑ¾­ÊµÀı»¯£¬Ö±½Ó·µ»ØÒÑÊµÀı¶ÔÏó£¬±ÜÃâÔÙ´ÎÊµÀı»¯
 	if(isset($GLOBALS['G_SP']["inst_class"][$class_name]))return $GLOBALS['G_SP']["inst_class"][$class_name];
-	// å¦‚æœ$sdirä¸èƒ½è¯»å–ï¼Œåˆ™æµ‹è¯•æ˜¯å¦ä»…è·¯å¾„
+	// Èç¹û$sdir²»ÄÜ¶ÁÈ¡£¬Ôò²âÊÔÊÇ·ñ½öÂ·¾¶
 	if(null != $sdir && !import($sdir) && !import($sdir.'/'.$class_name.'.php'))return FALSE;
 	
 	$has_define = FALSE;
-	// æ£€æŸ¥ç±»å®šä¹‰æ˜¯å¦å­˜åœ¨
+	// ¼ì²éÀà¶¨ÒåÊÇ·ñ´æÔÚ
 	if(class_exists($class_name, false) || interface_exists($class_name, false)){
 		$has_define = TRUE;
 	}else{
@@ -145,15 +145,15 @@ function spClass($class_name, $args = null, $sdir = null){
 		$GLOBALS['G_SP']["inst_class"][$class_name] = new $class_name($args);
 		return $GLOBALS['G_SP']["inst_class"][$class_name];
 	}
-	spError($class_name."ç±»å®šä¹‰ä¸å­˜åœ¨ï¼Œè¯·æ£€æŸ¥ã€‚");
+	spError($class_name."Àà¶¨Òå²»´æÔÚ£¬Çë¼ì²é¡£");
 }
 
 /**
- * spError æ¡†æ¶å®šä¹‰çš„ç³»ç»Ÿçº§é”™è¯¯æç¤º
+ * spError ¿ò¼Ü¶¨ÒåµÄÏµÍ³¼¶´íÎóÌáÊ¾
  * 
- * @param msg    å‡ºé”™ä¿¡æ¯
- * @param output    æ˜¯å¦è¾“å‡º
- * @param stop    æ˜¯å¦åœæ­¢ç¨‹åº
+ * @param msg    ³ö´íĞÅÏ¢
+ * @param output    ÊÇ·ñÊä³ö
+ * @param stop    ÊÇ·ñÍ£Ö¹³ÌĞò
  */
 function spError($msg, $output = TRUE, $stop = TRUE){
 	if(TRUE != SP_DEBUG){
@@ -166,22 +166,22 @@ function spError($msg, $output = TRUE, $stop = TRUE){
 	if(TRUE == $stop)exit;
 }
 /**
- * spErrorHandler ç³»ç»Ÿé”™è¯¯æç¤ºå‡½æ•°
- * @param errno    å‡ºé”™ç±»å‹
- * @param errstr    é”™è¯¯ä¿¡æ¯
- * @param errfile    å‡ºé”™çš„æ–‡ä»¶
- * @param errline    å‡ºé”™è¯­å¥è¡Œå·
+ * spErrorHandler ÏµÍ³´íÎóÌáÊ¾º¯Êı
+ * @param errno    ³ö´íÀàĞÍ
+ * @param errstr    ´íÎóĞÅÏ¢
+ * @param errfile    ³ö´íµÄÎÄ¼ş
+ * @param errline    ³ö´íÓï¾äĞĞºÅ
  */
 function spErrorHandler($errno, $errstr, $errfile, $errline) {
 	if( E_ERROR == $errno || E_PARSE == $errno )spError($errstr);
 }
 
 /**
- * spLaunch  æ‰§è¡ŒæŒ‚é ç¨‹åº
+ * spLaunch  Ö´ĞĞ¹Ò¿¿³ÌĞò
  * 
- * @param configname    æŒ‚é ç¨‹åºè®¾ç½®ç‚¹åç§°
- * @param launchargs    æŒ‚é å‚æ•°
- * @param return    æ˜¯å¦å­˜åœ¨è¿”å›æ•°æ®ï¼Œå¦‚éœ€è¦è¿”å›ï¼Œåˆ™è¯¥æŒ‚é ç‚¹ä»…èƒ½æœ‰ä¸€ä¸ªæŒ‚é æ“ä½œ
+ * @param configname    ¹Ò¿¿³ÌĞòÉèÖÃµãÃû³Æ
+ * @param launchargs    ¹Ò¿¿²ÎÊı
+ * @param return    ÊÇ·ñ´æÔÚ·µ»ØÊı¾İ£¬ÈçĞèÒª·µ»Ø£¬Ôò¸Ã¹Ò¿¿µã½öÄÜÓĞÒ»¸ö¹Ò¿¿²Ù×÷
  */
 function spLaunch($configname, $launchargs = null, $returns = FALSE ){
 	if( isset($GLOBALS['G_SP']['launch'][$configname]) && is_array($GLOBALS['G_SP']['launch'][$configname]) ){
@@ -200,9 +200,9 @@ function spLaunch($configname, $launchargs = null, $returns = FALSE ){
  *
  * T
  *
- * å¤šè¯­è¨€å®ç°ï¼Œç¿»è¯‘å‡½æ•°
+ * ¶àÓïÑÔÊµÏÖ£¬·­Òëº¯Êı
  *
- * @param w    é»˜è®¤è¯­è¨€çš„è¯è¯­
+ * @param w    Ä¬ÈÏÓïÑÔµÄ´ÊÓï
  *
  */
 function T($w) {
@@ -225,24 +225,24 @@ function T($w) {
  *
  * spUrl
  *
- * URLæ¨¡å¼çš„æ„å»ºå‡½æ•°
+ * URLÄ£Ê½µÄ¹¹½¨º¯Êı
  *
- * @param controller    æ§åˆ¶å™¨åç§°ï¼Œé»˜è®¤ä¸ºé…ç½®'default_controller'
- * @param action    åŠ¨ä½œåç§°ï¼Œé»˜è®¤ä¸ºé…ç½®'default_action' 
- * @param args    ä¼ é€’çš„å‚æ•°ï¼Œæ•°ç»„å½¢å¼
- * @param anchor    è·³è½¬é”šç‚¹
- * @param no_sphtml    æ˜¯å¦åº”ç”¨spHtmlè®¾ç½®ï¼Œåœ¨FALSEæ—¶æ•ˆæœä¸ä¸å¯ç”¨spHtmlç›¸åŒã€‚
+ * @param controller    ¿ØÖÆÆ÷Ãû³Æ£¬Ä¬ÈÏÎªÅäÖÃ'default_controller'
+ * @param action    ¶¯×÷Ãû³Æ£¬Ä¬ÈÏÎªÅäÖÃ'default_action' 
+ * @param args    ´«µİµÄ²ÎÊı£¬Êı×éĞÎÊ½
+ * @param anchor    Ìø×ªÃªµã
+ * @param no_sphtml    ÊÇ·ñÓ¦ÓÃspHtmlÉèÖÃ£¬ÔÚFALSEÊ±Ğ§¹ûÓë²»ÆôÓÃspHtmlÏàÍ¬¡£
  */
 function spUrl($controller = null, $action = null, $args = null, $anchor = null, $no_sphtml = FALSE) {
 	if(TRUE == $GLOBALS['G_SP']['html']["enabled"] && TRUE != $no_sphtml){
-		// å½“å¼€å¯HTMLç”Ÿæˆæ—¶ï¼Œå°†æŸ¥æ‰¾HTMLåˆ—è¡¨è·å–é™æ€æ–‡ä»¶åç§°ã€‚
+		// µ±¿ªÆôHTMLÉú³ÉÊ±£¬½«²éÕÒHTMLÁĞ±í»ñÈ¡¾²Ì¬ÎÄ¼şÃû³Æ¡£
 		$realhtml = spHtml::getUrl($controller, $action, $args, $anchor);if(isset($realhtml[0]))return $realhtml[0];
 	}
 	$controller = ( null != $controller ) ? $controller : $GLOBALS['G_SP']["default_controller"];
 	$action = ( null != $action ) ? $action : $GLOBALS['G_SP']["default_action"];
-	// ä½¿ç”¨æŒ‚é ç‚¹
+	// Ê¹ÓÃ¹Ò¿¿µã
 	if( $launch = spLaunch("function_url", array('controller'=>$controller, 'action'=>$action, 'args'=>$args, 'anchor'=>$anchor, 'no_sphtml'=>$no_sphtml), TRUE ))return $launch;
-	if( TRUE == $GLOBALS['G_SP']['url']["url_path_info"] ){ // ä½¿ç”¨path_infoæ–¹å¼
+	if( TRUE == $GLOBALS['G_SP']['url']["url_path_info"] ){ // Ê¹ÓÃpath_info·½Ê½
 		$url = $GLOBALS['G_SP']['url']["url_path_base"]."/{$controller}/{$action}";
 		if(null != $args)foreach($args as $key => $arg) $url .= "/{$key}/{$arg}";
 	}else{
@@ -258,10 +258,10 @@ function spUrl($controller = null, $action = null, $args = null, $anchor = null,
 /**
  * __mkdirs
  *
- * å¾ªç¯å»ºç«‹ç›®å½•çš„è¾…åŠ©å‡½æ•°
+ * Ñ­»·½¨Á¢Ä¿Â¼µÄ¸¨Öúº¯Êı
  *
- * @param dir    ç›®å½•è·¯å¾„
- * @param mode    æ–‡ä»¶æƒé™
+ * @param dir    Ä¿Â¼Â·¾¶
+ * @param mode    ÎÄ¼şÈ¨ÏŞ
  */
 function __mkdirs($dir, $mode = 0777)
 {
@@ -275,9 +275,9 @@ function __mkdirs($dir, $mode = 0777)
 /**
  * spExt
  *
- * æ‰©å±•ç±»è·å–æ‰©å±•é…ç½®çš„å‡½æ•°
+ * À©Õ¹Àà»ñÈ¡À©Õ¹ÅäÖÃµÄº¯Êı
  *
- * @param ext_node_name    æ‰©å±•é…ç½®å
+ * @param ext_node_name    À©Õ¹ÅäÖÃÃû
  */
 function spExt($ext_node_name)
 {
@@ -287,10 +287,10 @@ function spExt($ext_node_name)
 /**
  * spAddViewFunction
  *
- * å°†å‡½æ•°æ³¨å†Œåˆ°æ¨¡æ¿å†…ä½¿ç”¨ï¼Œè¯¥å‡½æ•°å¯ä»¥æ˜¯å¯¹è±¡çš„æ–¹æ³•ï¼Œç±»çš„æ–¹æ³•æˆ–æ˜¯å‡½æ•°ã€‚
+ * ½«º¯Êı×¢²áµ½Ä£°åÄÚÊ¹ÓÃ£¬¸Ãº¯Êı¿ÉÒÔÊÇ¶ÔÏóµÄ·½·¨£¬ÀàµÄ·½·¨»òÊÇº¯Êı¡£
  *
- * @param alias    å‡½æ•°åœ¨æ¨¡æ¿å†…çš„åˆ«å
- * @param callback_function    å›è°ƒçš„å‡½æ•°æˆ–æ–¹æ³•
+ * @param alias    º¯ÊıÔÚÄ£°åÄÚµÄ±ğÃû
+ * @param callback_function    »Øµ÷µÄº¯Êı»ò·½·¨
  */
 function spAddViewFunction($alias, $callback_function)
 {
@@ -298,19 +298,19 @@ function spAddViewFunction($alias, $callback_function)
 }
 
 /**
- * spDB å‡½æ•°ï¼ˆå…¨ç§°ï¼šSpeedPHP DataBaseï¼‰ï¼Œç®€åŒ–æ•°æ®åº“æ“ä½œçš„å‡½æ•°ã€‚
+ * spDB º¯Êı£¨È«³Æ£ºSpeedPHP DataBase£©£¬¼ò»¯Êı¾İ¿â²Ù×÷µÄº¯Êı¡£
  *
- * spDBå¯ä»¥è¾¾åˆ°ç®€å•ä½¿ç”¨spModelå­ç±»çš„å¿«æ·æ–¹å¼ï¼Œåœ¨æ²¡æœ‰spModelå­ç±»å®šä¹‰çš„æƒ…å†µä¸‹ï¼Œç›´æ¥å¯¹è¯¥è¡¨(spModelæ‹¥æœ‰çš„)æ“ä½œã€‚
- * spDBä»…æä¾›spModelå­ç±»çš„ç®€ä¾¿ä½¿ç”¨æ–¹å¼ï¼Œå¦‚éœ€è¦å¼ºå¤§æˆ–ä¸°å¯Œçš„spModelå­ç±»åŠŸèƒ½ï¼Œè¯·ä»ç„¶å¯¹å­ç±»è¿›è¡Œå®šä¹‰å¹¶ä½¿ç”¨è¯¥å­ç±»ã€‚
+ * spDB¿ÉÒÔ´ïµ½¼òµ¥Ê¹ÓÃspModel×ÓÀàµÄ¿ì½İ·½Ê½£¬ÔÚÃ»ÓĞspModel×ÓÀà¶¨ÒåµÄÇé¿öÏÂ£¬Ö±½Ó¶Ô¸Ã±í(spModelÓµÓĞµÄ)²Ù×÷¡£
+ * spDB½öÌá¹©spModel×ÓÀàµÄ¼ò±ãÊ¹ÓÃ·½Ê½£¬ÈçĞèÒªÇ¿´ó»ò·á¸»µÄspModel×ÓÀà¹¦ÄÜ£¬ÇëÈÔÈ»¶Ô×ÓÀà½øĞĞ¶¨Òå²¢Ê¹ÓÃ¸Ã×ÓÀà¡£
  *
- * å¼€å‘è€…å¯ä»¥æ–¹ä¾¿åœ°ï¼š
- * 1. åˆå§‹åŒ–ä¸€ä¸ªspModelçš„å­ç±»ï¼Œå³ä½¿è¿™ä¸ªå­ç±»çš„å®šä¹‰ä¸å­˜åœ¨
- * 2. è°ƒç”¨è¯¥å¯¹è±¡çš„ç»§æ‰¿spModelè€Œæ¥çš„å…¨éƒ¨æ–¹æ³•
+ * ¿ª·¢Õß¿ÉÒÔ·½±ãµØ£º
+ * 1. ³õÊ¼»¯Ò»¸öspModelµÄ×ÓÀà£¬¼´Ê¹Õâ¸ö×ÓÀàµÄ¶¨Òå²»´æÔÚ
+ * 2. µ÷ÓÃ¸Ã¶ÔÏóµÄ¼Ì³ĞspModel¶øÀ´µÄÈ«²¿·½·¨
  *
- * @param tbl_name    è¡¨å…¨å æˆ– è¡¨åç§°ï¼Œå¼€å‘è€…å¯åœ¨é…ç½®ä¸­çš„db_spdb_full_tblnameè®¾ç½®ç¬¦åˆè‡ªå·±ä½¿ç”¨ä¹ æƒ¯çš„æ–¹å¼ã€‚
- *                    è¡¨å…¨åæ˜¯é»˜è®¤å€¼ï¼Œdb_spdb_full_tblname = trueï¼Œtbl_nameå€¼å°†æ˜¯ï¼ˆè¡¨å‰ç¼€ + è¡¨åç§°ï¼‰
- *                    è¡¨åç§°ï¼Œdb_spdb_full_tblname = falseï¼Œè¿™æ—¶å€™æ¡†æ¶å°†ä½¿ç”¨dbé…ç½®ä¸­çš„è¡¨å‰ç¼€prefixã€‚
- * @param pk    ä¸»é”®ï¼ˆå¯é€‰ï¼‰ï¼Œåœ¨æ— éœ€ä½¿ç”¨åˆ°ä¸»é”®çš„æƒ…å†µä¸‹ï¼Œå¯ä»¥å¿½ç•¥ã€‚(ä½¿ç”¨åˆ°ä¸»é”®çš„æƒ…å†µï¼šcreateï¼ŒdeleteByPkï¼ŒfindAll)
+ * @param tbl_name    ±íÈ«Ãû »ò ±íÃû³Æ£¬¿ª·¢Õß¿ÉÔÚÅäÖÃÖĞµÄdb_spdb_full_tblnameÉèÖÃ·ûºÏ×Ô¼ºÊ¹ÓÃÏ°¹ßµÄ·½Ê½¡£
+ *                    ±íÈ«ÃûÊÇÄ¬ÈÏÖµ£¬db_spdb_full_tblname = true£¬tbl_nameÖµ½«ÊÇ£¨±íÇ°×º + ±íÃû³Æ£©
+ *                    ±íÃû³Æ£¬db_spdb_full_tblname = false£¬ÕâÊ±ºò¿ò¼Ü½«Ê¹ÓÃdbÅäÖÃÖĞµÄ±íÇ°×ºprefix¡£
+ * @param pk    Ö÷¼ü£¨¿ÉÑ¡£©£¬ÔÚÎŞĞèÊ¹ÓÃµ½Ö÷¼üµÄÇé¿öÏÂ£¬¿ÉÒÔºöÂÔ¡£(Ê¹ÓÃµ½Ö÷¼üµÄÇé¿ö£ºcreate£¬deleteByPk£¬findAll)
  */
 function spDB($tbl_name, $pk = 'id'){
 	$modelObj = spClass("spModel");
@@ -322,7 +322,7 @@ function spDB($tbl_name, $pk = 'id'){
 /**
  * json_decode/json_encode
  *
- * å…¼å®¹åœ¨æœªé…ç½®JSONæ‰©å±•çš„æƒ…å†µä¸‹ä½¿ç”¨Services_JSONç±»
+ * ¼æÈİÔÚÎ´ÅäÖÃJSONÀ©Õ¹µÄÇé¿öÏÂÊ¹ÓÃServices_JSONÀà
  *
  */
 if ( !function_exists('json_decode') ){
@@ -339,10 +339,10 @@ if ( !function_exists('json_encode') ){
 }
 
 /**
- * spConfigReady   å¿«é€Ÿå°†ç”¨æˆ·é…ç½®è¦†ç›–åˆ°æ¡†æ¶é»˜è®¤é…ç½®
+ * spConfigReady   ¿ìËÙ½«ÓÃ»§ÅäÖÃ¸²¸Çµ½¿ò¼ÜÄ¬ÈÏÅäÖÃ
  * 
- * @param preconfig    é»˜è®¤é…ç½®
- * @param useconfig    ç”¨æˆ·é…ç½®
+ * @param preconfig    Ä¬ÈÏÅäÖÃ
+ * @param useconfig    ÓÃ»§ÅäÖÃ
  */
 function spConfigReady( $preconfig, $useconfig = null){
 	$nowconfig = $preconfig;

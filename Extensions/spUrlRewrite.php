@@ -1,14 +1,14 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPä¸­æ–‡PHPæ¡†æž¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPÖÐÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * spUrlRewrite ç±»ï¼Œä»¥æ‰©å±•å½¢å¼æ”¯æŒSpeedPHPæ¡†æž¶URL_REWRITEçš„æ‰©å±•ã€‚
+ * spUrlRewrite Àà£¬ÒÔÀ©Õ¹ÐÎÊ½Ö§³ÖSpeedPHP¿ò¼ÜURL_REWRITEµÄÀ©Õ¹¡£
  *
- * è¯¥æ‰©å±•çš„ä½¿ç”¨ï¼Œé¦–å…ˆè¦ç¡®å®šæœåŠ¡å™¨å¼€å¯URL_REWRITEåŠŸèƒ½ï¼Œå¹¶ä¸”åœ¨.htaccessä¸­å·²ç»æœ‰ä»¥ä¸‹çš„å†…å®¹
+ * ¸ÃÀ©Õ¹µÄÊ¹ÓÃ£¬Ê×ÏÈÒªÈ·¶¨·þÎñÆ÷¿ªÆôURL_REWRITE¹¦ÄÜ£¬²¢ÇÒÔÚ.htaccessÖÐÒÑ¾­ÓÐÒÔÏÂµÄÄÚÈÝ
  *
- * .htaccessæ˜¯é’ˆå¯¹å½“å‰åº”ç”¨ç¨‹åºçš„
+ * .htaccessÊÇÕë¶Ôµ±Ç°Ó¦ÓÃ³ÌÐòµÄ
  *
  * <IfModule mod_rewrite.c>
  * RewriteEngine On
@@ -17,9 +17,9 @@
  * RewriteRule ^(.*)$ index.php?$1 [L]
  * </IfModule>
  *
- * æœ¬æ‰©å±•è¦æ±‚SpeedPHPæ¡†æž¶2.5ç‰ˆæœ¬ä»¥ä¸Šï¼Œä»¥æ”¯æŒå¯¹spUrlå‡½æ•°çš„æŒ‚é ç¨‹åºã€‚
+ * ±¾À©Õ¹ÒªÇóSpeedPHP¿ò¼Ü2.5°æ±¾ÒÔÉÏ£¬ÒÔÖ§³Ö¶ÔspUrlº¯ÊýµÄ¹Ò¿¿³ÌÐò¡£
  *
- * åº”ç”¨ç¨‹åºé…ç½®ä¸­éœ€è¦ä½¿ç”¨åˆ°è·¯ç”±æŒ‚é ç‚¹ä»¥åŠspUrlæŒ‚é ç‚¹
+ * Ó¦ÓÃ³ÌÐòÅäÖÃÖÐÐèÒªÊ¹ÓÃµ½Â·ÓÉ¹Ò¿¿µãÒÔ¼°spUrl¹Ò¿¿µã
  * 'launch' => array( 
  *	 	'router_prefilter' => array( 
  *			array('spUrlRewrite', 'setReWrite'), 
@@ -29,18 +29,18 @@
  * 	    ),
  *),
  *
- * å¯¹spUrlRewriteçš„é…ç½®
+ * ¶ÔspUrlRewriteµÄÅäÖÃ
  *
  * 'ext' => array(
  * 		'spUrlRewrite' => array(
- *			'hide_default' => true, // éšè—é»˜è®¤çš„main/indexåç§°ï¼Œä½†è¿™å‰ææ˜¯éœ€è¦éšè—çš„é»˜è®¤åŠ¨ä½œæ˜¯æ— GETå‚æ•°çš„
- * 			'args_path_info' => false, // åœ°å€å‚æ•°æ˜¯å¦ä½¿ç”¨path_infoçš„æ–¹å¼ï¼Œé»˜è®¤å¦
- *			'suffix' => '.html', // ç”Ÿæˆåœ°å€çš„ç»“å°¾ç¬¦
+ *			'hide_default' => true, // Òþ²ØÄ¬ÈÏµÄmain/indexÃû³Æ£¬µ«ÕâÇ°ÌáÊÇÐèÒªÒþ²ØµÄÄ¬ÈÏ¶¯×÷ÊÇÎÞGET²ÎÊýµÄ
+ * 			'args_path_info' => false, // µØÖ·²ÎÊýÊÇ·ñÊ¹ÓÃpath_infoµÄ·½Ê½£¬Ä¬ÈÏ·ñ
+ *			'suffix' => '.html', // Éú³ÉµØÖ·µÄ½áÎ²·û
  *		),
  * ),
  *
  */
-if( SP_VERSION < 2.5 )spError('spUrlRewriteæ‰©å±•è¦æ±‚SpeedPHPæ¡†æž¶ç‰ˆæœ¬2.5ä»¥ä¸Šã€‚');
+if( SP_VERSION < 2.5 )spError('spUrlRewriteÀ©Õ¹ÒªÇóSpeedPHP¿ò¼Ü°æ±¾2.5ÒÔÉÏ¡£');
 class spUrlRewrite
 {
 	var $params = array(
@@ -49,7 +49,7 @@ class spUrlRewrite
 		'suffix' => '.html',
 	);
 	/**
-	 * æž„é€ å‡½æ•°ï¼Œå¤„ç†é…ç½®
+	 * ¹¹Ôìº¯Êý£¬´¦ÀíÅäÖÃ
 	 */
 	public function __construct()
 	{
@@ -57,7 +57,7 @@ class spUrlRewrite
 		if(is_array($params))$this->params = array_merge($this->params, $params);
 	}	
 	/**
-	 * åœ¨æŽ§åˆ¶å™¨/åŠ¨ä½œæ‰§è¡Œå‰ï¼Œå¯¹è·¯ç”±è¿›è¡Œæ”¹è£…ï¼Œä½¿å…¶å¯ä»¥è§£æžURL_WRITEçš„åœ°å€
+	 * ÔÚ¿ØÖÆÆ÷/¶¯×÷Ö´ÐÐÇ°£¬¶ÔÂ·ÓÉ½øÐÐ¸Ä×°£¬Ê¹Æä¿ÉÒÔ½âÎöURL_WRITEµÄµØÖ·
 	 */
 	public function setReWrite()
 	{
@@ -71,11 +71,11 @@ class spUrlRewrite
 		}
 		$lasturi = stristr($uri,$this->params['suffix']);if( false == $lasturi )return ;
 		$firsturi = explode('/',trim(substr($uri, 0, -strlen($lasturi)),"\/\\"));
-		if( true == $this->params['hide_default'] && !isset($firsturi[1]) ){ // å¼€å¯éšè—é»˜è®¤åç§°
+		if( true == $this->params['hide_default'] && !isset($firsturi[1]) ){ // ¿ªÆôÒþ²ØÄ¬ÈÏÃû³Æ
 			$__controller = $GLOBALS['G_SP']['default_controller'];
 			$__action = $firsturi[0];
 		}else{
-			// ä¸å¼€å¯
+			// ²»¿ªÆô
 			$__controller = (empty($firsturi[0])) ? $GLOBALS['G_SP']['default_controller'] : $firsturi[0];
 			$__action = (empty($firsturi[1])) ? $GLOBALS['G_SP']['default_action'] : $firsturi[1];
 		}
@@ -97,19 +97,19 @@ class spUrlRewrite
 
 
 	/**
-	 * åœ¨æž„é€ spUrlåœ°å€æ—¶ï¼Œå¯¹åœ°å€è¿›è¡ŒURL_WRITEçš„æ”¹å†™
+	 * ÔÚ¹¹ÔìspUrlµØÖ·Ê±£¬¶ÔµØÖ·½øÐÐURL_WRITEµÄ¸ÄÐ´
 	 *
-	 * @param urlargs    spUrlçš„å‚æ•°
+	 * @param urlargs    spUrlµÄ²ÎÊý
 	 */
 	public function getReWrite($urlargs = array())
 	{
 		$url = trim(dirname($GLOBALS['G_SP']['url']["url_path_base"]),"\/\\");
 		if( empty($url) ){$url = '/';}else{$url = '/'.$url.'/';}
 		if( $GLOBALS['G_SP']["default_controller"] == $urlargs['controller'] && $GLOBALS['G_SP']["default_action"] == $urlargs['action'] ){
-		}elseif( true == $this->params['hide_default'] && $GLOBALS['G_SP']["default_controller"] == $urlargs['controller'] ){ // å¼€å¯éšè—é»˜è®¤åç§°
+		}elseif( true == $this->params['hide_default'] && $GLOBALS['G_SP']["default_controller"] == $urlargs['controller'] ){ // ¿ªÆôÒþ²ØÄ¬ÈÏÃû³Æ
 			$url .= (null != $urlargs['action'] ? $urlargs['action'] : $GLOBALS['G_SP']["default_action"]).$this->params['suffix'];
 		}else{
-			// ä¸å¼€å¯
+			// ²»¿ªÆô
 			$controller = (null != $urlargs['controller']) ? $urlargs['controller'] : $GLOBALS['G_SP']["default_controller"];
 			$action = (null != $urlargs['action']) ? $urlargs['action']: $GLOBALS['G_SP']["default_action"];
 			$url .= "{$controller}/{$action}".$this->params['suffix'];

@@ -1,29 +1,29 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * db_pdo_mysql PDO MySQLæ•°æ®é©±åŠ¨ç±»
+ * db_pdo_mysql PDO MySQLÊı¾İÇı¶¯Àà
  */
 class db_pdo_mysql extends db_pdo {
 	/**
-	 * è·å–æ•°æ®è¡¨ç»“æ„
+	 * »ñÈ¡Êı¾İ±í½á¹¹
 	 *
-	 * @param tbl_name  è¡¨åç§°
+	 * @param tbl_name  ±íÃû³Æ
 	 */
 	public function getTable($tbl_name){
 		return $this->getArray("DESCRIBE {$tbl_name}");
 	}
 }
 /**
- * db_pdo_sqlite PDO Sqliteæ•°æ®é©±åŠ¨ç±»
+ * db_pdo_sqlite PDO SqliteÊı¾İÇı¶¯Àà
  */
 class db_pdo_sqlite extends db_pdo {
 	/**
-	 * è·å–æ•°æ®è¡¨ç»“æ„
+	 * »ñÈ¡Êı¾İ±í½á¹¹
 	 *
-	 * @param tbl_name  è¡¨åç§°
+	 * @param tbl_name  ±íÃû³Æ
 	 */
 	public function getTable($tbl_name){
 		$tmptable = $this->conn->query("SELECT sql FROM SQLITE_MASTER type = table AND name = '{$tbl_name}'");
@@ -38,26 +38,26 @@ class db_pdo_sqlite extends db_pdo {
 }
 
 /**
- * db_pdo PDOé©±åŠ¨ç±» 
+ * db_pdo PDOÇı¶¯Àà 
  */
 class db_pdo {
 	/**
-	 * æ•°æ®åº“é“¾æ¥å¥æŸ„
+	 * Êı¾İ¿âÁ´½Ó¾ä±ú
 	 */
 	public $conn;
 	/**
-	 * æ‰§è¡Œçš„SQLè¯­å¥è®°å½•
+	 * Ö´ĞĞµÄSQLÓï¾ä¼ÇÂ¼
 	 */
 	public $arrSql;
 	/**
-	 * execæ‰§è¡Œå½±å“è¡Œæ•°
+	 * execÖ´ĞĞÓ°ÏìĞĞÊı
 	 */
 	private $num_rows;
 
 	/**
-	 * æŒ‰SQLè¯­å¥è·å–è®°å½•ç»“æœï¼Œè¿”å›æ•°ç»„
+	 * °´SQLÓï¾ä»ñÈ¡¼ÇÂ¼½á¹û£¬·µ»ØÊı×é
 	 * 
-	 * @param sql  æ‰§è¡Œçš„SQLè¯­å¥
+	 * @param sql  Ö´ĞĞµÄSQLÓï¾ä
 	 */
 	public function getArray($sql)
 	{
@@ -68,7 +68,7 @@ class db_pdo {
 	}
 	
 	/**
-	 * è¿”å›å½“å‰æ’å…¥è®°å½•çš„ä¸»é”®ID
+	 * ·µ»Øµ±Ç°²åÈë¼ÇÂ¼µÄÖ÷¼üID
 	 */
 	public function newinsertid()
 	{
@@ -76,7 +76,7 @@ class db_pdo {
 	}
 	
 	/**
-	 * æ ¼å¼åŒ–å¸¦limitçš„SQLè¯­å¥
+	 * ¸ñÊ½»¯´ølimitµÄSQLÓï¾ä
 	 */
 	public function setlimit($sql, $limit)
 	{
@@ -84,9 +84,9 @@ class db_pdo {
 	}
 
 	/**
-	 * æ‰§è¡Œä¸€ä¸ªSQLè¯­å¥
+	 * Ö´ĞĞÒ»¸öSQLÓï¾ä
 	 * 
-	 * @param sql éœ€è¦æ‰§è¡Œçš„SQLè¯­å¥
+	 * @param sql ĞèÒªÖ´ĞĞµÄSQLÓï¾ä
 	 */
 	public function exec($sql)
 	{
@@ -96,12 +96,12 @@ class db_pdo {
 			$this->num_rows = $result;
 			return $result;
 		}else{
-			spError("{$sql}<br />æ‰§è¡Œé”™è¯¯: " .$this->conn->errorInfo());
+			spError("{$sql}<br />Ö´ĞĞ´íÎó: " .$this->conn->errorInfo());
 		}
 	}
 	
 	/**
-	 * è¿”å›å½±å“è¡Œæ•°
+	 * ·µ»ØÓ°ÏìĞĞÊı
 	 */
 	public function affected_rows()
 	{
@@ -109,30 +109,30 @@ class db_pdo {
 	}
 
 	/**
-	 * è·å–æ•°æ®è¡¨ç»“æ„
+	 * »ñÈ¡Êı¾İ±í½á¹¹
 	 *
-	 * @param tbl_name  è¡¨åç§°
+	 * @param tbl_name  ±íÃû³Æ
 	 */
 	public function getTable($tbl_name){}
 
 	/**
-	 * æ„é€ å‡½æ•°
+	 * ¹¹Ôìº¯Êı
 	 *
-	 * @param dbConfig  æ•°æ®åº“é…ç½®
+	 * @param dbConfig  Êı¾İ¿âÅäÖÃ
 	 */
 	public function __construct($dbConfig)
 	{
-		if(!class_exists("PDO"))spError('PHPç¯å¢ƒæœªå®‰è£…PDOå‡½æ•°åº“ï¼');
+		if(!class_exists("PDO"))spError('PHP»·¾³Î´°²×°PDOº¯Êı¿â£¡');
 		try {
 		    $this->conn = new PDO($dbConfig['host'], $dbConfig['login'], $dbConfig['password']); 
 		} catch (PDOException $e) {
-		    echo 'æ•°æ®åº“é“¾æ¥é”™è¯¯/æ— æ³•æ‰¾åˆ°æ•°æ®åº“ :  ' . $e->getMessage();
+		    echo 'Êı¾İ¿âÁ´½Ó´íÎó/ÎŞ·¨ÕÒµ½Êı¾İ¿â :  ' . $e->getMessage();
 		}
 	}
 	/**
-	 * å¯¹ç‰¹æ®Šå­—ç¬¦è¿›è¡Œè¿‡æ»¤
+	 * ¶ÔÌØÊâ×Ö·û½øĞĞ¹ıÂË
 	 *
-	 * @param value  å€¼
+	 * @param value  Öµ
 	 */
 	public function __val_escape($value) {
 		if(is_null($value))return null;
@@ -144,14 +144,14 @@ class db_pdo {
 	}
 
 	/**
-	 * ææ„å‡½æ•°
+	 * Îö¹¹º¯Êı
 	 */
 	public function __destruct(){
 		$this->conn = null;
 	}
 	
 	/**
-	 * getConn å–å¾—PDOå¯¹è±¡
+	 * getConn È¡µÃPDO¶ÔÏó
 	 */
 	public function getConn()
 	{

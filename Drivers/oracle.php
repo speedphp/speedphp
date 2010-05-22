@@ -1,29 +1,29 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * db_oracle Oracleæ•°æ®åº“çš„é©±åŠ¨æ”¯æŒ
+ * db_oracle OracleÊı¾İ¿âµÄÇı¶¯Ö§³Ö
  */
 class db_oracle {
 	/**
-	 * æ•°æ®åº“é“¾æ¥å¥æŸ„
+	 * Êı¾İ¿âÁ´½Ó¾ä±ú
 	 */
 	public $conn;
 	/**
-	 * æ‰§è¡Œçš„SQLè¯­å¥è®°å½•
+	 * Ö´ĞĞµÄSQLÓï¾ä¼ÇÂ¼
 	 */
 	public $arrSql;
 	/**
-	 * execæ‰§è¡Œå½±å“è¡Œæ•°
+	 * execÖ´ĞĞÓ°ÏìĞĞÊı
 	 */
 	private $num_rows;
 
 	/**
-	 * æŒ‰SQLè¯­å¥è·å–è®°å½•ç»“æœï¼Œè¿”å›æ•°ç»„
+	 * °´SQLÓï¾ä»ñÈ¡¼ÇÂ¼½á¹û£¬·µ»ØÊı×é
 	 * 
-	 * @param sql  æ‰§è¡Œçš„SQLè¯­å¥
+	 * @param sql  Ö´ĞĞµÄSQLÓï¾ä
 	 */
 	public function getArray($sql)
 	{
@@ -35,15 +35,15 @@ class db_oracle {
 	}
 	
 	/**
-	 * è¿”å›å½“å‰æ’å…¥è®°å½•çš„ä¸»é”®ID
+	 * ·µ»Øµ±Ç°²åÈë¼ÇÂ¼µÄÖ÷¼üID
 	 */
 	public function newinsertid()
 	{
-		return FALSE; // ä½¿ç”¨spModelçš„createæ¥è¿›è¡ŒæŸ¥æ‰¾æœ€åæ’å…¥ID
+		return FALSE; // Ê¹ÓÃspModelµÄcreateÀ´½øĞĞ²éÕÒ×îºó²åÈëID
 	}
 	
 	/**
-	 * æ ¼å¼åŒ–å¸¦limitçš„SQLè¯­å¥
+	 * ¸ñÊ½»¯´ølimitµÄSQLÓï¾ä
 	 */
 	public function setlimit($sql, $limit)
 	{
@@ -54,16 +54,16 @@ class db_oracle {
 	}
 
 	/**
-	 * æ‰§è¡Œä¸€ä¸ªSQLè¯­å¥
+	 * Ö´ĞĞÒ»¸öSQLÓï¾ä
 	 * 
-	 * @param sql éœ€è¦æ‰§è¡Œçš„SQLè¯­å¥
+	 * @param sql ĞèÒªÖ´ĞĞµÄSQLÓï¾ä
 	 */
 	public function exec($sql)
 	{
 		$this->arrSql[] = $sql;
 		$result = oci_parse($this->conn, $sql);
 		if( !$result or !oci_execute($result) ){
-			$e = oci_error();spError('{$sql}<br />æ‰§è¡Œé”™è¯¯: ' . strip_tags($e['message']));
+			$e = oci_error();spError('{$sql}<br />Ö´ĞĞ´íÎó: ' . strip_tags($e['message']));
 		}
 		$this->num_rows = oci_num_rows($result);
 		return $result;
@@ -71,7 +71,7 @@ class db_oracle {
 	
 	
 	/**
-	 * è¿”å›å½±å“è¡Œæ•°
+	 * ·µ»ØÓ°ÏìĞĞÊı
 	 */
 	public function affected_rows()
 	{
@@ -79,9 +79,9 @@ class db_oracle {
 	}
 
 	/**
-	 * è·å–æ•°æ®è¡¨ç»“æ„
+	 * »ñÈ¡Êı¾İ±í½á¹¹
 	 *
-	 * @param tbl_name  è¡¨åç§°
+	 * @param tbl_name  ±íÃû³Æ
 	 */
 	public function getTable($tbl_name)
 	{
@@ -89,22 +89,22 @@ class db_oracle {
 	}
 
 	/**
-	 * æ„é€ å‡½æ•°
+	 * ¹¹Ôìº¯Êı
 	 *
-	 * @param dbConfig  æ•°æ®åº“é…ç½®
+	 * @param dbConfig  Êı¾İ¿âÅäÖÃ
 	 */
 	public function __construct($dbConfig)
 	{
-		if(!function_exists('oci_connect'))spError('PHPç¯å¢ƒæœªå®‰è£…ORACLEå‡½æ•°åº“ï¼');
+		if(!function_exists('oci_connect'))spError('PHP»·¾³Î´°²×°ORACLEº¯Êı¿â£¡');
 		$linkfunction = ( TRUE == $dbConfig['persistent'] ) ? 'oci_pconnect' : 'oci_connect';
-		if( ! $this->conn = $linkfunction($dbConfig['login'], $dbConfig['password'], $dbConfig['host'], 'AL32UTF8') ){
-			$e = oci_error();spError('æ•°æ®åº“é“¾æ¥é”™è¯¯ : ' . strip_tags($e['message']));
+		if( ! $this->conn = $linkfunction($dbConfig['login'], $dbConfig['password'], $dbConfig['host'], 'ZHS16GBK') ){
+			$e = oci_error();spError('Êı¾İ¿âÁ´½Ó´íÎó : ' . strip_tags($e['message']));
 		}
 	}
 	/**
-	 * å¯¹ç‰¹æ®Šå­—ç¬¦è¿›è¡Œè¿‡æ»¤
+	 * ¶ÔÌØÊâ×Ö·û½øĞĞ¹ıÂË
 	 *
-	 * @param value  å€¼
+	 * @param value  Öµ
 	 */
 	public function __val_escape($value) {
 		if(is_null($value))return null;
@@ -119,7 +119,7 @@ class db_oracle {
 	}
 
 	/**
-	 * ææ„å‡½æ•°
+	 * Îö¹¹º¯Êı
 	 */
 	public function __destruct()
 	{
