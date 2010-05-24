@@ -127,18 +127,18 @@ class db_mssql {
 	/**
 	 * 转换MSSQL的LIMIT语句的转换函数
 	 */
-	public function translimit($sql){       
+	function translimit($sql){       
 		if(preg_match('/ limit /i', $sql)){
 			//去连续空格 
 			while(preg_match("/  /", $sql))$sql = str_replace("  "," ",$sql);
 			$sql_array = explode(" ",$sql);
 			//取得部分重要的数组索引 
 			$i = 0;
-			while($sql_array[$i]){ 
+			while(isset($sql_array[$i]) && $sql_array[$i]){ 
 				if(strtolower($sql_array[$i])=="from")$from_id = $i;  
 				if(strtolower($sql_array[$i])=="limit")$limit_id = $i; 
 				if(strtolower($sql_array[$i])=="order")$order_id = $i;
-				$i++; 
+				$i++;
 			} 
 			$last_id = $i-1; 
 			$two_num = explode(",",$sql_array[$limit_id+1]);
@@ -146,17 +146,17 @@ class db_mssql {
 
 			$sql_return = "SELECT ";
 			for($i=1;$i<=$from_id;$i++){ 
-				$sql_return .= $sql_array[$i]; 
+				$sql_return .= $this->translimit_notblname($sql_array[$i]); 
 				$sql_return .= " "; 
 			}
 			$sql_return .= " ( SELECT TOP {$two_num[1]} ";
 			for($i=1;$i<=$from_id;$i++){
-				$sql_return .= $sql_array[$i]; 
+				$sql_return .= $this->translimit_notblname($sql_array[$i]); 
 				$sql_return .= " "; 
 			}
 			$sql_return .=" ( SELECT TOP {$totle_num} ";
 			for($i=1;$i<$limit_id;$i++){
-				$sql_return .= $sql_array[$i]; 
+				$sql_return .= $sql_array[$i] ; 
 				$sql_return .= " "; 
 			} 
 			$sql_return .= " ) AS SPTMP_MSSQL_TOTLERESULT ";
@@ -179,5 +179,10 @@ class db_mssql {
 		}else{
 			return $sql;
 		}
+	}
+	function translimit_notblname($field){
+		$posdot = strpos($field,'.');
+		if( FALSE === $posdot )return $field;
+		return substr( $field, $posdot + 1 );
 	}
 }
