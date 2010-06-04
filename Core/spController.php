@@ -17,6 +17,16 @@ class spController {
 	 * 赋值到模板的变量
 	 */
 	private $__template_vals = array();
+	
+	/**
+	 * 构造函数
+	 */
+	public function __construct()
+	{	
+		if(TRUE == $GLOBALS['G_SP']['view']['enabled']){
+			$this->v = spClass('spView');
+		}
+	}
 
     /**
      *
