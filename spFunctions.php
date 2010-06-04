@@ -12,6 +12,8 @@ function spRun(){
 	spLaunch("router_prefilter");
 	// 对将要访问的控制器类进行实例化
 	$handle_controller = spClass($__controller, null, $GLOBALS['G_SP']["controller_path"].'/'.$__controller.".php");
+	// 实例化视图对象
+	if(TRUE == $GLOBALS['G_SP']['view']['enabled'])$handle_controller->v = spClass('spView');
 	// 调用控制器出错将调用路由错误处理函数
 	if(!is_object($handle_controller) || !method_exists($handle_controller, $__action)){
 		eval($GLOBALS['G_SP']["dispatcher_error"]);
@@ -162,7 +164,7 @@ function spError($msg, $output = TRUE, $stop = TRUE){
 	}
 	$traces = debug_backtrace();
 	$bufferabove = ob_get_clean();
-	require($GLOBALS['G_SP']['sp_notice_php']);
+	require_once($GLOBALS['G_SP']['sp_notice_php']);
 	if(TRUE == $stop)exit;
 }
 /**
