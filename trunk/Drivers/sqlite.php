@@ -97,13 +97,15 @@ class db_sqlite {
 	 *
 	 * @param value  值
 	 */
-	public function __val_escape($value) {
+	public function __val_escape($value, $quotes = FALSE) {
 		if(is_null($value))return null;
 		if(is_bool($value))return $value ? 1 : 0;
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
-		return sqlite_escape_string($value);
+		$value = sqlite_escape_string($value);
+		if($quotes)$value = "'{$value}'";
+		return $value;
 	}
 
 	/**

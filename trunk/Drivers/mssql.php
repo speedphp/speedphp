@@ -84,7 +84,7 @@ class db_mssql {
 	{
 		$result = $this->getArray("SELECT syscolumns.name FROM syscolumns, systypes WHERE syscolumns.xusertype = systypes.xusertype AND syscolumns.id = object_id('{$tbl_name}')");
 		$columns = array();
-		foreach( $result as $column )$columns[] = array('Field'=>$column);
+		foreach( $result as $column )$columns[] = array('Field'=>$column['name']);
 		return $columns;
 	}
 
@@ -105,7 +105,7 @@ class db_mssql {
 	 *
 	 * @param value  值
 	 */
-	public function __val_escape($value) {
+	public function __val_escape($value, $quotes = FALSE) {
 		if(is_null($value))return null;
 		if(is_bool($value))return $value ? 1 : 0;
 		if(is_int($value))return (int)$value;
@@ -113,6 +113,7 @@ class db_mssql {
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
 		$value = str_replace("'","''",$value);
 		$value = str_replace("\0","[NULL]",$value);
+		if($quotes)$value = "'{$value}'";
 		return $value;
 	}
 

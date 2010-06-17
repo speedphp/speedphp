@@ -62,9 +62,8 @@ class db_pdo {
 	public function getArray($sql)
 	{
 		$this->arrSql[] = $sql;
-		$rows = array();
-		while($rows[] = $this->conn->query($sql)){}
-		return $rows;
+		$rows = $this->conn->query($sql);
+		return $rows->fetchAll();
 	}
 	
 	/**
@@ -134,13 +133,15 @@ class db_pdo {
 	 *
 	 * @param value  值
 	 */
-	public function __val_escape($value) {
+	public function __val_escape($value, $quotes = FALSE) {
 		if(is_null($value))return null;
 		if(is_bool($value))return $value ? 1 : 0;
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
-		return $this->conn->quote($value);
+		$value = $this->conn->quote($value);
+		if($quotes)$value = "'{$value}'";
+		return $value;
 	}
 
 	/**
