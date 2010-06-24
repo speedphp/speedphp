@@ -98,7 +98,7 @@ class spModel {
 		}else{
 			$sort = "ORDER BY {$this->pk}";
 		}
-		$sql = "SELECT {$this->tbl_name}.{$fields} FROM {$this->tbl_name} {$where} {$sort}";
+		$sql = "SELECT {$fields} FROM {$this->tbl_name} {$where} {$sort}";
 		if(null != $limit)$sql = $this->_db->setlimit($sql, $limit);
 		return $this->_db->getArray($sql);
 	}
@@ -128,7 +128,7 @@ class spModel {
 		}
 		$col = join(',', $cols);
 		$val = join(',', $vals);
-		
+
 		$sql = "INSERT INTO {$this->tbl_name} ({$col}) VALUES ({$val})";
 		if( FALSE != $this->_db->exec($sql) ){ // 获取当前新增的ID
 			if( $newinserid = $this->_db->newinsertid() ){
@@ -251,9 +251,9 @@ class spModel {
 		}else{
 			if(null != $conditions)$where = "WHERE ".$conditions;
 		}
-		$sql = "SELECT COUNT({$this->pk}) as sp_counter FROM {$this->tbl_name} {$where}";
+		$sql = "SELECT COUNT({$this->pk}) AS SP_COUNTER FROM {$this->tbl_name} {$where}";
 		$result = $this->_db->getArray($sql);
-		return $result[0]['sp_counter'];
+		return $result[0]['SP_COUNTER'];
 	}
 
 	/**
@@ -335,7 +335,7 @@ class spModel {
 		}else{
 			if(null != $conditions)$where = "WHERE ".$conditions;
 		}
-		$values = "{$this->tbl_name}.{$field} = {$this->tbl_name}.{$field} + {$optval}";
+		$values = "{$field} = {$field} + {$optval}";
 		$sql = "UPDATE {$this->tbl_name} SET {$values} {$where}";
 		return $this->_db->exec($sql);
 	}

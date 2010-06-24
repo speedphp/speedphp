@@ -90,7 +90,7 @@ class db_sqlite {
 	{
 		if(!function_exists('sqlite_open'))spError('PHP环境未安装Sqlite函数库！');
 		$linkfunction = ( TRUE == $dbConfig['persistent'] ) ? 'sqlite_popen' : 'sqlite_open';
-		if (! $this->conn = $linkfunction($dbConfig['database'], 0666, $sqliteerror))spError('数据库链接错误/无法找到数据库 : '. $sqliteerror);
+		if (! $this->conn = $linkfunction($dbConfig['host'], 0666, $sqliteerror))spError('数据库链接错误/无法找到数据库 : '. $sqliteerror);
 	}
 	/**
 	 * 对特殊字符进行过滤

@@ -49,8 +49,8 @@ class db_oracle {
 	{
 		$limitarr = explode(',',str_replace(' ','',$limit));
 		$total = (isset($limitarr[1])) ? ($limitarr[1] + $limitarr[0]) : $limitarr[0];
-		$start = (isset($limitarr[1])) ? $limitarr[1] : 0;
-		return "SELECT * FROM ( SELECT *, ROWNUM sptmp_limit_rownum FROM ({$sql}) sptmp_limit_tblname WHERE ROWNUM <= {$total} )WHERE sptmp_limit_rownum >= {$start}";
+		$start = (isset($limitarr[1])) ? $limitarr[0] : 0;
+		return "SELECT * FROM ( SELECT SPTMP_LIMIT_TBLNAME.*, ROWNUM SPTMP_LIMIT_ROWNUM FROM ({$sql}) SPTMP_LIMIT_TBLNAME WHERE ROWNUM <= {$total} )WHERE SPTMP_LIMIT_ROWNUM > {$start}";
 	}
 
 	/**
@@ -62,9 +62,7 @@ class db_oracle {
 	{
 		$this->arrSql[] = $sql;
 		$result = oci_parse($this->conn, $sql);
-		if( !$result or !oci_execute($result) ){
-			$e = oci_error();spError('{$sql}<br />执行错误: ' . strip_tags($e['message']));
-		}
+		if( !oci_execute($result) ){$e = oci_error($result);spError("{$sql}<br />执行错误: " . strip_tags($e['message']));}
 		$this->num_rows = oci_num_rows($result);
 		return $result;
 	}
@@ -85,7 +83,10 @@ class db_oracle {
 	 */
 	public function getTable($tbl_name)
 	{
-		return $this->getArray("SELECT column_name AS Field FROM USER_TAB_COLUMNS WHERE table_name = '{$tbl_name}'");
+		$tbl_name = strtoupper($tbl_name);
+		$upcaseres = $this->getArray("SELECT COLUMN_NAME AS FIELD FROM USER_TAB_COLUMNS WHERE TABLE_NAME = '{$tbl_name}'");
+		foreach( $upcaseres as $k => $v )$upcaseres[$k] = array('Field'=>$v['FIELD']);
+		return $upcaseres;
 	}
 
 	/**
@@ -112,7 +113,6 @@ class db_oracle {
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
-		$value = addslashes($value); // ?
 		$value = str_replace("_","\_",$value);
 		$value = str_replace("%","\%",$value);
 		if($quotes)$value = "'{$value}'";

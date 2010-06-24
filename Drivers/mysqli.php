@@ -106,7 +106,7 @@ class db_mysqli {
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
-		$value = mysqli_real_escape_string($value, $this->conn);
+		$value = mysqli_real_escape_string($this->conn, $value); // 注意mysqli_real_escape_string的参数位置
 		if($quotes)$value = "'{$value}'";
 		return $value;
 	}

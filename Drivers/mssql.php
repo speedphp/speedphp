@@ -147,12 +147,12 @@ class db_mssql {
 
 			$sql_return = "SELECT ";
 			for($i=1;$i<=$from_id;$i++){ 
-				$sql_return .= $this->translimit_notblname($sql_array[$i]); 
+				$sql_return .= $sql_array[$i]; 
 				$sql_return .= " "; 
 			}
 			$sql_return .= " ( SELECT TOP {$two_num[1]} ";
 			for($i=1;$i<=$from_id;$i++){
-				$sql_return .= $this->translimit_notblname($sql_array[$i]); 
+				$sql_return .= $sql_array[$i]; 
 				$sql_return .= " "; 
 			}
 			$sql_return .=" ( SELECT TOP {$totle_num} ";
@@ -180,10 +180,5 @@ class db_mssql {
 		}else{
 			return $sql;
 		}
-	}
-	function translimit_notblname($field){
-		$posdot = strpos($field,'.');
-		if( FALSE === $posdot )return $field;
-		return substr( $field, $posdot + 1 );
 	}
 }
