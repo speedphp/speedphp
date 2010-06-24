@@ -26,8 +26,8 @@ class db_pdo_sqlite extends db_pdo {
 	 * @param tbl_name  表名称
 	 */
 	public function getTable($tbl_name){
-		$tmptable = $this->conn->query("SELECT sql FROM SQLITE_MASTER type = table AND name = '{$tbl_name}'");
-		$tmp = explode('[',$tmptable['sql']);
+		$tmptable = $this->getArray("SELECT * FROM SQLITE_MASTER WHERE name = '{$tbl_name}' AND type='table'");
+		$tmp = explode('[',$tmptable[0]['sql']);
 		foreach( $tmp as $value ){
 			$towarr = explode(']', $value);
 			if( isset($towarr[1]) )$columns[]['Field'] = $towarr[0];
@@ -62,8 +62,9 @@ class db_pdo {
 	public function getArray($sql)
 	{
 		$this->arrSql[] = $sql;
-		$rows = $this->conn->query($sql);
-		return $rows->fetchAll();
+		$rows = $this->conn->prepare($sql);
+		$rows->execute();
+		return $rows->fetchAll(PDO::FETCH_ASSOC);
 	}
 	
 	/**
@@ -140,7 +141,7 @@ class db_pdo {
 		if(is_float($value))return (float)$value;
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
 		$value = $this->conn->quote($value);
-		if($quotes)$value = "'{$value}'";
+		//if($quotes)$value = "'{$value}'";
 		return $value;
 	}
 
