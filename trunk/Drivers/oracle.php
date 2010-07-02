@@ -27,7 +27,6 @@ class db_oracle {
 	 */
 	public function getArray($sql)
 	{
-		$this->arrSql[] = $sql;
 		$result = $this->exec($sql);
 		oci_fetch_all($result, $res, null, null, OCI_FETCHSTATEMENT_BY_ROW);
 		oci_free_statement($result);
@@ -108,7 +107,7 @@ class db_oracle {
 	 * @param value  值
 	 */
 	public function __val_escape($value, $quotes = FALSE) {
-		if(is_null($value))return null;
+		if(is_null($value))return 'NULL';
 		if(is_bool($value))return $value ? 1 : 0;
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
