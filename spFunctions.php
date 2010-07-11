@@ -76,7 +76,7 @@ function import($sfilename, $auto_search = TRUE, $auto_error = FALSE){
 			}
 		}
 	}
-	if( TRUE == $auto_error )spError('未能找到名为：{$sfilename}的文件');
+	if( TRUE == $auto_error )spError("未能找到名为：{$sfilename}的文件");
 	return FALSE;
 }
 
