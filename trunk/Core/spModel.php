@@ -307,13 +307,13 @@ class spModel {
 	 */
 	public function replace($conditions, $row)
 	{
-		$result = $this->update($conditions, $row);
-		if( $this->affectedRows() < 1 ){
+		if( $this->find($conditions) ){
+			return $this->update($conditions, $row);
+		}else{
 			if( !is_array($conditions) )spError('replace方法的条件务必是数组形式！');
 			$rows = spConfigReady($conditions, $row);
 			return $this->create($rows);
 		}
-		return $result;
 	}
 	
 	/**
