@@ -23,7 +23,7 @@ function spRun(){
 	if(FALSE != $GLOBALS['G_SP']['view']['auto_display']){
 		$__tplname = $__controller.$GLOBALS['G_SP']['view']['auto_display_sep'].
 				$__action.$GLOBALS['G_SP']['view']['auto_display_suffix']; // 拼装模板路径
-		$handle_controller->v->auto_display($__tplname);
+		$handle_controller->auto_display($__tplname);
 	}
 	// 对路由进行后续相关操作
 	spLaunch("router_postfilter");
