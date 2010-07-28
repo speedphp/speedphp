@@ -106,6 +106,18 @@ class spController {
 		}
 		if( TRUE != $output )return ob_get_clean();
 	}
+	
+	/**
+	 * 自动输出页面
+	 * @param tplname 模板文件路径
+	 */
+	public function auto_display($tplname)
+	{
+		if( TRUE != $this->v->displayed && FALSE != $GLOBALS['G_SP']['view']['auto_display']){
+			if( !method_exists($this->v->engine, 'template_exists') || TRUE == $this->v->engine->template_exists($tplname) )
+				$this->display($tplname);
+		}
+	}
 
 	/**
 	 * 魔术函数，实现对控制器扩展类的自动加载

@@ -14,7 +14,7 @@ class spView {
 	/**
 	 * 模板是否已输出
 	 */
-	private $displayed = FALSE;
+	public $displayed = FALSE;
 
 	/**
 	 * 构造函数，进行模板引擎的实例化操作
@@ -45,17 +45,6 @@ class spView {
 		$this->displayed = TRUE;
 		if($GLOBALS['G_SP']['view']['debugging'] && SP_DEBUG)$this->engine->debugging = TRUE;
 		$this->engine->display($tplname);
-	}
-	/**
-	 * 自动输出页面
-	 * @param tplname 模板文件路径
-	 */
-	public function auto_display($tplname)
-	{
-		if( TRUE != $this->displayed && FALSE != $GLOBALS['G_SP']['view']['auto_display']){
-			if( !method_exists($this->engine, 'template_exists') || TRUE == $this->engine->template_exists($tplname) )
-				$this->display($tplname);
-		}
 	}
 	
 	/**
