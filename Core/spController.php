@@ -75,7 +75,7 @@ class spController {
 	 */
 	public function __set($name, $value)
 	{
-		if(TRUE == $GLOBALS['G_SP']['view']['enabled']){
+		if(TRUE == $GLOBALS['G_SP']['view']['enabled'] && false !== $value){
 			$this->v->engine->assign(array($name=>$value));
 		}
 		$this->__template_vals[$name] = $value;
