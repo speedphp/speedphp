@@ -3,7 +3,7 @@
 // SpeedPHP中文PHP框架, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
-define('SP_VERSION', '3.0.32.2'); // 当前框架版本
+define('SP_VERSION', '3.0.73.2'); // 当前框架版本
 
 /**
  * spCore
@@ -48,8 +48,6 @@ if('' == $GLOBALS['G_SP']['url']["url_path_base"]){
 		$GLOBALS['G_SP']['url']["url_path_base"] = $_SERVER['PHP_SELF'];
 	elseif (isset($_SERVER['ORIG_SCRIPT_NAME']) && basename($_SERVER['ORIG_SCRIPT_NAME']) === basename($_SERVER['SCRIPT_FILENAME']))
 		$GLOBALS['G_SP']['url']["url_path_base"] = $_SERVER['ORIG_SCRIPT_NAME'];
-}else{
-	$GLOBALS['G_SP']['url']["url_path_base"] = '/index.php';
 }
 
 // 在使用PATH_INFO的情况下，对路由进行预处理
