@@ -1,47 +1,47 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * spModel ç³»ç»Ÿæ¨¡å‹ç±»ï¼Œæ‰€æœ‰æ¨¡å‹ç±»çš„çˆ¶ç±» åº”ç”¨ç¨‹åºä¸­çš„æ¯ä¸ªæ¨¡å‹ç±»éƒ½åº”ç»§æ‰¿äºspModelã€‚
+ * spModel ÏµÍ³Ä£ĞÍÀà£¬ËùÓĞÄ£ĞÍÀàµÄ¸¸Àà Ó¦ÓÃ³ÌĞòÖĞµÄÃ¿¸öÄ£ĞÍÀà¶¼Ó¦¼Ì³ĞÓÚspModel¡£
  */
 class spModel {
 	/**
-	 * ä¾›æ£€éªŒå€¼çš„è§„åˆ™ä¸è¿”å›ä¿¡æ¯
+	 * ¹©¼ìÑéÖµµÄ¹æÔòÓë·µ»ØĞÅÏ¢
 	 */
 	public $verifier = null;
 	
 	/**
-	 * å¢åŠ çš„è‡ªå®šä¹‰éªŒè¯å‡½æ•°
+	 * Ôö¼ÓµÄ×Ô¶¨ÒåÑéÖ¤º¯Êı
 	 */
 	public $addrules = array();
 	/**
-	 * è¡¨ä¸»é”®
+	 * ±íÖ÷¼ü
 	 */
 	public $pk;
 	/**
-	 * è¡¨åç§°
+	 * ±íÃû³Æ
 	 */
 	public $table;
 
 	/**
-	 * å…³è”æè¿°
+	 * ¹ØÁªÃèÊö
 	 */
 	public $linker = null;
 	
 	/**
-	 * è¡¨å…¨å
+	 * ±íÈ«Ãû
 	 */
 	public $tbl_name = null;
 	
 	/**
-	 * æ•°æ®é©±åŠ¨ç¨‹åº
+	 * Êı¾İÇı¶¯³ÌĞò
 	 */
 	public $_db;
 
 	/**
-	 * æ„é€ å‡½æ•°
+	 * ¹¹Ôìº¯Êı
 	 */
 	public function __construct()
 	{
@@ -53,12 +53,12 @@ class spModel {
 	}
 
 	/**
-	 * ä»æ•°æ®è¡¨ä¸­æŸ¥æ‰¾ä¸€æ¡è®°å½•
+	 * ´ÓÊı¾İ±íÖĞ²éÕÒÒ»Ìõ¼ÇÂ¼
 	 *
-	 * @param conditions    æŸ¥æ‰¾æ¡ä»¶ï¼Œæ•°ç»„array("å­—æ®µå"=>"æŸ¥æ‰¾å€¼")æˆ–å­—ç¬¦ä¸²ï¼Œ
-	 * è¯·æ³¨æ„åœ¨ä½¿ç”¨å­—ç¬¦ä¸²æ—¶å°†éœ€è¦å¼€å‘è€…è‡ªè¡Œä½¿ç”¨escapeæ¥å¯¹è¾“å…¥å€¼è¿›è¡Œè¿‡æ»¤
-	 * @param sort    æ’åºï¼Œç­‰åŒäºâ€œORDER BY â€
-	 * @param fields    è¿”å›çš„å­—æ®µèŒƒå›´ï¼Œé»˜è®¤ä¸ºè¿”å›å…¨éƒ¨å­—æ®µçš„å€¼
+	 * @param conditions    ²éÕÒÌõ¼ş£¬Êı×éarray("×Ö¶ÎÃû"=>"²éÕÒÖµ")»ò×Ö·û´®£¬
+	 * Çë×¢ÒâÔÚÊ¹ÓÃ×Ö·û´®Ê±½«ĞèÒª¿ª·¢Õß×ÔĞĞÊ¹ÓÃescapeÀ´¶ÔÊäÈëÖµ½øĞĞ¹ıÂË
+	 * @param sort    ÅÅĞò£¬µÈÍ¬ÓÚ¡°ORDER BY ¡±
+	 * @param fields    ·µ»ØµÄ×Ö¶Î·¶Î§£¬Ä¬ÈÏÎª·µ»ØÈ«²¿×Ö¶ÎµÄÖµ
 	 */
 	public function find($conditions = null, $sort = null, $fields = null)
 	{
@@ -70,14 +70,14 @@ class spModel {
 	}
 	
 	/**
-	 * ä»æ•°æ®è¡¨ä¸­æŸ¥æ‰¾è®°å½•
+	 * ´ÓÊı¾İ±íÖĞ²éÕÒ¼ÇÂ¼
 	 *
-	 * @param conditions    æŸ¥æ‰¾æ¡ä»¶ï¼Œæ•°ç»„array("å­—æ®µå"=>"æŸ¥æ‰¾å€¼")æˆ–å­—ç¬¦ä¸²ï¼Œ
-	 * è¯·æ³¨æ„åœ¨ä½¿ç”¨å­—ç¬¦ä¸²æ—¶å°†éœ€è¦å¼€å‘è€…è‡ªè¡Œä½¿ç”¨escapeæ¥å¯¹è¾“å…¥å€¼è¿›è¡Œè¿‡æ»¤
-	 * @param sort    æ’åºï¼Œç­‰åŒäºâ€œORDER BY â€
-	 * @param fields    è¿”å›çš„å­—æ®µèŒƒå›´ï¼Œé»˜è®¤ä¸ºè¿”å›å…¨éƒ¨å­—æ®µçš„å€¼
-	 * @param limit    è¿”å›çš„ç»“æœæ•°é‡é™åˆ¶ï¼Œç­‰åŒäºâ€œLIMIT â€ï¼Œå¦‚$limit = " 3, 5"ï¼Œå³æ˜¯ä»ç¬¬3æ¡è®°å½•ï¼ˆä»0å¼€å§‹è®¡ç®—ï¼‰å¼€å§‹è·å–ï¼Œå…±è·å–5æ¡è®°å½•
-	 *                 å¦‚æœlimitå€¼åªæœ‰ä¸€ä¸ªæ•°å­—ï¼Œåˆ™æ˜¯æŒ‡ä»£ä»0æ¡è®°å½•å¼€å§‹ã€‚
+	 * @param conditions    ²éÕÒÌõ¼ş£¬Êı×éarray("×Ö¶ÎÃû"=>"²éÕÒÖµ")»ò×Ö·û´®£¬
+	 * Çë×¢ÒâÔÚÊ¹ÓÃ×Ö·û´®Ê±½«ĞèÒª¿ª·¢Õß×ÔĞĞÊ¹ÓÃescapeÀ´¶ÔÊäÈëÖµ½øĞĞ¹ıÂË
+	 * @param sort    ÅÅĞò£¬µÈÍ¬ÓÚ¡°ORDER BY ¡±
+	 * @param fields    ·µ»ØµÄ×Ö¶Î·¶Î§£¬Ä¬ÈÏÎª·µ»ØÈ«²¿×Ö¶ÎµÄÖµ
+	 * @param limit    ·µ»ØµÄ½á¹ûÊıÁ¿ÏŞÖÆ£¬µÈÍ¬ÓÚ¡°LIMIT ¡±£¬Èç$limit = " 3, 5"£¬¼´ÊÇ´ÓµÚ3Ìõ¼ÇÂ¼£¨´Ó0¿ªÊ¼¼ÆËã£©¿ªÊ¼»ñÈ¡£¬¹²»ñÈ¡5Ìõ¼ÇÂ¼
+	 *                 Èç¹ûlimitÖµÖ»ÓĞÒ»¸öÊı×Ö£¬ÔòÊÇÖ¸´ú´Ó0Ìõ¼ÇÂ¼¿ªÊ¼¡£
 	 */
 	public function findAll($conditions = null, $sort = null, $fields = null, $limit = null)
 	{
@@ -103,21 +103,21 @@ class spModel {
 		return $this->_db->getArray($sql);
 	}
 	/**
-	 * è¿‡æ»¤è½¬ä¹‰å­—ç¬¦
+	 * ¹ıÂË×ªÒå×Ö·û
 	 *
-	 * @param value éœ€è¦è¿›è¡Œè¿‡æ»¤çš„å€¼
+	 * @param value ĞèÒª½øĞĞ¹ıÂËµÄÖµ
 	 */
 	public function escape($value, $quotes = FALSE)
 	{
 		return $this->_db->__val_escape($value, $quotes);
 	}
-	// __val_escapeæ˜¯valçš„åˆ«åï¼Œå‘å‰å…¼å®¹
+	// __val_escapeÊÇvalµÄ±ğÃû£¬ÏòÇ°¼æÈİ
 	public function __val_escape($value, $quotes = FALSE){return $this->escape($value, $quotes);}
 	
 	/**
-	 * åœ¨æ•°æ®è¡¨ä¸­æ–°å¢ä¸€è¡Œæ•°æ®
+	 * ÔÚÊı¾İ±íÖĞĞÂÔöÒ»ĞĞÊı¾İ
 	 *
-	 * @param row æ•°ç»„å½¢å¼ï¼Œæ•°ç»„çš„é”®æ˜¯æ•°æ®è¡¨ä¸­çš„å­—æ®µåï¼Œé”®å¯¹åº”çš„å€¼æ˜¯éœ€è¦æ–°å¢çš„æ•°æ®ã€‚
+	 * @param row Êı×éĞÎÊ½£¬Êı×éµÄ¼üÊÇÊı¾İ±íÖĞµÄ×Ö¶ÎÃû£¬¼ü¶ÔÓ¦µÄÖµÊÇĞèÒªĞÂÔöµÄÊı¾İ¡£
 	 */
 	public function create($row)
 	{
@@ -132,7 +132,7 @@ class spModel {
 		$val = join(',', $vals);
 
 		$sql = "INSERT INTO {$this->tbl_name} ({$col}) VALUES ({$val})";
-		if( FALSE != $this->_db->exec($sql) ){ // è·å–å½“å‰æ–°å¢çš„ID
+		if( FALSE != $this->_db->exec($sql) ){ // »ñÈ¡µ±Ç°ĞÂÔöµÄID
 			if( $newinserid = $this->_db->newinsertid() ){
 				return $newinserid;
 			}else{
@@ -143,9 +143,9 @@ class spModel {
 	}
 
 	/**
-	 * åœ¨æ•°æ®è¡¨ä¸­æ–°å¢å¤šæ¡è®°å½•
+	 * ÔÚÊı¾İ±íÖĞĞÂÔö¶àÌõ¼ÇÂ¼
 	 *
-	 * @param rows æ•°ç»„å½¢å¼ï¼Œæ¯é¡¹å‡ä¸ºcreateçš„$rowçš„ä¸€ä¸ªæ•°ç»„
+	 * @param rows Êı×éĞÎÊ½£¬Ã¿Ïî¾ùÎªcreateµÄ$rowµÄÒ»¸öÊı×é
 	 */
 	public function createAll($rows)
 	{
@@ -153,9 +153,9 @@ class spModel {
 	}
 
 	/**
-	 * æŒ‰æ¡ä»¶åˆ é™¤è®°å½•
+	 * °´Ìõ¼şÉ¾³ı¼ÇÂ¼
 	 *
-	 * @param conditions æ•°ç»„å½¢å¼ï¼ŒæŸ¥æ‰¾æ¡ä»¶ï¼Œæ­¤å‚æ•°çš„æ ¼å¼ç”¨æ³•ä¸find/findAllçš„æŸ¥æ‰¾æ¡ä»¶å‚æ•°æ˜¯ç›¸åŒçš„ã€‚
+	 * @param conditions Êı×éĞÎÊ½£¬²éÕÒÌõ¼ş£¬´Ë²ÎÊıµÄ¸ñÊ½ÓÃ·¨Óëfind/findAllµÄ²éÕÒÌõ¼ş²ÎÊıÊÇÏàÍ¬µÄ¡£
 	 */
 	public function delete($conditions)
 	{
@@ -175,10 +175,10 @@ class spModel {
 	}
 
 	/**
-	 * æŒ‰å­—æ®µå€¼æŸ¥æ‰¾ä¸€æ¡è®°å½•
+	 * °´×Ö¶ÎÖµ²éÕÒÒ»Ìõ¼ÇÂ¼
 	 *
-	 * @param field å­—ç¬¦ä¸²ï¼Œå¯¹åº”æ•°æ®è¡¨ä¸­çš„å­—æ®µå
-	 * @param value å­—ç¬¦ä¸²ï¼Œå¯¹åº”çš„å€¼
+	 * @param field ×Ö·û´®£¬¶ÔÓ¦Êı¾İ±íÖĞµÄ×Ö¶ÎÃû
+	 * @param value ×Ö·û´®£¬¶ÔÓ¦µÄÖµ
 	 */
 	public function findBy($field, $value)
 	{
@@ -186,11 +186,11 @@ class spModel {
 	}
 
 	/**
-	 * æŒ‰å­—æ®µå€¼ä¿®æ”¹ä¸€æ¡è®°å½•
+	 * °´×Ö¶ÎÖµĞŞ¸ÄÒ»Ìõ¼ÇÂ¼
 	 *
-	 * @param conditions æ•°ç»„å½¢å¼ï¼ŒæŸ¥æ‰¾æ¡ä»¶ï¼Œæ­¤å‚æ•°çš„æ ¼å¼ç”¨æ³•ä¸find/findAllçš„æŸ¥æ‰¾æ¡ä»¶å‚æ•°æ˜¯ç›¸åŒçš„ã€‚
-	 * @param field å­—ç¬¦ä¸²ï¼Œå¯¹åº”æ•°æ®è¡¨ä¸­çš„éœ€è¦ä¿®æ”¹çš„å­—æ®µå
-	 * @param value å­—ç¬¦ä¸²ï¼Œæ–°å€¼
+	 * @param conditions Êı×éĞÎÊ½£¬²éÕÒÌõ¼ş£¬´Ë²ÎÊıµÄ¸ñÊ½ÓÃ·¨Óëfind/findAllµÄ²éÕÒÌõ¼ş²ÎÊıÊÇÏàÍ¬µÄ¡£
+	 * @param field ×Ö·û´®£¬¶ÔÓ¦Êı¾İ±íÖĞµÄĞèÒªĞŞ¸ÄµÄ×Ö¶ÎÃû
+	 * @param value ×Ö·û´®£¬ĞÂÖµ
 	 */
 	public function updateField($conditions, $field, $value)
 	{
@@ -198,9 +198,9 @@ class spModel {
 	}
 
 	/**
-	 * ä½¿ç”¨SQLè¯­å¥è¿›è¡ŒæŸ¥æ‰¾æ“ä½œï¼Œç­‰äºè¿›è¡Œfindï¼ŒfindAllç­‰æ“ä½œ
+	 * Ê¹ÓÃSQLÓï¾ä½øĞĞ²éÕÒ²Ù×÷£¬µÈÓÚ½øĞĞfind£¬findAllµÈ²Ù×÷
 	 *
-	 * @param sql å­—ç¬¦ä¸²ï¼Œéœ€è¦è¿›è¡ŒæŸ¥æ‰¾çš„SQLè¯­å¥
+	 * @param sql ×Ö·û´®£¬ĞèÒª½øĞĞ²éÕÒµÄSQLÓï¾ä
 	 */
 	public function findSql($sql)
 	{
@@ -208,19 +208,19 @@ class spModel {
 	}
 
 	/**
-	 * æ‰§è¡ŒSQLè¯­å¥ï¼Œç›¸ç­‰äºæ‰§è¡Œæ–°å¢ï¼Œä¿®æ”¹ï¼Œåˆ é™¤ç­‰æ“ä½œã€‚
+	 * Ö´ĞĞSQLÓï¾ä£¬ÏàµÈÓÚÖ´ĞĞĞÂÔö£¬ĞŞ¸Ä£¬É¾³ıµÈ²Ù×÷¡£
 	 *
-	 * @param sql å­—ç¬¦ä¸²ï¼Œéœ€è¦æ‰§è¡Œçš„SQLè¯­å¥
+	 * @param sql ×Ö·û´®£¬ĞèÒªÖ´ĞĞµÄSQLÓï¾ä
 	 */
 	public function runSql($sql)
 	{
 		return $this->_db->exec($sql);
 	}
-	// queryæ˜¯runSqlçš„åˆ«åï¼Œå‘å‰å…¼å®¹
+	// queryÊÇrunSqlµÄ±ğÃû£¬ÏòÇ°¼æÈİ
 	public function query($sql){return $this->runSql($sql);}
 
 	/**
-	 * è¿”å›æœ€åæ‰§è¡Œçš„SQLè¯­å¥ä¾›åˆ†æ
+	 * ·µ»Ø×îºóÖ´ĞĞµÄSQLÓï¾ä¹©·ÖÎö
 	 */
 	public function dumpSql()
 	{
@@ -228,17 +228,17 @@ class spModel {
 	}
 	
 	/**
-	 * è¿”å›ä¸Šæ¬¡æ‰§è¡Œupdate,create,delete,execçš„å½±å“è¡Œæ•°
+	 * ·µ»ØÉÏ´ÎÖ´ĞĞupdate,create,delete,execµÄÓ°ÏìĞĞÊı
 	 */
 	public function affectedRows()
 	{
 		return $this->_db->affected_rows();
 	}
 	/**
-	 * è®¡ç®—ç¬¦åˆæ¡ä»¶çš„è®°å½•æ•°é‡
+	 * ¼ÆËã·ûºÏÌõ¼şµÄ¼ÇÂ¼ÊıÁ¿
 	 *
-	 * @param conditions æŸ¥æ‰¾æ¡ä»¶ï¼Œæ•°ç»„array("å­—æ®µå"=>"æŸ¥æ‰¾å€¼")æˆ–å­—ç¬¦ä¸²ï¼Œ
-	 * è¯·æ³¨æ„åœ¨ä½¿ç”¨å­—ç¬¦ä¸²æ—¶å°†éœ€è¦å¼€å‘è€…è‡ªè¡Œä½¿ç”¨escapeæ¥å¯¹è¾“å…¥å€¼è¿›è¡Œè¿‡æ»¤
+	 * @param conditions ²éÕÒÌõ¼ş£¬Êı×éarray("×Ö¶ÎÃû"=>"²éÕÒÖµ")»ò×Ö·û´®£¬
+	 * Çë×¢ÒâÔÚÊ¹ÓÃ×Ö·û´®Ê±½«ĞèÒª¿ª·¢Õß×ÔĞĞÊ¹ÓÃescapeÀ´¶ÔÊäÈëÖµ½øĞĞ¹ıÂË
 	 */
 	public function findCount($conditions = null)
 	{
@@ -259,23 +259,23 @@ class spModel {
 	}
 
 	/**
-	 * é­”æœ¯å‡½æ•°ï¼Œæ‰§è¡Œæ¨¡å‹æ‰©å±•ç±»çš„è‡ªåŠ¨åŠ è½½åŠä½¿ç”¨
+	 * Ä§Êõº¯Êı£¬Ö´ĞĞÄ£ĞÍÀ©Õ¹ÀàµÄ×Ô¶¯¼ÓÔØ¼°Ê¹ÓÃ
 	 */
 	public function __call($name, $args)
 	{
 		if(in_array($name, $GLOBALS['G_SP']["auto_load_model"])){
 			return spClass($name)->__input($this, $args);
 		}elseif(!method_exists( $this, $name )){
-			spError("æ–¹æ³• {$name} æœªå®šä¹‰");
+			spError("·½·¨ {$name} Î´¶¨Òå");
 		}
 	}
 
 	/**
-	 * ä¿®æ”¹æ•°æ®ï¼Œè¯¥å‡½æ•°å°†æ ¹æ®å‚æ•°ä¸­è®¾ç½®çš„æ¡ä»¶è€Œæ›´æ–°è¡¨ä¸­æ•°æ®
+	 * ĞŞ¸ÄÊı¾İ£¬¸Ãº¯Êı½«¸ù¾İ²ÎÊıÖĞÉèÖÃµÄÌõ¼ş¶ø¸üĞÂ±íÖĞÊı¾İ
 	 * 
-	 * @param conditions    æ•°ç»„å½¢å¼ï¼ŒæŸ¥æ‰¾æ¡ä»¶ï¼Œæ­¤å‚æ•°çš„æ ¼å¼ç”¨æ³•ä¸find/findAllçš„æŸ¥æ‰¾æ¡ä»¶å‚æ•°æ˜¯ç›¸åŒçš„ã€‚
-	 * @param row    æ•°ç»„å½¢å¼ï¼Œä¿®æ”¹çš„æ•°æ®ï¼Œ
-	 *  æ­¤å‚æ•°çš„æ ¼å¼ç”¨æ³•ä¸createçš„$rowæ˜¯ç›¸åŒçš„ã€‚åœ¨ç¬¦åˆæ¡ä»¶çš„è®°å½•ä¸­ï¼Œå°†å¯¹$rowè®¾ç½®çš„å­—æ®µçš„æ•°æ®è¿›è¡Œä¿®æ”¹ã€‚
+	 * @param conditions    Êı×éĞÎÊ½£¬²éÕÒÌõ¼ş£¬´Ë²ÎÊıµÄ¸ñÊ½ÓÃ·¨Óëfind/findAllµÄ²éÕÒÌõ¼ş²ÎÊıÊÇÏàÍ¬µÄ¡£
+	 * @param row    Êı×éĞÎÊ½£¬ĞŞ¸ÄµÄÊı¾İ£¬
+	 *  ´Ë²ÎÊıµÄ¸ñÊ½ÓÃ·¨ÓëcreateµÄ$rowÊÇÏàÍ¬µÄ¡£ÔÚ·ûºÏÌõ¼şµÄ¼ÇÂ¼ÖĞ£¬½«¶Ô$rowÉèÖÃµÄ×Ö¶ÎµÄÊı¾İ½øĞĞĞŞ¸Ä¡£
 	 */
 	public function update($conditions, $row)
 	{
@@ -302,27 +302,27 @@ class spModel {
 	}
 	
 	/**
-	 * æ›¿æ¢æ•°æ®ï¼Œæ ¹æ®æ¡ä»¶æ›¿æ¢å­˜åœ¨çš„è®°å½•ï¼Œå¦‚è®°å½•ä¸å­˜åœ¨ï¼Œåˆ™å°†æ¡ä»¶ä¸æ›¿æ¢æ•°æ®ç›¸åŠ å¹¶æ–°å¢ä¸€æ¡è®°å½•ã€‚
+	 * Ìæ»»Êı¾İ£¬¸ù¾İÌõ¼şÌæ»»´æÔÚµÄ¼ÇÂ¼£¬Èç¼ÇÂ¼²»´æÔÚ£¬Ôò½«Ìõ¼şÓëÌæ»»Êı¾İÏà¼Ó²¢ĞÂÔöÒ»Ìõ¼ÇÂ¼¡£
 	 * 
-	 * @param conditions    æ•°ç»„å½¢å¼ï¼ŒæŸ¥æ‰¾æ¡ä»¶ï¼Œè¯·æ³¨æ„ï¼Œä»…èƒ½ä½¿ç”¨æ•°ç»„ä½œä¸ºè¯¥æ¡ä»¶ï¼
-	 * @param row    æ•°ç»„å½¢å¼ï¼Œä¿®æ”¹çš„æ•°æ®
+	 * @param conditions    Êı×éĞÎÊ½£¬²éÕÒÌõ¼ş£¬Çë×¢Òâ£¬½öÄÜÊ¹ÓÃÊı×é×÷Îª¸ÃÌõ¼ş£¡
+	 * @param row    Êı×éĞÎÊ½£¬ĞŞ¸ÄµÄÊı¾İ
 	 */
 	public function replace($conditions, $row)
 	{
 		if( $this->find($conditions) ){
 			return $this->update($conditions, $row);
 		}else{
-			if( !is_array($conditions) )spError('replaceæ–¹æ³•çš„æ¡ä»¶åŠ¡å¿…æ˜¯æ•°ç»„å½¢å¼ï¼');
+			if( !is_array($conditions) )spError('replace·½·¨µÄÌõ¼şÎñ±ØÊÇÊı×éĞÎÊ½£¡');
 			$rows = spConfigReady($conditions, $row);
 			return $this->create($rows);
 		}
 	}
 	
 	/**
-	 * ä¸ºè®¾å®šçš„å­—æ®µå€¼å¢åŠ 
-	 * @param conditions    æ•°ç»„å½¢å¼ï¼ŒæŸ¥æ‰¾æ¡ä»¶ï¼Œæ­¤å‚æ•°çš„æ ¼å¼ç”¨æ³•ä¸find/findAllçš„æŸ¥æ‰¾æ¡ä»¶å‚æ•°æ˜¯ç›¸åŒçš„ã€‚
-	 * @param field    å­—ç¬¦ä¸²ï¼Œéœ€è¦å¢åŠ çš„å­—æ®µåç§°ï¼Œè¯¥å­—æ®µåŠ¡å¿…æ˜¯æ•°å€¼ç±»å‹
-	 * @param optval    å¢åŠ çš„å€¼
+	 * ÎªÉè¶¨µÄ×Ö¶ÎÖµÔö¼Ó
+	 * @param conditions    Êı×éĞÎÊ½£¬²éÕÒÌõ¼ş£¬´Ë²ÎÊıµÄ¸ñÊ½ÓÃ·¨Óëfind/findAllµÄ²éÕÒÌõ¼ş²ÎÊıÊÇÏàÍ¬µÄ¡£
+	 * @param field    ×Ö·û´®£¬ĞèÒªÔö¼ÓµÄ×Ö¶ÎÃû³Æ£¬¸Ã×Ö¶ÎÎñ±ØÊÇÊıÖµÀàĞÍ
+	 * @param optval    Ôö¼ÓµÄÖµ
 	 */
 	public function incrField($conditions, $field, $optval = 1)
 	{
@@ -343,10 +343,10 @@ class spModel {
 	}
 	
 	/**
-	 * ä¸ºè®¾å®šçš„å­—æ®µå€¼å‡å°‘
-	 * @param conditions    æ•°ç»„å½¢å¼ï¼ŒæŸ¥æ‰¾æ¡ä»¶ï¼Œæ­¤å‚æ•°çš„æ ¼å¼ç”¨æ³•ä¸find/findAllçš„æŸ¥æ‰¾æ¡ä»¶å‚æ•°æ˜¯ç›¸åŒçš„ã€‚
-	 * @param field    å­—ç¬¦ä¸²ï¼Œéœ€è¦å‡å°‘çš„å­—æ®µåç§°ï¼Œè¯¥å­—æ®µåŠ¡å¿…æ˜¯æ•°å€¼ç±»å‹
-	 * @param optval    å‡å°‘çš„å€¼
+	 * ÎªÉè¶¨µÄ×Ö¶ÎÖµ¼õÉÙ
+	 * @param conditions    Êı×éĞÎÊ½£¬²éÕÒÌõ¼ş£¬´Ë²ÎÊıµÄ¸ñÊ½ÓÃ·¨Óëfind/findAllµÄ²éÕÒÌõ¼ş²ÎÊıÊÇÏàÍ¬µÄ¡£
+	 * @param field    ×Ö·û´®£¬ĞèÒª¼õÉÙµÄ×Ö¶ÎÃû³Æ£¬¸Ã×Ö¶ÎÎñ±ØÊÇÊıÖµÀàĞÍ
+	 * @param optval    ¼õÉÙµÄÖµ
 	 */
 	public function decrField($conditions, $field, $optval = 1)
 	{
@@ -354,9 +354,9 @@ class spModel {
 	}
 
 	/**
-	 * æŒ‰ç»™å®šçš„æ•°æ®è¡¨çš„ä¸»é”®åˆ é™¤è®°å½•
+	 * °´¸ø¶¨µÄÊı¾İ±íµÄÖ÷¼üÉ¾³ı¼ÇÂ¼
 	 *
-	 * @param pk    å­—ç¬¦ä¸²æˆ–æ•°å­—ï¼Œæ•°æ®è¡¨ä¸»é”®çš„å€¼ã€‚
+	 * @param pk    ×Ö·û´®»òÊı×Ö£¬Êı¾İ±íÖ÷¼üµÄÖµ¡£
 	 */
 	public function deleteByPk($pk)
 	{
@@ -364,8 +364,8 @@ class spModel {
 	}
 
 	/**
-	 * æŒ‰è¡¨å­—æ®µè°ƒæ•´é€‚åˆçš„å­—æ®µ
-	 * @param rows    è¾“å…¥çš„è¡¨å­—æ®µ
+	 * °´±í×Ö¶Îµ÷ÕûÊÊºÏµÄ×Ö¶Î
+	 * @param rows    ÊäÈëµÄ±í×Ö¶Î
 	 */
 	private function __prepera_format($rows)
 	{
@@ -382,23 +382,23 @@ class spModel {
 
 /**
  * spPager
- * æ•°æ®åˆ†é¡µç¨‹åº
+ * Êı¾İ·ÖÒ³³ÌĞò
  */
 class spPager {
 	/**
-	 * æ¨¡å‹å¯¹è±¡
+	 * Ä£ĞÍ¶ÔÏó
 	 */
 	private $model_obj = null;
 	/**
-	 * é¡µç æ•°æ®
+	 * Ò³ÂëÊı¾İ
 	 */
 	private $pageData = null;
 	/** 
-	 * è°ƒç”¨æ—¶è¾“å…¥çš„å‚æ•°
+	 * µ÷ÓÃÊ±ÊäÈëµÄ²ÎÊı
 	 */
 	private $input_args = null;
 	/** 
-	 * å‡½æ•°å¼ä½¿ç”¨æ¨¡å‹è¾…åŠ©ç±»çš„è¾“å…¥å‡½æ•°
+	 * º¯ÊıÊ½Ê¹ÓÃÄ£ĞÍ¸¨ÖúÀàµÄÊäÈëº¯Êı
 	 */
     public function __input(& $obj, $args){
 		$this->model_obj = $obj;
@@ -406,7 +406,7 @@ class spPager {
 		return $this;
 	}
 	/** 
-	 * é­”æœ¯å‡½æ•°ï¼Œæ”¯æŒå¤šé‡å‡½æ•°å¼ä½¿ç”¨ç±»çš„æ–¹æ³•
+	 * Ä§Êõº¯Êı£¬Ö§³Ö¶àÖØº¯ÊıÊ½Ê¹ÓÃÀàµÄ·½·¨
 	 */
 	public function __call($func_name, $func_args){
 		if( ( 'findAll' == $func_name || 'findSql' == $func_name ) && 0 != $this->input_args[0]){
@@ -418,14 +418,14 @@ class spPager {
 		}
 	}
 	/** 
-	 * è·å–åˆ†é¡µæ•°æ®
+	 * »ñÈ¡·ÖÒ³Êı¾İ
 	 */
 	public function getPager(){
 		return $this->pageData;
 	}
 	
 	/** 
-	 * ç”Ÿæˆåˆ†é¡µæ•°æ®
+	 * Éú³É·ÖÒ³Êı¾İ
 	 */
 	private function runpager($func_name, $func_args){
 		$this->pageData = null;
@@ -439,17 +439,17 @@ class spPager {
 		}
 		if($total_count > $pageSize){
 			$total_page = ceil( $total_count / $pageSize );
-			$page = min(intval(max($page, 1)), $total_count); // å¯¹é¡µç è¿›è¡Œè§„èŒƒè¿ç®—
+			$page = min(intval(max($page, 1)), $total_count); // ¶ÔÒ³Âë½øĞĞ¹æ·¶ÔËËã
 			$this->pageData = array(
-				"total_count" => $total_count,                                 // æ€»è®°å½•æ•°
-				"page_size"   => $pageSize,                                    // åˆ†é¡µå¤§å°
-				"total_page"  => $total_page,                                  // æ€»é¡µæ•°
-				"first_page"  => 1,                                            // ç¬¬ä¸€é¡µ
-				"prev_page"   => ( ( 1 == $page ) ? 1 : ($page - 1) ),         // ä¸Šä¸€é¡µ
-				"next_page"   => ( ( $page == $total_page ) ? $total_page : ($page + 1)),     // ä¸‹ä¸€é¡µ
-				"last_page"   => $total_page,                                  // æœ€åä¸€é¡µ
-				"current_page"=> $page,                                        // å½“å‰é¡µ
-				"all_pages"   => array()	                                   // å…¨éƒ¨é¡µç 
+				"total_count" => $total_count,                                 // ×Ü¼ÇÂ¼Êı
+				"page_size"   => $pageSize,                                    // ·ÖÒ³´óĞ¡
+				"total_page"  => $total_page,                                  // ×ÜÒ³Êı
+				"first_page"  => 1,                                            // µÚÒ»Ò³
+				"prev_page"   => ( ( 1 == $page ) ? 1 : ($page - 1) ),         // ÉÏÒ»Ò³
+				"next_page"   => ( ( $page == $total_page ) ? $total_page : ($page + 1)),     // ÏÂÒ»Ò³
+				"last_page"   => $total_page,                                  // ×îºóÒ»Ò³
+				"current_page"=> $page,                                        // µ±Ç°Ò³
+				"all_pages"   => array()	                                   // È«²¿Ò³Âë
 			);
 			for($i=1; $i <= $total_page; $i++)$this->pageData['all_pages'][] = $i;
 			$limit = ($page - 1) * $pageSize . "," . $pageSize;
@@ -465,31 +465,31 @@ class spPager {
 
 /**
  * spVerifier
- * æ•°æ®éªŒè¯ç¨‹åº
+ * Êı¾İÑéÖ¤³ÌĞò
  */
 class spVerifier {
 
 	/** 
-	 * é™„åŠ çš„æ£€éªŒè§„åˆ™å‡½æ•°
+	 * ¸½¼ÓµÄ¼ìÑé¹æÔòº¯Êı
 	 */
 	private $add_rules = null;
 	
 	/** 
-	 * éªŒè¯è§„åˆ™
+	 * ÑéÖ¤¹æÔò
 	 */
 	private $verifier = null;
 	
 	/** 
-	 * éªŒè¯æ—¶è¿”å›çš„æç¤ºä¿¡æ¯
+	 * ÑéÖ¤Ê±·µ»ØµÄÌáÊ¾ĞÅÏ¢
 	 */
 	private $messages = null;
 	
 	/** 
-	 * å¾…éªŒè¯å­—æ®µ
+	 * ´ıÑéÖ¤×Ö¶Î
 	 */
 	private $checkvalues = null;
 	/** 
-	 * å‡½æ•°å¼ä½¿ç”¨æ¨¡å‹è¾…åŠ©ç±»çš„è¾“å…¥å‡½æ•°
+	 * º¯ÊıÊ½Ê¹ÓÃÄ£ĞÍ¸¨ÖúÀàµÄÊäÈëº¯Êı
 	 */
     public function __input(& $obj, $args){
 		$this->verifier = (null != $obj->verifier) ? $obj->verifier : array();
@@ -498,25 +498,25 @@ class spVerifier {
 			$this->verifier["messages"] = isset($args[1]["messages"]) ? ( $this->verifier["messages"] + $args[1]["messages"] ) : $this->verifier["messages"];
 		}
 		if(is_array($obj->addrules) && !empty($obj->addrules) ){foreach($obj->addrules as $addrule => $addveri)$this->addrules($addrule, $addveri);}
-		if(empty($this->verifier["rules"]))spError("æ— å¯¹åº”çš„éªŒè¯è§„åˆ™ï¼");
-		return is_array($args[0]) ? $this->checkrules($args[0]) : TRUE; // TRUEä¸ºä¸é€šè¿‡éªŒè¯
+		if(empty($this->verifier["rules"]))spError("ÎŞ¶ÔÓ¦µÄÑéÖ¤¹æÔò£¡");
+		return is_array($args[0]) ? $this->checkrules($args[0]) : TRUE; // TRUEÎª²»Í¨¹ıÑéÖ¤
 	}
 	
 	/** 
-	 * åŠ å…¥é™„åŠ çš„éªŒè¯è§„åˆ™
+	 * ¼ÓÈë¸½¼ÓµÄÑéÖ¤¹æÔò
 	 * 
-	 * @param rule_name    éªŒè¯è§„åˆ™åç§°
-	 * @param checker    éªŒè¯å™¨ï¼ŒéªŒè¯å™¨å¯ä»¥æœ‰ä¸¤ç§æ–¹å¼ï¼š
-	 * ç¬¬ä¸€ç§æ˜¯  'éªŒè¯å‡½æ•°å'ï¼Œè¿™æ˜¯å½“å‡½æ•°æ˜¯ä¸€ä¸ªå•çº¯çš„å‡½æ•°æ—¶ä½¿ç”¨
-	 * ç¬¬äºŒç§æ˜¯ array('ç±»å', 'æ–¹æ³•å‡½æ•°å')ï¼Œè¿™æ˜¯å½“å‡½æ•°æ˜¯ä¸€ä¸ªç±»çš„æŸä¸ªæ–¹æ³•å‡½æ•°æ—¶å€™ä½¿ç”¨ã€‚
+	 * @param rule_name    ÑéÖ¤¹æÔòÃû³Æ
+	 * @param checker    ÑéÖ¤Æ÷£¬ÑéÖ¤Æ÷¿ÉÒÔÓĞÁ½ÖÖ·½Ê½£º
+	 * µÚÒ»ÖÖÊÇ  'ÑéÖ¤º¯ÊıÃû'£¬ÕâÊÇµ±º¯ÊıÊÇÒ»¸öµ¥´¿µÄº¯ÊıÊ±Ê¹ÓÃ
+	 * µÚ¶şÖÖÊÇ array('ÀàÃû', '·½·¨º¯ÊıÃû')£¬ÕâÊÇµ±º¯ÊıÊÇÒ»¸öÀàµÄÄ³¸ö·½·¨º¯ÊıÊ±ºòÊ¹ÓÃ¡£
 	 */
 	public function addrules($rule_name, $checker){
 		$this->add_rules[$rule_name] = $checker;
 	}
 	/** 
-	 * æŒ‰è§„åˆ™éªŒè¯æ•°æ®
+	 * °´¹æÔòÑéÖ¤Êı¾İ
 	 * 
-	 * @param values    éªŒè¯å€¼
+	 * @param values    ÑéÖ¤Öµ
 	 */
 	private function checkrules($values){ 
 		$this->checkvalues = $values;
@@ -532,58 +532,58 @@ class spVerifier {
 						if(TRUE == spClass($this->add_rules[$rule][0])->{$this->add_rules[$rule][1]}($inputval, $rightval, $values))continue;
 					}
 				}else{
-					spError("æœªçŸ¥è§„åˆ™ï¼");
+					spError("Î´Öª¹æÔò£¡");
 				}
 				$this->messages[$rkey][] = (isset($this->verifier["messages"][$rkey][$rule])) ? $this->verifier["messages"][$rkey][$rule] : "{$rule}";
 			}
 		}
-		// è¿”å›FALSEåˆ™é€šè¿‡éªŒè¯ï¼Œè¿”å›æ•°ç»„åˆ™æœªèƒ½é€šè¿‡éªŒè¯ï¼Œè¿”å›çš„æ˜¯æç¤ºä¿¡æ¯ã€‚
+		// ·µ»ØFALSEÔòÍ¨¹ıÑéÖ¤£¬·µ»ØÊı×éÔòÎ´ÄÜÍ¨¹ıÑéÖ¤£¬·µ»ØµÄÊÇÌáÊ¾ĞÅÏ¢¡£
 		return (null == $this->messages) ? FALSE : $this->messages; 
 	}
 	/** 
-	 * å†…ç½®éªŒè¯å™¨ï¼Œæ£€æŸ¥å­—ç¬¦ä¸²éç©º
-	 * @param val    å¾…éªŒè¯å­—ç¬¦ä¸²
-	 * @param right    æ­£ç¡®å€¼
+	 * ÄÚÖÃÑéÖ¤Æ÷£¬¼ì²é×Ö·û´®·Ç¿Õ
+	 * @param val    ´ıÑéÖ¤×Ö·û´®
+	 * @param right    ÕıÈ·Öµ
 	 */
 	private function notnull($val, $right){return $right === ( isset($val) && !empty($val) && "" != $val );}
 	/** 
-	 * å†…ç½®éªŒè¯å™¨ï¼Œæ£€æŸ¥å­—ç¬¦ä¸²æ˜¯å¦å°äºæŒ‡å®šé•¿åº¦
-	 * @param val    å¾…éªŒè¯å­—ç¬¦ä¸²
-	 * @param right    æ­£ç¡®å€¼
+	 * ÄÚÖÃÑéÖ¤Æ÷£¬¼ì²é×Ö·û´®ÊÇ·ñĞ¡ÓÚÖ¸¶¨³¤¶È
+	 * @param val    ´ıÑéÖ¤×Ö·û´®
+	 * @param right    ÕıÈ·Öµ
 	 */
 	private function minlength($val, $right){return $this->cn_strlen($val) >= $right;}
 	/** 
-	 * å†…ç½®éªŒè¯å™¨ï¼Œæ£€æŸ¥å­—ç¬¦ä¸²æ˜¯å¦å¤§äºæŒ‡å®šé•¿åº¦
-	 * @param val    å¾…éªŒè¯å­—ç¬¦ä¸²
-	 * @param right    æ­£ç¡®å€¼
+	 * ÄÚÖÃÑéÖ¤Æ÷£¬¼ì²é×Ö·û´®ÊÇ·ñ´óÓÚÖ¸¶¨³¤¶È
+	 * @param val    ´ıÑéÖ¤×Ö·û´®
+	 * @param right    ÕıÈ·Öµ
 	 */
 	private function maxlength($val, $right){return $this->cn_strlen($val) <= $right;}
 	/** 
-	 * å†…ç½®éªŒè¯å™¨ï¼Œæ£€æŸ¥å­—ç¬¦ä¸²æ˜¯å¦ç­‰äºå¦ä¸€ä¸ªéªŒè¯å­—æ®µçš„å€¼
-	 * @param val    å¾…éªŒè¯å­—ç¬¦ä¸²
-	 * @param right    æ­£ç¡®å€¼
+	 * ÄÚÖÃÑéÖ¤Æ÷£¬¼ì²é×Ö·û´®ÊÇ·ñµÈÓÚÁíÒ»¸öÑéÖ¤×Ö¶ÎµÄÖµ
+	 * @param val    ´ıÑéÖ¤×Ö·û´®
+	 * @param right    ÕıÈ·Öµ
 	 */
 	private function equalto($val, $right){return $val == $this->checkvalues[$right];}
 	/** 
-	 * å†…ç½®éªŒè¯å™¨ï¼Œæ£€æŸ¥å­—ç¬¦ä¸²æ˜¯å¦æ­£ç¡®çš„æ—¶é—´æ ¼å¼
-	 * @param val    å¾…éªŒè¯å­—ç¬¦ä¸²
-	 * @param right    æ­£ç¡®å€¼
+	 * ÄÚÖÃÑéÖ¤Æ÷£¬¼ì²é×Ö·û´®ÊÇ·ñÕıÈ·µÄÊ±¼ä¸ñÊ½
+	 * @param val    ´ıÑéÖ¤×Ö·û´®
+	 * @param right    ÕıÈ·Öµ
 	 */
 	private function istime($val, $right){$test = @strtotime($val);return $right == ( $test !== -1 && $test !== false );}
 	/** 
-	 * å†…ç½®éªŒè¯å™¨ï¼Œæ£€æŸ¥å­—ç¬¦ä¸²æ˜¯å¦æ­£ç¡®çš„ç”µå­é‚®ä»¶æ ¼å¼
-	 * @param val    å¾…éªŒè¯å­—ç¬¦ä¸²
-	 * @param right    æ­£ç¡®å€¼
+	 * ÄÚÖÃÑéÖ¤Æ÷£¬¼ì²é×Ö·û´®ÊÇ·ñÕıÈ·µÄµç×ÓÓÊ¼ş¸ñÊ½
+	 * @param val    ´ıÑéÖ¤×Ö·û´®
+	 * @param right    ÕıÈ·Öµ
 	 */	
 	private function email($val, $right){
 		return $right == ( preg_match('/^[A-Za-z0-9]+([._\-\+]*[A-Za-z0-9]+)*@([A-Za-z0-9-]+\.)+[A-Za-z0-9]+$/', $val) != 0 );
 	}
 	/** 
-	 * è®¡ç®—å­—ç¬¦ä¸²é•¿åº¦ï¼Œæ”¯æŒåŒ…æ‹¬æ±‰å­—åœ¨å†…çš„å­—ç¬¦ä¸²
-	 * @param val    å¾…è®¡ç®—çš„å­—ç¬¦ä¸²
+	 * ¼ÆËã×Ö·û´®³¤¶È£¬Ö§³Ö°üÀ¨ºº×ÖÔÚÄÚµÄ×Ö·û´®
+	 * @param val    ´ı¼ÆËãµÄ×Ö·û´®
 	 */
 	public function cn_strlen($val){$i=0;$n=0;
-		while($i<strlen($val)){$clen = ( strlen("å¿«é€Ÿ") == 4 ) ? 2 : 3;
+		while($i<strlen($val)){$clen = ( strlen("¿ìËÙ") == 4 ) ? 2 : 3;
 			if(preg_match("/^[".chr(0xa1)."-".chr(0xff)."]+$/",$val[$i])){$i+=$clen;}else{$i+=1;}$n+=1;}
 		return $n;
 	}
@@ -591,26 +591,26 @@ class spVerifier {
 
 /**
  * spCache
- * å‡½æ•°å’Œæ•°æ®ç¼“å­˜å®ç°
+ * º¯ÊıºÍÊı¾İ»º´æÊµÏÖ
  */
 class spCache {
 	
 	/**
-	 * é»˜è®¤çš„æ•°æ®ç”Ÿå­˜æœŸ
+	 * Ä¬ÈÏµÄÊı¾İÉú´æÆÚ
 	 */
 	public $life_time = 3600;
 	
 	/**
-	 * æ¨¡å‹å¯¹è±¡
+	 * Ä£ĞÍ¶ÔÏó
 	 */
 	private $model_obj = null;
 	
 	/** 
-	 * è°ƒç”¨æ—¶è¾“å…¥çš„å‚æ•°
+	 * µ÷ÓÃÊ±ÊäÈëµÄ²ÎÊı
 	 */
 	private $input_args = null;
 	/** 
-	 * å‡½æ•°å¼ä½¿ç”¨æ¨¡å‹è¾…åŠ©ç±»çš„è¾“å…¥å‡½æ•°
+	 * º¯ÊıÊ½Ê¹ÓÃÄ£ĞÍ¸¨ÖúÀàµÄÊäÈëº¯Êı
 	 */
     public function __input(& $obj, $args){
 		$this->model_obj = $obj;
@@ -618,7 +618,7 @@ class spCache {
 		return $this;
 	}
 	/** 
-	 * é­”æœ¯å‡½æ•°ï¼Œæ”¯æŒå¤šé‡å‡½æ•°å¼ä½¿ç”¨ç±»çš„æ–¹æ³•
+	 * Ä§Êõº¯Êı£¬Ö§³Ö¶àÖØº¯ÊıÊ½Ê¹ÓÃÀàµÄ·½·¨
 	 */
 	public function __call($func_name, $func_args){
 		if( isset($this->input_args[0]) && -1 == $this->input_args[0] )return $this->clear($this->model_obj, $func_name, $func_args);
@@ -628,12 +628,12 @@ class spCache {
 		return $this->cache_obj($cache_id, call_user_func_array(array($this->model_obj, $func_name), $func_args), $this->input_args[0]);
 	}
 	/** 
-	 * æ‰§è¡ŒspModelå­ç±»å¯¹è±¡çš„æ–¹æ³•ï¼Œå¹¶å¯¹è¿”å›ç»“æœè¿›è¡Œç¼“å­˜ã€‚
+	 * Ö´ĞĞspModel×ÓÀà¶ÔÏóµÄ·½·¨£¬²¢¶Ô·µ»Ø½á¹û½øĞĞ»º´æ¡£
 	 *
-	 * @param obj    å¼•ç”¨çš„spModelå­ç±»å¯¹è±¡
-	 * @param func_name    éœ€è¦æ‰§è¡Œçš„å‡½æ•°åç§°
-	 * @param func_args    å‡½æ•°çš„å‚æ•°
-	 * @param life_time    ç¼“å­˜ç”Ÿå­˜æ—¶é—´
+	 * @param obj    ÒıÓÃµÄspModel×ÓÀà¶ÔÏó
+	 * @param func_name    ĞèÒªÖ´ĞĞµÄº¯ÊıÃû³Æ
+	 * @param func_args    º¯ÊıµÄ²ÎÊı
+	 * @param life_time    »º´æÉú´æÊ±¼ä
 	 */
 	public function cache_obj($cache_id, $run_result, $life_time = null ){
 		if( null == $life_time )$life_time = $this->life_time;
@@ -647,12 +647,12 @@ class spCache {
 		return $run_result;
 	}
 	/** 
-	 * æ¸…é™¤å•ä¸ªå‡½æ•°ç¼“å­˜çš„æ•°æ®
+	 * Çå³ıµ¥¸öº¯Êı»º´æµÄÊı¾İ
 	 *
-	 * @param obj    å¼•ç”¨çš„spModelå­ç±»å¯¹è±¡
-	 * @param func_name    éœ€è¦æ‰§è¡Œçš„å‡½æ•°åç§°
-	 * @param func_args    å‡½æ•°çš„å‚æ•°ï¼Œåœ¨é»˜è®¤ä¸è¾“å…¥å‚æ•°çš„æƒ…å†µä¸‹ï¼Œå°†æ¸…é™¤å…¨éƒ¨è¯¥å‡½æ•°ç”Ÿæˆçš„ç¼“å­˜ã€‚
-	 * å¦‚æœfunc_argsæœ‰è®¾ç½®ï¼Œå°†åªä¼šæ¸…é™¤è¯¥å‚æ•°äº§ç”Ÿçš„ç¼“å­˜ã€‚
+	 * @param obj    ÒıÓÃµÄspModel×ÓÀà¶ÔÏó
+	 * @param func_name    ĞèÒªÖ´ĞĞµÄº¯ÊıÃû³Æ
+	 * @param func_args    º¯ÊıµÄ²ÎÊı£¬ÔÚÄ¬ÈÏ²»ÊäÈë²ÎÊıµÄÇé¿öÏÂ£¬½«Çå³ıÈ«²¿¸Ãº¯ÊıÉú³ÉµÄ»º´æ¡£
+	 * Èç¹ûfunc_argsÓĞÉèÖÃ£¬½«Ö»»áÇå³ı¸Ã²ÎÊı²úÉúµÄ»º´æ¡£
 	 */
 	public function clear(& $obj, $func_name, $func_args = null){
 		$cache_id = get_class($obj) . md5($func_name);
@@ -672,7 +672,7 @@ class spCache {
 		return TRUE;
 	}
 	/** 
-	 * æ¸…é™¤å…¨éƒ¨å‡½æ•°ç¼“å­˜çš„æ•°æ®
+	 * Çå³ıÈ«²¿º¯Êı»º´æµÄÊı¾İ
 	 *
 	 */
 	public function clear_all(){
@@ -687,35 +687,35 @@ class spCache {
 
 /**
  * spLinker 
- * æ•°æ®åº“çš„è¡¨é—´å…³è”ç¨‹åº
+ * Êı¾İ¿âµÄ±í¼ä¹ØÁª³ÌĞò
  */
 class spLinker
 {
 	/**
-	 * æ¨¡å‹å¯¹è±¡
+	 * Ä£ĞÍ¶ÔÏó
 	 */
 	private $model_obj = null;
 	
 	/** 
-	 * é¢„å‡†å¤‡çš„ç»“æœ
+	 * Ô¤×¼±¸µÄ½á¹û
 	 */
 	private $prepare_result = null;
 	
 	/** 
-	 * è¿è¡Œçš„ç»“æœ
+	 * ÔËĞĞµÄ½á¹û
 	 */
 	private $run_result = null;
 	
 	/**
-	 * å¯æ”¯æŒçš„å…³è”æ–¹æ³•
+	 * ¿ÉÖ§³ÖµÄ¹ØÁª·½·¨
 	 */
 	private $methods = array('find','findBy','findAll','run','create','delete','deleteByPk','update');
 	/**
-	 * æ˜¯å¦å¯ç”¨å…¨éƒ¨å…³è”
+	 * ÊÇ·ñÆôÓÃÈ«²¿¹ØÁª
 	 */
 	public $enabled = TRUE;
 	/** 
-	 * å‡½æ•°å¼ä½¿ç”¨æ¨¡å‹è¾…åŠ©ç±»çš„è¾“å…¥å‡½æ•°
+	 * º¯ÊıÊ½Ê¹ÓÃÄ£ĞÍ¸¨ÖúÀàµÄÊäÈëº¯Êı
 	 */
     public function __input(& $obj, $args = null){
 		$this->model_obj = $obj;
@@ -723,8 +723,8 @@ class spLinker
 	}
 	
 	/** 
-	 * å¼€å‘è€…å¯ä»¥é€šè¿‡spLinker()->fun($result)å¯¹å·²ç»è¿”å›çš„æ•°æ®è¿›è¡Œå…³è”findAllæŸ¥æ‰¾
-	 * @param result    è¿”å›çš„æ•°æ®
+	 * ¿ª·¢Õß¿ÉÒÔÍ¨¹ıspLinker()->fun($result)¶ÔÒÑ¾­·µ»ØµÄÊı¾İ½øĞĞ¹ØÁªfindAll²éÕÒ
+	 * @param result    ·µ»ØµÄÊı¾İ
 	 */
     public function run($result = FALSE){
     	if( FALSE == $result )return FALSE;
@@ -733,9 +733,9 @@ class spLinker
 	}
 	
 	/** 
-	 * é­”æœ¯å‡½æ•°ï¼Œæ”¯æŒå¤šé‡å‡½æ•°å¼ä½¿ç”¨ç±»çš„æ–¹æ³•
+	 * Ä§Êõº¯Êı£¬Ö§³Ö¶àÖØº¯ÊıÊ½Ê¹ÓÃÀàµÄ·½·¨
 	 *
-	 * åœ¨spLinkerç±»ä¸­ï¼Œ__callæ‰§è¡Œäº†spModelç»§æ‰¿ç±»çš„ç›¸å…³æ“ä½œï¼Œä»¥åŠæŒ‰å…³è”çš„æè¿°è¿›è¡Œäº†å¯¹å…³è”æ•°æ®æ¨¡å‹ç±»çš„æ“ä½œã€‚
+	 * ÔÚspLinkerÀàÖĞ£¬__callÖ´ĞĞÁËspModel¼Ì³ĞÀàµÄÏà¹Ø²Ù×÷£¬ÒÔ¼°°´¹ØÁªµÄÃèÊö½øĞĞÁË¶Ô¹ØÁªÊı¾İÄ£ĞÍÀàµÄ²Ù×÷¡£
 	 */
 	public function __call($func_name, $func_args){
 		if( in_array( $func_name, $this->methods ) && FALSE != $this->enabled ){
@@ -772,9 +772,9 @@ class spLinker
 	}
 
 	/** 
-	 * ç§æœ‰å‡½æ•°ï¼Œè¾…åŠ©åˆ é™¤æ•°æ®æ“ä½œ
-	 * @param func_name    éœ€è¦æ‰§è¡Œçš„å‡½æ•°åç§°
-	 * @param func_args    å‡½æ•°çš„å‚æ•°
+	 * Ë½ÓĞº¯Êı£¬¸¨ÖúÉ¾³ıÊı¾İ²Ù×÷
+	 * @param func_name    ĞèÒªÖ´ĞĞµÄº¯ÊıÃû³Æ
+	 * @param func_args    º¯ÊıµÄ²ÎÊı
 	 */
 	private function prepare_delete($func_name, $func_args)
 	{
@@ -785,9 +785,9 @@ class spLinker
 		}
 	}
 	/** 
-	 * ç§æœ‰å‡½æ•°ï¼Œè¿›è¡Œå…³è”åˆ é™¤æ•°æ®æ“ä½œ
-	 * @param thelinker    å…³è”çš„æè¿°
-	 * @param maprecords    å¯¹åº”çš„è®°å½•
+	 * Ë½ÓĞº¯Êı£¬½øĞĞ¹ØÁªÉ¾³ıÊı¾İ²Ù×÷
+	 * @param thelinker    ¹ØÁªµÄÃèÊö
+	 * @param maprecords    ¶ÔÓ¦µÄ¼ÇÂ¼
 	 */
 	private function do_delete( $thelinker, $maprecords ){
 		if( FALSE == $maprecords )return FALSE;
@@ -806,9 +806,9 @@ class spLinker
 		return $returns;
 	}
 	/** 
-	 * ç§æœ‰å‡½æ•°ï¼Œè¿›è¡Œå…³è”æ›´æ–°æ•°æ®æ“ä½œ
-	 * @param thelinker    å…³è”çš„æè¿°
-	 * @param func_args    è¿›è¡Œæ“ä½œçš„å‚æ•°
+	 * Ë½ÓĞº¯Êı£¬½øĞĞ¹ØÁª¸üĞÂÊı¾İ²Ù×÷
+	 * @param thelinker    ¹ØÁªµÄÃèÊö
+	 * @param func_args    ½øĞĞ²Ù×÷µÄ²ÎÊı
 	 */
 	private function do_update( $thelinker, $func_args ){
 		if( !is_array($func_args[1][$thelinker['map']]) )return FALSE;
@@ -828,10 +828,10 @@ class spLinker
 		return $returns;
 	}
 	/** 
-	 * ç§æœ‰å‡½æ•°ï¼Œè¿›è¡Œå…³è”æ–°å¢æ•°æ®æ“ä½œ
-	 * @param thelinker    å…³è”çš„æè¿°
-	 * @param newid    ä¸»è¡¨æ–°å¢è®°å½•åçš„å…³è”ID
-	 * @param func_args    è¿›è¡Œæ“ä½œçš„å‚æ•°
+	 * Ë½ÓĞº¯Êı£¬½øĞĞ¹ØÁªĞÂÔöÊı¾İ²Ù×÷
+	 * @param thelinker    ¹ØÁªµÄÃèÊö
+	 * @param newid    Ö÷±íĞÂÔö¼ÇÂ¼ºóµÄ¹ØÁªID
+	 * @param func_args    ½øĞĞ²Ù×÷µÄ²ÎÊı
 	 */
 	private function do_create( $thelinker, $newid, $func_args ){
 		if( !is_array($func_args[0][$thelinker['map']]) )return FALSE;
@@ -840,14 +840,14 @@ class spLinker
 			$newrows[$thelinker['fkey']] = $newid;
 			return spClass($thelinker['fclass'])->create($newrows);
 		}elseif('hasmany'==$thelinker['type']){
-			if(array_key_exists(0,$func_args[0][$thelinker['map']])){ // å¤šä¸ªæ–°å¢
+			if(array_key_exists(0,$func_args[0][$thelinker['map']])){ // ¶à¸öĞÂÔö
 				foreach($func_args[0][$thelinker['map']] as $singlerows){
 					$newrows = $singlerows;
 					$newrows[$thelinker['fkey']] = $newid;
 					$returns = spClass($thelinker['fclass'])->create($newrows);	
 				}
 				return $returns;
-			}else{ // å•ä¸ªæ–°å¢
+			}else{ // µ¥¸öĞÂÔö
 				$newrows = $func_args[0][$thelinker['map']];
 				$newrows[$thelinker['fkey']] = $newid;
 				return spClass($thelinker['fclass'])->create($newrows);
@@ -855,9 +855,9 @@ class spLinker
 		}
 	}
 	/** 
-	 * ç§æœ‰å‡½æ•°ï¼Œè¿›è¡Œå…³è”æŸ¥æ‰¾æ•°æ®æ“ä½œ
-	 * @param thelinker    å…³è”çš„æè¿°
-	 * @param run_result    ä¸»è¡¨æ‰§è¡ŒæŸ¥æ‰¾åè¿”å›çš„ç»“æœ
+	 * Ë½ÓĞº¯Êı£¬½øĞĞ¹ØÁª²éÕÒÊı¾İ²Ù×÷
+	 * @param thelinker    ¹ØÁªµÄÃèÊö
+	 * @param run_result    Ö÷±íÖ´ĞĞ²éÕÒºó·µ»ØµÄ½á¹û
 	 */
 	private function do_select( $thelinker, $run_result ){
 		if(empty($thelinker['mapkey']))$thelinker['mapkey'] = $this->model_obj->pk;

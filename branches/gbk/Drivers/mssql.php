@@ -1,25 +1,25 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * db_mssql MsSQLæ•°æ®åº“çš„é©±åŠ¨æ”¯æŒ
+ * db_mssql MsSQLÊı¾İ¿âµÄÇı¶¯Ö§³Ö
  */
 class db_mssql {
 	/**
-	 * æ•°æ®åº“é“¾æ¥å¥æŸ„
+	 * Êı¾İ¿âÁ´½Ó¾ä±ú
 	 */
 	public $conn;
 	/**
-	 * æ‰§è¡Œçš„SQLè¯­å¥è®°å½•
+	 * Ö´ĞĞµÄSQLÓï¾ä¼ÇÂ¼
 	 */
 	public $arrSql;
 
 	/**
-	 * æŒ‰SQLè¯­å¥è·å–è®°å½•ç»“æœï¼Œè¿”å›æ•°ç»„
+	 * °´SQLÓï¾ä»ñÈ¡¼ÇÂ¼½á¹û£¬·µ»ØÊı×é
 	 * 
-	 * @param sql  æ‰§è¡Œçš„SQLè¯­å¥
+	 * @param sql  Ö´ĞĞµÄSQLÓï¾ä
 	 */
 	public function getArray($sql)
 	{
@@ -33,7 +33,7 @@ class db_mssql {
 	}
 	
 	/**
-	 * è¿”å›å½“å‰æ’å…¥è®°å½•çš„ä¸»é”®ID
+	 * ·µ»Øµ±Ç°²åÈë¼ÇÂ¼µÄÖ÷¼üID
 	 */
 	public function newinsertid()
 	{
@@ -42,7 +42,7 @@ class db_mssql {
 	}
 	
 	/**
-	 * æ ¼å¼åŒ–å¸¦limitçš„SQLè¯­å¥
+	 * ¸ñÊ½»¯´ølimitµÄSQLÓï¾ä
 	 */
 	public function setlimit($sql, $limit)
 	{
@@ -52,9 +52,9 @@ class db_mssql {
 	}
 
 	/**
-	 * æ‰§è¡Œä¸€ä¸ªSQLè¯­å¥
+	 * Ö´ĞĞÒ»¸öSQLÓï¾ä
 	 * 
-	 * @param sql éœ€è¦æ‰§è¡Œçš„SQLè¯­å¥
+	 * @param sql ĞèÒªÖ´ĞĞµÄSQLÓï¾ä
 	 */
 	public function exec($sql)
 	{
@@ -62,12 +62,12 @@ class db_mssql {
 		if( $result = mssql_query($sql, $this->conn) ){
 			return $result;
 		}else{
-			spError("{$sql}<br />æ‰§è¡Œé”™è¯¯: " . mssql_get_last_message());
+			spError("{$sql}<br />Ö´ĞĞ´íÎó: " . mssql_get_last_message());
 		}
 	}
 	
 	/**
-	 * è¿”å›å½±å“è¡Œæ•°
+	 * ·µ»ØÓ°ÏìĞĞÊı
 	 */
 	public function affected_rows()
 	{
@@ -75,9 +75,9 @@ class db_mssql {
 	}
 
 	/**
-	 * è·å–æ•°æ®è¡¨ç»“æ„
+	 * »ñÈ¡Êı¾İ±í½á¹¹
 	 *
-	 * @param tbl_name  è¡¨åç§°
+	 * @param tbl_name  ±íÃû³Æ
 	 */
 	public function getTable($tbl_name)
 	{
@@ -88,21 +88,21 @@ class db_mssql {
 	}
 
 	/**
-	 * æ„é€ å‡½æ•°
+	 * ¹¹Ôìº¯Êı
 	 *
-	 * @param dbConfig  æ•°æ®åº“é…ç½®
+	 * @param dbConfig  Êı¾İ¿âÅäÖÃ
 	 */
 	public function __construct($dbConfig)
 	{
-		if(!function_exists('mssql_connect'))spError('PHPç¯å¢ƒæœªå®‰è£…MSSQLå‡½æ•°åº“ï¼');
+		if(!function_exists('mssql_connect'))spError('PHP»·¾³Î´°²×°MSSQLº¯Êı¿â£¡');
 		$linkfunction = ( TRUE == $dbConfig['persistent'] ) ? 'mssql_pconnect' : 'mssql_connect';
-		$this->conn = $linkfunction($dbConfig['host'], $dbConfig['login'], $dbConfig['password']) or spError("æ•°æ®åº“é“¾æ¥é”™è¯¯ : " . mssql_get_last_message()); 
-		mssql_select_db($dbConfig['database'], $this->conn) or spError("æ— æ³•æ‰¾åˆ°æ•°æ®åº“ï¼Œè¯·ç¡®è®¤æ•°æ®åº“åç§°æ­£ç¡®ï¼");
+		$this->conn = $linkfunction($dbConfig['host'], $dbConfig['login'], $dbConfig['password']) or spError("Êı¾İ¿âÁ´½Ó´íÎó : " . mssql_get_last_message()); 
+		mssql_select_db($dbConfig['database'], $this->conn) or spError("ÎŞ·¨ÕÒµ½Êı¾İ¿â£¬ÇëÈ·ÈÏÊı¾İ¿âÃû³ÆÕıÈ·£¡");
 	}
 	/**
-	 * å¯¹ç‰¹æ®Šå­—ç¬¦è¿›è¡Œè¿‡æ»¤
+	 * ¶ÔÌØÊâ×Ö·û½øĞĞ¹ıÂË
 	 *
-	 * @param value  å€¼
+	 * @param value  Öµ
 	 */
 	public function __val_escape($value, $quotes = FALSE) {
 		if(is_null($value))return 'NULL';
@@ -117,7 +117,7 @@ class db_mssql {
 	}
 
 	/**
-	 * ææ„å‡½æ•°
+	 * Îö¹¹º¯Êı
 	 */
 	public function __destruct()
 	{
@@ -125,14 +125,14 @@ class db_mssql {
 	}
 
 	/**
-	 * è½¬æ¢MSSQLçš„LIMITè¯­å¥çš„è½¬æ¢å‡½æ•°
+	 * ×ª»»MSSQLµÄLIMITÓï¾äµÄ×ª»»º¯Êı
 	 */
 	function translimit($sql){       
 		if(preg_match('/ limit /i', $sql)){
-			//å»è¿ç»­ç©ºæ ¼ 
+			//È¥Á¬Ğø¿Õ¸ñ 
 			while(preg_match("/  /", $sql))$sql = str_replace("  "," ",$sql);
 			$sql_array = explode(" ",$sql);
-			//å–å¾—éƒ¨åˆ†é‡è¦çš„æ•°ç»„ç´¢å¼• 
+			//È¡µÃ²¿·ÖÖØÒªµÄÊı×éË÷Òı 
 			$i = 0;
 			while(isset($sql_array[$i]) && $sql_array[$i]){ 
 				if(strtolower($sql_array[$i])=="from")$from_id = $i;  

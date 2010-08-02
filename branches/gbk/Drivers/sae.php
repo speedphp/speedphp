@@ -1,41 +1,41 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * SAEä¸­MySQLæ•°æ®åº“çš„é©±åŠ¨æ”¯æŒ 
+ * SAEÖĞMySQLÊı¾İ¿âµÄÇı¶¯Ö§³Ö 
  *
- * SAEæ˜¯Sina App Engineï¼ˆæ–°æµªåº”ç”¨å¼•æ“ï¼‰çš„ç¼©å†™ï¼ŒSAEæ˜¯ä¸€ä¸ªåˆ†å¸ƒå¼webåº”ç”¨å¼€å‘è¿è¡Œçš„æœåŠ¡å¹³å°ï¼Œ
- * å…¶ä¸ä»…ä»…åŒ…å«åˆ›å»ºã€éƒ¨ç½²webåº”ç”¨çš„ç®€å•äº¤äº’ï¼Œæ›´æ¶‰åŠä¸€æ•´å¥—å¤§è§„æ¨¡åˆ†å¸ƒå¼æœåŠ¡çš„è§£å†³æ–¹æ¡ˆã€‚
+ * SAEÊÇSina App Engine£¨ĞÂÀËÓ¦ÓÃÒıÇæ£©µÄËõĞ´£¬SAEÊÇÒ»¸ö·Ö²¼Ê½webÓ¦ÓÃ¿ª·¢ÔËĞĞµÄ·şÎñÆ½Ì¨£¬
+ * Æä²»½ö½ö°üº¬´´½¨¡¢²¿ÊğwebÓ¦ÓÃµÄ¼òµ¥½»»¥£¬¸üÉæ¼°Ò»ÕûÌ×´ó¹æÄ£·Ö²¼Ê½·şÎñµÄ½â¾ö·½°¸¡£
  *
- * db_sae å°è£…äº†SAEæä¾›çš„SaeMysqlç±»çš„é©±åŠ¨æ“ä½œã€‚
+ * db_sae ·â×°ÁËSAEÌá¹©µÄSaeMysqlÀàµÄÇı¶¯²Ù×÷¡£
  */
 class db_sae {
 	/**
-	 * æ•°æ®åº“é“¾æ¥å¥æŸ„
+	 * Êı¾İ¿âÁ´½Ó¾ä±ú
 	 */
 	public $conn;
 	/**
-	 * æ‰§è¡Œçš„SQLè¯­å¥è®°å½•
+	 * Ö´ĞĞµÄSQLÓï¾ä¼ÇÂ¼
 	 */
 	public $arrSql;
 
 	/**
-	 * æŒ‰SQLè¯­å¥è·å–è®°å½•ç»“æœï¼Œè¿”å›æ•°ç»„
+	 * °´SQLÓï¾ä»ñÈ¡¼ÇÂ¼½á¹û£¬·µ»ØÊı×é
 	 * 
-	 * @param sql  æ‰§è¡Œçš„SQLè¯­å¥
+	 * @param sql  Ö´ĞĞµÄSQLÓï¾ä
 	 */
 	public function getArray($sql)
 	{
 		$this->arrSql[] = $sql;
 		$result = $this->conn->getData($sql);
-		if( $this->conn->errno() )spError("{$sql}<br />æ‰§è¡Œé”™è¯¯: " . $this->conn->error());
+		if( $this->conn->errno() )spError("{$sql}<br />Ö´ĞĞ´íÎó: " . $this->conn->error());
 		return $result;
 	}
 	
 	/**
-	 * è¿”å›å½“å‰æ’å…¥è®°å½•çš„ä¸»é”®ID
+	 * ·µ»Øµ±Ç°²åÈë¼ÇÂ¼µÄÖ÷¼üID
 	 */
 	public function newinsertid()
 	{
@@ -43,7 +43,7 @@ class db_sae {
 	}
 	
 	/**
-	 * æ ¼å¼åŒ–å¸¦limitçš„SQLè¯­å¥
+	 * ¸ñÊ½»¯´ølimitµÄSQLÓï¾ä
 	 */
 	public function setlimit($sql, $limit)
 	{
@@ -51,30 +51,30 @@ class db_sae {
 	}
 
 	/**
-	 * æ‰§è¡Œä¸€ä¸ªSQLè¯­å¥
+	 * Ö´ĞĞÒ»¸öSQLÓï¾ä
 	 * 
-	 * @param sql éœ€è¦æ‰§è¡Œçš„SQLè¯­å¥
+	 * @param sql ĞèÒªÖ´ĞĞµÄSQLÓï¾ä
 	 */
 	public function exec($sql)
 	{
 		$this->arrSql[] = $sql;
 		$result = $this->conn->runSql($sql);
-		if( $this->conn->errno() )spError("{$sql}<br />æ‰§è¡Œé”™è¯¯: " . $this->conn->error());
+		if( $this->conn->errno() )spError("{$sql}<br />Ö´ĞĞ´íÎó: " . $this->conn->error());
 		return $result;
 	}
 	
 	/**
-	 * è¿”å›å½±å“è¡Œæ•°
+	 * ·µ»ØÓ°ÏìĞĞÊı
 	 */
 	public function affected_rows()
 	{
-		return FALSE; // SAEç¯å¢ƒæš‚æ—¶æ— æ³•è·å–å½±å“è¡Œæ•°
+		return FALSE; // SAE»·¾³ÔİÊ±ÎŞ·¨»ñÈ¡Ó°ÏìĞĞÊı
 	}
 
 	/**
-	 * è·å–æ•°æ®è¡¨ç»“æ„
+	 * »ñÈ¡Êı¾İ±í½á¹¹
 	 *
-	 * @param tbl_name  è¡¨åç§°
+	 * @param tbl_name  ±íÃû³Æ
 	 */
 	public function getTable($tbl_name)
 	{
@@ -82,21 +82,21 @@ class db_sae {
 	}
 
 	/**
-	 * æ„é€ å‡½æ•°
+	 * ¹¹Ôìº¯Êı
 	 *
-	 * @param dbConfig  æ•°æ®åº“é…ç½®
+	 * @param dbConfig  Êı¾İ¿âÅäÖÃ
 	 */
 	public function __construct($dbConfig)
 	{
 		if(TRUE == SP_DEBUG)sae_set_display_errors(TRUE);
 		$this->conn = @new SaeMysql();
-		if( $this->conn->errno() )spError("æ•°æ®åº“é“¾æ¥é”™è¯¯ : " . $this->conn->error()); 
+		if( $this->conn->errno() )spError("Êı¾İ¿âÁ´½Ó´íÎó : " . $this->conn->error()); 
 		$this->conn->setCharset("GBK");
 	}
 	/**
-	 * å¯¹ç‰¹æ®Šå­—ç¬¦è¿›è¡Œè¿‡æ»¤
+	 * ¶ÔÌØÊâ×Ö·û½øĞĞ¹ıÂË
 	 *
-	 * @param value  å€¼
+	 * @param value  Öµ
 	 */
 	public function __val_escape($value, $quotes = FALSE) {
 		if(is_null($value))return 'NULL';
@@ -110,7 +110,7 @@ class db_sae {
 	}
 
 	/**
-	 * ææ„å‡½æ•°
+	 * Îö¹¹º¯Êı
 	 */
 	public function __destruct()
 	{
@@ -118,8 +118,8 @@ class db_sae {
 	}
 	
 	/**
-	 * getConn å–å¾—Sae MySQLå¯¹è±¡
-	 * ä¸ºäº†æ›´å¥½åœ°ä½¿ç”¨Seaæä¾›MySQLç±»ï¼ŒgetSeaDBå‡½æ•°å°†è¿”å›Sae MySQLå¯¹è±¡ä¾›å¼€å‘è€…ä½¿ç”¨
+	 * getConn È¡µÃSae MySQL¶ÔÏó
+	 * ÎªÁË¸üºÃµØÊ¹ÓÃSeaÌá¹©MySQLÀà£¬getSeaDBº¯Êı½«·µ»ØSae MySQL¶ÔÏó¹©¿ª·¢ÕßÊ¹ÓÃ
 	 */
 	public function getConn()
 	{

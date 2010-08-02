@@ -1,14 +1,14 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * spUrlRewrite ç±»ï¼Œä»¥æ‰©å±•å½¢å¼æ”¯æŒSpeedPHPæ¡†æ¶URL_REWRITEçš„æ‰©å±•ã€‚
+ * spUrlRewrite Àà£¬ÒÔÀ©Õ¹ĞÎÊ½Ö§³ÖSpeedPHP¿ò¼ÜURL_REWRITEµÄÀ©Õ¹¡£
  *
- * è¯¥æ‰©å±•çš„ä½¿ç”¨ï¼Œé¦–å…ˆè¦ç¡®å®šæœåŠ¡å™¨å¼€å¯URL_REWRITEåŠŸèƒ½ï¼Œå¹¶ä¸”åœ¨.htaccessä¸­å·²ç»æœ‰ä»¥ä¸‹çš„å†…å®¹
+ * ¸ÃÀ©Õ¹µÄÊ¹ÓÃ£¬Ê×ÏÈÒªÈ·¶¨·şÎñÆ÷¿ªÆôURL_REWRITE¹¦ÄÜ£¬²¢ÇÒÔÚ.htaccessÖĞÒÑ¾­ÓĞÒÔÏÂµÄÄÚÈİ
  *
- * .htaccessæ˜¯é’ˆå¯¹å½“å‰åº”ç”¨ç¨‹åºçš„
+ * .htaccessÊÇÕë¶Ôµ±Ç°Ó¦ÓÃ³ÌĞòµÄ
  *
  * <IfModule mod_rewrite.c>
  * RewriteEngine On
@@ -17,9 +17,9 @@
  * RewriteRule ^(.*)$ index.php?$1 [L]
  * </IfModule>
  *
- * æœ¬æ‰©å±•è¦æ±‚SpeedPHPæ¡†æ¶2.5ç‰ˆæœ¬ä»¥ä¸Šï¼Œä»¥æ”¯æŒå¯¹spUrlå‡½æ•°çš„æŒ‚é ç¨‹åºã€‚
+ * ±¾À©Õ¹ÒªÇóSpeedPHP¿ò¼Ü2.5°æ±¾ÒÔÉÏ£¬ÒÔÖ§³Ö¶ÔspUrlº¯ÊıµÄ¹Ò¿¿³ÌĞò¡£
  *
- * åº”ç”¨ç¨‹åºé…ç½®ä¸­éœ€è¦ä½¿ç”¨åˆ°è·¯ç”±æŒ‚é ç‚¹ä»¥åŠspUrlæŒ‚é ç‚¹
+ * Ó¦ÓÃ³ÌĞòÅäÖÃÖĞĞèÒªÊ¹ÓÃµ½Â·ÓÉ¹Ò¿¿µãÒÔ¼°spUrl¹Ò¿¿µã
  * 'launch' => array( 
  *	 	'router_prefilter' => array( 
  *			array('spUrlRewrite', 'setReWrite'), 
@@ -29,33 +29,33 @@
  * 	    ),
  *),
  *
- * å¯¹spUrlRewriteçš„é…ç½®
+ * ¶ÔspUrlRewriteµÄÅäÖÃ
  *
  * 'ext' => array(
  * 		'spUrlRewrite' => array(
- *			'suffix' => '.html', // ç”Ÿæˆåœ°å€çš„ç»“å°¾ç¬¦ï¼Œç½‘å€åç¼€
- *			'sep' => '/', // ç½‘å€å‚æ•°åˆ†éš”ç¬¦ï¼Œå»ºè®®æ˜¯â€œ-_/â€ä¹‹ä¸€
- *			'map' => array( // ç½‘å€æ˜ å°„ï¼Œæ¯”å¦‚ 'search' => 'main@search'ï¼Œ
- *							// å°†ä½¿å¾— http://www.example.com/search.html è½¬å‘æ§åˆ¶å™¨main/åŠ¨ä½œserachæ‰§è¡Œ
- *							// ç‰¹ä¾‹ '@' => 'main@no' å¦‚æœæ˜ å°„æ˜¯@ï¼Œå°†ä½¿å¾—ç¬¦åˆä»¥ä¸‹æ¡ä»¶çš„ç½‘å€è½¬å‘åˆ° æ§åˆ¶å™¨main/åŠ¨ä½œnoæ‰§è¡Œï¼š
- *							// 1. åœ¨mapä¸­æ— æ³•æ‰¾åˆ°å…¶ä»–æ˜ å°„ï¼Œ2. ç½‘å€ç¬¬ä¸€ä¸ªå‚æ•°å¹¶éæ§åˆ¶å™¨åç§°ã€‚			
+ *			'suffix' => '.html', // Éú³ÉµØÖ·µÄ½áÎ²·û£¬ÍøÖ·ºó×º
+ *			'sep' => '/', // ÍøÖ·²ÎÊı·Ö¸ô·û£¬½¨ÒéÊÇ¡°-_/¡±Ö®Ò»
+ *			'map' => array( // ÍøÖ·Ó³Éä£¬±ÈÈç 'search' => 'main@search'£¬
+ *							// ½«Ê¹µÃ http://www.example.com/search.html ×ªÏò¿ØÖÆÆ÷main/¶¯×÷serachÖ´ĞĞ
+ *							// ÌØÀı '@' => 'main@no' Èç¹ûÓ³ÉäÊÇ@£¬½«Ê¹µÃ·ûºÏÒÔÏÂÌõ¼şµÄÍøÖ·×ªÏòµ½ ¿ØÖÆÆ÷main/¶¯×÷noÖ´ĞĞ£º
+ *							// 1. ÔÚmapÖĞÎŞ·¨ÕÒµ½ÆäËûÓ³Éä£¬2. ÍøÖ·µÚÒ»¸ö²ÎÊı²¢·Ç¿ØÖÆÆ÷Ãû³Æ¡£			
  *			),
- *			'args' => array( // ç½‘å€æ˜ å°„é™„åŠ çš„éšè—å‚æ•°ï¼Œå¦‚æœé’ˆå¯¹æŸä¸ªç½‘å€æ˜ å°„è®¾ç½®äº†éšè—å‚æ•°ï¼Œåˆ™åœ¨ç½‘å€ä¸­ä»…ä¼šå­˜åœ¨å‚æ•°å€¼ï¼Œè€Œå‚æ•°åç§°è¢«éšè—ã€‚
- *						 	 // æ¯”å¦‚ 'search' => array('q','page'), é‚£ä¹ˆç”Ÿæˆçš„ç½‘å€å°†ä¼šæ˜¯ï¼š
+ *			'args' => array( // ÍøÖ·Ó³Éä¸½¼ÓµÄÒş²Ø²ÎÊı£¬Èç¹ûÕë¶ÔÄ³¸öÍøÖ·Ó³ÉäÉèÖÃÁËÒş²Ø²ÎÊı£¬ÔòÔÚÍøÖ·ÖĞ½ö»á´æÔÚ²ÎÊıÖµ£¬¶ø²ÎÊıÃû³Æ±»Òş²Ø¡£
+ *						 	 // ±ÈÈç 'search' => array('q','page'), ÄÇÃ´Éú³ÉµÄÍøÖ·½«»áÊÇ£º
  *							 // http://www.example.com/search-thekey-2.html
- *							 // é…åˆmapæ˜ å°„'search' => 'main@search'ï¼Œè¿™ä¸ªç½‘å€å°†ä¼šæ‰§è¡Œ æ§åˆ¶å™¨main/åŠ¨ä½œserachï¼Œ
- *							 // è€Œå‚æ•°qå°†ç­‰äºthekeyï¼Œå‚æ•°pageå°†ç­‰äº2
+ *							 // ÅäºÏmapÓ³Éä'search' => 'main@search'£¬Õâ¸öÍøÖ·½«»áÖ´ĞĞ ¿ØÖÆÆ÷main/¶¯×÷serach£¬
+ *							 // ¶ø²ÎÊıq½«µÈÓÚthekey£¬²ÎÊıpage½«µÈÓÚ2
  *			),
  *		),
  * ),
  *
  */
-if( SP_VERSION < 2.5 )spError('spUrlRewriteæ‰©å±•è¦æ±‚SpeedPHPæ¡†æ¶ç‰ˆæœ¬2.5ä»¥ä¸Šã€‚');
+if( SP_VERSION < 2.5 )spError('spUrlRewriteÀ©Õ¹ÒªÇóSpeedPHP¿ò¼Ü°æ±¾2.5ÒÔÉÏ¡£');
 class spUrlRewrite
 {
 	var $params = array(
-		// 'hide_default' => true, // éšè—é»˜è®¤çš„main/indexåç§°ï¼Œå·²æ— æ•ˆ
-		// 'args_path_info' => false, // åœ°å€å‚æ•°æ˜¯å¦ä½¿ç”¨path_infoæ¨¡å¼ï¼Œå·²æ— æ•ˆã€‚å…¨ä¸ºépath_infoçš„æ¨¡å¼
+		// 'hide_default' => true, // Òş²ØÄ¬ÈÏµÄmain/indexÃû³Æ£¬ÒÑÎŞĞ§
+		// 'args_path_info' => false, // µØÖ·²ÎÊıÊÇ·ñÊ¹ÓÃpath_infoÄ£Ê½£¬ÒÑÎŞĞ§¡£È«Îª·Çpath_infoµÄÄ£Ê½
 		'suffix' => '.html',
 		'sep' => '-',
 		'map' => array(
@@ -64,7 +64,7 @@ class spUrlRewrite
 		),
 	);
 	/**
-	 * æ„é€ å‡½æ•°ï¼Œå¤„ç†é…ç½®
+	 * ¹¹Ôìº¯Êı£¬´¦ÀíÅäÖÃ
 	 */
 	public function __construct()
 	{
@@ -72,7 +72,7 @@ class spUrlRewrite
 		if(is_array($params))$this->params = array_merge($this->params, $params);
 	}	
 	/**
-	 * åœ¨æ§åˆ¶å™¨/åŠ¨ä½œæ‰§è¡Œå‰ï¼Œå¯¹è·¯ç”±è¿›è¡Œæ”¹è£…ï¼Œä½¿å…¶å¯ä»¥è§£æURL_WRITEçš„åœ°å€
+	 * ÔÚ¿ØÖÆÆ÷/¶¯×÷Ö´ĞĞÇ°£¬¶ÔÂ·ÓÉ½øĞĞ¸Ä×°£¬Ê¹Æä¿ÉÒÔ½âÎöURL_WRITEµÄµØÖ·
 	 */
 	public function setReWrite()
 	{
@@ -114,9 +114,9 @@ class spUrlRewrite
 
 
 	/**
-	 * åœ¨æ„é€ spUrlåœ°å€æ—¶ï¼Œå¯¹åœ°å€è¿›è¡ŒURL_WRITEçš„æ”¹å†™
+	 * ÔÚ¹¹ÔìspUrlµØÖ·Ê±£¬¶ÔµØÖ·½øĞĞURL_WRITEµÄ¸ÄĞ´
 	 *
-	 * @param urlargs    spUrlçš„å‚æ•°
+	 * @param urlargs    spUrlµÄ²ÎÊı
 	 */
 	public function getReWrite($urlargs = array())
 	{
