@@ -56,7 +56,7 @@ class spModel {
 	 * 从数据表中查找一条记录
 	 *
 	 * @param conditions    查找条件，数组array("字段名"=>"查找值")或字符串，
-	 * 请注意在使用字符串时将需要开发者自行使用__val_escape来对输入值进行过滤
+	 * 请注意在使用字符串时将需要开发者自行使用escape来对输入值进行过滤
 	 * @param sort    排序，等同于“ORDER BY ”
 	 * @param fields    返回的字段范围，默认为返回全部字段的值
 	 */
@@ -73,7 +73,7 @@ class spModel {
 	 * 从数据表中查找记录
 	 *
 	 * @param conditions    查找条件，数组array("字段名"=>"查找值")或字符串，
-	 * 请注意在使用字符串时将需要开发者自行使用__val_escape来对输入值进行过滤
+	 * 请注意在使用字符串时将需要开发者自行使用escape来对输入值进行过滤
 	 * @param sort    排序，等同于“ORDER BY ”
 	 * @param fields    返回的字段范围，默认为返回全部字段的值
 	 * @param limit    返回的结果数量限制，等同于“LIMIT ”，如$limit = " 3, 5"，即是从第3条记录（从0开始计算）开始获取，共获取5条记录
@@ -86,7 +86,7 @@ class spModel {
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
-				$condition = $this->__val_escape($condition, TRUE);
+				$condition = $this->escape($condition, TRUE);
 				$join[] = "{$key} = {$condition}";
 			}
 			$where = "WHERE ".join(" AND ",$join);
@@ -107,11 +107,13 @@ class spModel {
 	 *
 	 * @param value 需要进行过滤的值
 	 */
-	public function __val_escape($value, $quotes = FALSE)
+	public function escape($value, $quotes = FALSE)
 	{
 		return $this->_db->__val_escape($value, $quotes);
 	}
-
+	// __val_escape是val的别名，向前兼容
+	public function __val_escape($value, $quotes = FALSE){return $this->escape($value, $quotes);}
+	
 	/**
 	 * 在数据表中新增一行数据
 	 *
@@ -124,7 +126,7 @@ class spModel {
 		if(empty($row))return FALSE;
 		foreach($row as $key => $value){
 			$cols[] = $key;
-			$vals[] = $this->__val_escape($value, TRUE);
+			$vals[] = $this->escape($value, TRUE);
 		}
 		$col = join(',', $cols);
 		$val = join(',', $vals);
@@ -161,7 +163,7 @@ class spModel {
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
-				$condition = $this->__val_escape($condition, TRUE);
+				$condition = $this->escape($condition, TRUE);
 				$join[] = "{$key} = {$condition}";
 			}
 			$where = "WHERE ( ".join(" AND ",$join). ")";
@@ -236,7 +238,7 @@ class spModel {
 	 * 计算符合条件的记录数量
 	 *
 	 * @param conditions 查找条件，数组array("字段名"=>"查找值")或字符串，
-	 * 请注意在使用字符串时将需要开发者自行使用__val_escape来对输入值进行过滤
+	 * 请注意在使用字符串时将需要开发者自行使用escape来对输入值进行过滤
 	 */
 	public function findCount($conditions = null)
 	{
@@ -244,7 +246,7 @@ class spModel {
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
-				$condition = $this->__val_escape($condition, TRUE);
+				$condition = $this->escape($condition, TRUE);
 				$join[] = "{$key} = {$condition}";
 			}
 			$where = "WHERE ".join(" AND ",$join);
@@ -283,7 +285,7 @@ class spModel {
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
-				$condition = $this->__val_escape($condition, TRUE);
+				$condition = $this->escape($condition, TRUE);
 				$join[] = "{$key} = {$condition}";
 			}
 			$where = "WHERE ".join(" AND ",$join);
@@ -291,7 +293,7 @@ class spModel {
 			if(null != $conditions)$where = "WHERE ".$conditions;
 		}
 		foreach($row as $key => $value){
-			$value = $this->__val_escape($value, TRUE);
+			$value = $this->escape($value, TRUE);
 			$vals[] = "{$key} = {$value}";
 		}
 		$values = join(", ",$vals);
@@ -328,7 +330,7 @@ class spModel {
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
-				$condition = $this->__val_escape($condition, TRUE);
+				$condition = $this->escape($condition, TRUE);
 				$join[] = "{$key} = {$condition}";
 			}
 			$where = "WHERE ".join(" AND ",$join);
