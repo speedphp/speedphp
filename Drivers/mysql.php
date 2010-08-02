@@ -1,29 +1,28 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * db_mysql MySQLÊı¾İ¿âµÄÇı¶¯Ö§³Ö 
+ * db_mysql MySQLæ•°æ®åº“çš„é©±åŠ¨æ”¯æŒ 
  */
 class db_mysql {
 	/**
-	 * Êı¾İ¿âÁ´½Ó¾ä±ú
+	 * æ•°æ®åº“é“¾æ¥å¥æŸ„
 	 */
 	public $conn;
 	/**
-	 * Ö´ĞĞµÄSQLÓï¾ä¼ÇÂ¼
+	 * æ‰§è¡Œçš„SQLè¯­å¥è®°å½•
 	 */
 	public $arrSql;
 
 	/**
-	 * °´SQLÓï¾ä»ñÈ¡¼ÇÂ¼½á¹û£¬·µ»ØÊı×é
+	 * æŒ‰SQLè¯­å¥è·å–è®°å½•ç»“æœï¼Œè¿”å›æ•°ç»„
 	 * 
-	 * @param sql  Ö´ĞĞµÄSQLÓï¾ä
+	 * @param sql  æ‰§è¡Œçš„SQLè¯­å¥
 	 */
 	public function getArray($sql)
 	{
-		$this->arrSql[] = $sql;
 		if( ! $result = $this->exec($sql) )return FALSE;
 		if( ! mysql_num_rows($result) )return FALSE;
 		$rows = array();
@@ -34,7 +33,7 @@ class db_mysql {
 	}
 	
 	/**
-	 * ·µ»Øµ±Ç°²åÈë¼ÇÂ¼µÄÖ÷¼üID
+	 * è¿”å›å½“å‰æ’å…¥è®°å½•çš„ä¸»é”®ID
 	 */
 	public function newinsertid()
 	{
@@ -42,7 +41,7 @@ class db_mysql {
 	}
 	
 	/**
-	 * ¸ñÊ½»¯´ølimitµÄSQLÓï¾ä
+	 * æ ¼å¼åŒ–å¸¦limitçš„SQLè¯­å¥
 	 */
 	public function setlimit($sql, $limit)
 	{
@@ -50,9 +49,9 @@ class db_mysql {
 	}
 
 	/**
-	 * Ö´ĞĞÒ»¸öSQLÓï¾ä
+	 * æ‰§è¡Œä¸€ä¸ªSQLè¯­å¥
 	 * 
-	 * @param sql ĞèÒªÖ´ĞĞµÄSQLÓï¾ä
+	 * @param sql éœ€è¦æ‰§è¡Œçš„SQLè¯­å¥
 	 */
 	public function exec($sql)
 	{
@@ -60,12 +59,12 @@ class db_mysql {
 		if( $result = mysql_query($sql, $this->conn) ){
 			return $result;
 		}else{
-			spError("{$sql}<br />Ö´ĞĞ´íÎó: " . mysql_error());
+			spError("{$sql}<br />æ‰§è¡Œé”™è¯¯: " . mysql_error());
 		}
 	}
 	
 	/**
-	 * ·µ»ØÓ°ÏìĞĞÊı
+	 * è¿”å›å½±å“è¡Œæ•°
 	 */
 	public function affected_rows()
 	{
@@ -73,9 +72,9 @@ class db_mysql {
 	}
 
 	/**
-	 * »ñÈ¡Êı¾İ±í½á¹¹
+	 * è·å–æ•°æ®è¡¨ç»“æ„
 	 *
-	 * @param tbl_name  ±íÃû³Æ
+	 * @param tbl_name  è¡¨åç§°
 	 */
 	public function getTable($tbl_name)
 	{
@@ -83,33 +82,35 @@ class db_mysql {
 	}
 
 	/**
-	 * ¹¹Ôìº¯Êı
+	 * æ„é€ å‡½æ•°
 	 *
-	 * @param dbConfig  Êı¾İ¿âÅäÖÃ
+	 * @param dbConfig  æ•°æ®åº“é…ç½®
 	 */
 	public function __construct($dbConfig)
 	{
 		$linkfunction = ( TRUE == $dbConfig['persistent'] ) ? 'mysql_pconnect' : 'mysql_connect';
-		$this->conn = $linkfunction($dbConfig['host'].":".$dbConfig['port'], $dbConfig['login'], $dbConfig['password']) or spError("Êı¾İ¿âÁ´½Ó´íÎó : " . mysql_error()); 
-		mysql_select_db($dbConfig['database'], $this->conn) or spError("ÎŞ·¨ÕÒµ½Êı¾İ¿â£¬ÇëÈ·ÈÏÊı¾İ¿âÃû³ÆÕıÈ·£¡");
+		$this->conn = $linkfunction($dbConfig['host'].":".$dbConfig['port'], $dbConfig['login'], $dbConfig['password']) or spError("æ•°æ®åº“é“¾æ¥é”™è¯¯ : " . mysql_error()); 
+		mysql_select_db($dbConfig['database'], $this->conn) or spError("æ— æ³•æ‰¾åˆ°æ•°æ®åº“ï¼Œè¯·ç¡®è®¤æ•°æ®åº“åç§°æ­£ç¡®ï¼");
 		$this->exec("SET NAMES GBK");
 	}
 	/**
-	 * ¶ÔÌØÊâ×Ö·û½øĞĞ¹ıÂË
+	 * å¯¹ç‰¹æ®Šå­—ç¬¦è¿›è¡Œè¿‡æ»¤
 	 *
-	 * @param value  Öµ
+	 * @param value  å€¼
 	 */
-	public function __val_escape($value) {
-		if(is_null($value))return null;
+	public function __val_escape($value, $quotes = FALSE) {
+		if(is_null($value))return 'NULL';
 		if(is_bool($value))return $value ? 1 : 0;
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
-		return mysql_real_escape_string($value, $this->conn);
+		$value = mysql_real_escape_string($value, $this->conn);
+		if($quotes)$value = "'{$value}'";
+		return $value;
 	}
 
 	/**
-	 * Îö¹¹º¯Êı
+	 * ææ„å‡½æ•°
 	 */
 	public function __destruct()
 	{

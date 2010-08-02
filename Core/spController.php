@@ -1,25 +1,25 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * spController »ù´¡¿ØÖÆÆ÷³ÌĞò¸¸Àà Ó¦ÓÃ³ÌĞòÖĞµÄÃ¿¸ö¿ØÖÆÆ÷³ÌĞò¶¼Ó¦¼Ì³ĞÓÚspController
+ * spController åŸºç¡€æ§åˆ¶å™¨ç¨‹åºçˆ¶ç±» åº”ç”¨ç¨‹åºä¸­çš„æ¯ä¸ªæ§åˆ¶å™¨ç¨‹åºéƒ½åº”ç»§æ‰¿äºspController
  */
 class spController { 
 
 	/**
-	 * ÊÓÍ¼¶ÔÏó
+	 * è§†å›¾å¯¹è±¡
 	 */
 	public $v;
 	
 	/**
-	 * ¸³Öµµ½Ä£°åµÄ±äÁ¿
+	 * èµ‹å€¼åˆ°æ¨¡æ¿çš„å˜é‡
 	 */
 	private $__template_vals = array();
 	
 	/**
-	 * ¹¹Ôìº¯Êı
+	 * æ„é€ å‡½æ•°
 	 */
 	public function __construct()
 	{	
@@ -27,14 +27,15 @@ class spController {
 			$this->v = spClass('spView');
 		}
 	}
+
     /**
      *
-     * Ìø×ª³ÌĞò
+     * è·³è½¬ç¨‹åº
      *
-     * Ó¦ÓÃ³ÌĞòµÄ¿ØÖÆÆ÷Àà¿ÉÒÔ¸²¸Ç¸Ãº¯ÊıÒÔÊ¹ÓÃ×Ô¶¨ÒåµÄÌø×ª³ÌĞò
+     * åº”ç”¨ç¨‹åºçš„æ§åˆ¶å™¨ç±»å¯ä»¥è¦†ç›–è¯¥å‡½æ•°ä»¥ä½¿ç”¨è‡ªå®šä¹‰çš„è·³è½¬ç¨‹åº
      *
-     * @param $url  ĞèÒªÇ°ÍùµÄµØÖ·
-     * @param $delay   ÑÓ³ÙÊ±¼ä
+     * @param $url  éœ€è¦å‰å¾€çš„åœ°å€
+     * @param $delay   å»¶è¿Ÿæ—¶é—´
      */
     public function jump($url, $delay = 0){
 		echo "<html><head><meta http-equiv='refresh' content='{$delay};url={$url}'></head><body></body></html>";
@@ -43,38 +44,38 @@ class spController {
 
     /**
      *
-     * ´íÎóÌáÊ¾³ÌĞò
+     * é”™è¯¯æç¤ºç¨‹åº
      *
-     * Ó¦ÓÃ³ÌĞòµÄ¿ØÖÆÆ÷Àà¿ÉÒÔ¸²¸Ç¸Ãº¯ÊıÒÔÊ¹ÓÃ×Ô¶¨ÒåµÄ´íÎóÌáÊ¾
+     * åº”ç”¨ç¨‹åºçš„æ§åˆ¶å™¨ç±»å¯ä»¥è¦†ç›–è¯¥å‡½æ•°ä»¥ä½¿ç”¨è‡ªå®šä¹‰çš„é”™è¯¯æç¤º
      *
-     * @param $msg   ´íÎóÌáÊ¾ĞèÒªµÄÏà¹ØĞÅÏ¢
-     * @param $url   Ìø×ªµØÖ·
+     * @param $msg   é”™è¯¯æç¤ºéœ€è¦çš„ç›¸å…³ä¿¡æ¯
+     * @param $url   è·³è½¬åœ°å€
      */
     public function error($msg, $url){
-		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"{$msg}\");location.href=\"{$url}\";}</script></head><body onload=\"sptips()\"></body></html>";
+		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=gb2312\"><script>function sptips(){alert(\"{$msg}\");location.href=\"{$url}\";}</script></head><body onload=\"sptips()\"></body></html>";
 		exit;
     }
 
     /**
      *
-     * ³É¹¦ÌáÊ¾³ÌĞò
+     * æˆåŠŸæç¤ºç¨‹åº
      *
-     * Ó¦ÓÃ³ÌĞòµÄ¿ØÖÆÆ÷Àà¿ÉÒÔ¸²¸Ç¸Ãº¯ÊıÒÔÊ¹ÓÃ×Ô¶¨ÒåµÄ³É¹¦ÌáÊ¾
+     * åº”ç”¨ç¨‹åºçš„æ§åˆ¶å™¨ç±»å¯ä»¥è¦†ç›–è¯¥å‡½æ•°ä»¥ä½¿ç”¨è‡ªå®šä¹‰çš„æˆåŠŸæç¤º
 	 *
-     * @param $msg   ³É¹¦ÌáÊ¾ĞèÒªµÄÏà¹ØĞÅÏ¢
-     * @param $url   Ìø×ªµØÖ·
+     * @param $msg   æˆåŠŸæç¤ºéœ€è¦çš„ç›¸å…³ä¿¡æ¯
+     * @param $url   è·³è½¬åœ°å€
      */
     public function success($msg, $url){
-		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"{$msg}\");location.href=\"{$url}\";}</script></head><body onload=\"sptips()\"></body></html>";
+		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=gb2312\"><script>function sptips(){alert(\"{$msg}\");location.href=\"{$url}\";}</script></head><body onload=\"sptips()\"></body></html>";
 		exit;
     }
 
 	/**
-	 * Ä§Êõº¯Êı£¬»ñÈ¡¸³Öµ×÷ÎªÄ£°åÄÚ±äÁ¿
+	 * é­”æœ¯å‡½æ•°ï¼Œè·å–èµ‹å€¼ä½œä¸ºæ¨¡æ¿å†…å˜é‡
 	 */
 	public function __set($name, $value)
 	{
-		if(TRUE == $GLOBALS['G_SP']['view']['enabled']){
+		if(TRUE == $GLOBALS['G_SP']['view']['enabled'] && false !== $value){
 			$this->v->engine->assign(array($name=>$value));
 		}
 		$this->__template_vals[$name] = $value;
@@ -82,7 +83,7 @@ class spController {
 	
 
 	/**
-	 * Ä§Êõº¯Êı£¬·µ»ØÒÑ¸³ÖµµÄ±äÁ¿Öµ
+	 * é­”æœ¯å‡½æ•°ï¼Œè¿”å›å·²èµ‹å€¼çš„å˜é‡å€¼
 	 */
 	public function __get($name)
 	{
@@ -90,10 +91,10 @@ class spController {
 	}
 	
 	/**
-	 * Êä³öÄ£°å
+	 * è¾“å‡ºæ¨¡æ¿
 	 *
-     * @param $tplname   Ä£°åÂ·¾¶¼°Ãû³Æ
-     * @param $output   ÊÇ·ñÖ±½ÓÏÔÊ¾Ä£°å£¬ÉèÖÃ³ÉFALSE½«·µ»ØHTML¶ø²»Êä³ö
+     * @param $tplname   æ¨¡æ¿è·¯å¾„åŠåç§°
+     * @param $output   æ˜¯å¦ç›´æ¥æ˜¾ç¤ºæ¨¡æ¿ï¼Œè®¾ç½®æˆFALSEå°†è¿”å›HTMLè€Œä¸è¾“å‡º
 	 */
 	public function display($tplname, $output = TRUE)
 	{
@@ -105,21 +106,33 @@ class spController {
 		}
 		if( TRUE != $output )return ob_get_clean();
 	}
+	
+	/**
+	 * è‡ªåŠ¨è¾“å‡ºé¡µé¢
+	 * @param tplname æ¨¡æ¿æ–‡ä»¶è·¯å¾„
+	 */
+	public function auto_display($tplname)
+	{
+		if( TRUE != $this->v->displayed && FALSE != $GLOBALS['G_SP']['view']['auto_display']){
+			if( !method_exists($this->v->engine, 'template_exists') || TRUE == $this->v->engine->template_exists($tplname) )
+				$this->display($tplname);
+		}
+	}
 
 	/**
-	 * Ä§Êõº¯Êı£¬ÊµÏÖ¶Ô¿ØÖÆÆ÷À©Õ¹ÀàµÄ×Ô¶¯¼ÓÔØ
+	 * é­”æœ¯å‡½æ•°ï¼Œå®ç°å¯¹æ§åˆ¶å™¨æ‰©å±•ç±»çš„è‡ªåŠ¨åŠ è½½
 	 */
 	public function __call($name, $args)
 	{
 		if(in_array($name, $GLOBALS['G_SP']["auto_load_controller"])){
 			return spClass($name)->__input($args);
 		}elseif(!method_exists( $this, $name )){
-			spError("·½·¨ {$name}Î´¶¨Òå£¡<br />Çë¼ì²éÊÇ·ñ¿ØÖÆÆ÷Àà(".get_class($this).")ÓëÊı¾İÄ£ĞÍÀàÖØÃû£¿");
+			spError("æ–¹æ³• {$name}æœªå®šä¹‰ï¼<br />è¯·æ£€æŸ¥æ˜¯å¦æ§åˆ¶å™¨ç±»(".get_class($this).")ä¸æ•°æ®æ¨¡å‹ç±»é‡åï¼Ÿ");
 		}
 	}
 
 	/**
-	 * »ñÈ¡Ä£°åÒıÇæÊµÀı
+	 * è·å–æ¨¡æ¿å¼•æ“å®ä¾‹
 	 */
 	public function getView()
 	{
@@ -127,22 +140,22 @@ class spController {
 		return $this->v->engine;
 	}
 	/**
-	 * ÉèÖÃµ±Ç°ÓÃ»§µÄÓïÑÔ
-     * @param $lang   ÓïÑÔ±êÊ¶
+	 * è®¾ç½®å½“å‰ç”¨æˆ·çš„è¯­è¨€
+     * @param $lang   è¯­è¨€æ ‡è¯†
 	 */
 	public function setLang($lang)
 	{
 		if( array_key_exists($lang, $GLOBALS['G_SP']["lang"]) ){
 			@ob_start();
 			$domain = ('www.' == substr($_SERVER["HTTP_HOST"],0,4)) ? substr($_SERVER["HTTP_HOST"],4) : $_SERVER["HTTP_HOST"];
-			setcookie("SpLangCookies", $lang, time()+31536000, '/', $domain ); // Ò»Äê¹ıÆÚ
+			setcookie("SpLangCookies", $lang, time()+31536000, '/', $domain ); // ä¸€å¹´è¿‡æœŸ
 			$_SESSION["SpLangSession"] = $lang;
 			return TRUE;
 		}
 		return FALSE;
 	}
 	/**
-	 * »ñÈ¡µ±Ç°ÓÃ»§µÄÓïÑÔ
+	 * è·å–å½“å‰ç”¨æˆ·çš„è¯­è¨€
 	 */
 	public function getLang()
 	{
@@ -153,19 +166,19 @@ class spController {
 
 /**
  * spArgs 
- * Ó¦ÓÃ³ÌĞò±äÁ¿Àà
- * spArgsÊÇ·â×°ÁË$_SESSION¡¢$_GET/$_POST¡¢$_COOKIE¡¢$_SERVER¡¢$_FILES¡¢$_ENVµÈ£¬Ìá¹©Ò»Ğ©¼ò±ãµÄ·ÃÎÊºÍÊ¹ÓÃÕâĞ©
- * È«¾Ö±äÁ¿µÄ·½·¨¡£
+ * åº”ç”¨ç¨‹åºå˜é‡ç±»
+ * spArgsæ˜¯å°è£…äº†$_SESSIONã€$_GET/$_POSTã€$_COOKIEã€$_SERVERã€$_FILESã€$_ENVç­‰ï¼Œæä¾›ä¸€äº›ç®€ä¾¿çš„è®¿é—®å’Œä½¿ç”¨è¿™äº›
+ * å…¨å±€å˜é‡çš„æ–¹æ³•ã€‚
  */
 
 class spArgs {
 	/**
-	 * ÔÚÄÚ´æÖĞ±£´æµÄ±äÁ¿
+	 * åœ¨å†…å­˜ä¸­ä¿å­˜çš„å˜é‡
 	 */
 	private $args = null;
 
 	/**
-	 * ¹¹Ôìº¯Êı
+	 * æ„é€ å‡½æ•°
 	 *
 	 */
 	public function __construct(){
@@ -173,11 +186,11 @@ class spArgs {
 	}
 	
 	/**
-	 * »ñÈ¡Ó¦ÓÃ³ÌĞòÇëÇó±äÁ¿Öµ£¬Í¬Ê±Ò²¿ÉÒÔÖ¸¶¨»ñÈ¡µÄ±äÁ¿ËùÊô¡£
+	 * è·å–åº”ç”¨ç¨‹åºè¯·æ±‚å˜é‡å€¼ï¼ŒåŒæ—¶ä¹Ÿå¯ä»¥æŒ‡å®šè·å–çš„å˜é‡æ‰€å±ã€‚
 	 * 
-	 * @param name    »ñÈ¡µÄ±äÁ¿Ãû³Æ£¬Èç¹ûÎª¿Õ£¬Ôò·µ»ØÈ«²¿µÄÇëÇó±äÁ¿
-	 * @param default    µ±Ç°»ñÈ¡µÄ±äÁ¿²»´æÔÚµÄÊ±ºò£¬½«·µ»ØµÄÄ¬ÈÏÖµ
-	 * @param method    »ñÈ¡Î»ÖÃ£¬È¡ÖµGET£¬POST£¬COOKIE
+	 * @param name    è·å–çš„å˜é‡åç§°ï¼Œå¦‚æœä¸ºç©ºï¼Œåˆ™è¿”å›å…¨éƒ¨çš„è¯·æ±‚å˜é‡
+	 * @param default    å½“å‰è·å–çš„å˜é‡ä¸å­˜åœ¨çš„æ—¶å€™ï¼Œå°†è¿”å›çš„é»˜è®¤å€¼
+	 * @param method    è·å–ä½ç½®ï¼Œå–å€¼GETï¼ŒPOSTï¼ŒCOOKIE
 	 */
 	public function get($name = null, $default = FALSE, $method = null)
 	{
@@ -203,10 +216,10 @@ class spArgs {
 	}
 
 	/**
-	 * ÉèÖÃ£¨Ôö¼Ó£©»·¾³±äÁ¿Öµ£¬¸ÃÃû³Æ½«¸²¸ÇÔ­À´µÄ»·¾³±äÁ¿Ãû³Æ
+	 * è®¾ç½®ï¼ˆå¢åŠ ï¼‰ç¯å¢ƒå˜é‡å€¼ï¼Œè¯¥åç§°å°†è¦†ç›–åŸæ¥çš„ç¯å¢ƒå˜é‡åç§°
 	 * 
-	 * @param name    »·¾³±äÁ¿Ãû³Æ
-	 * @param value    »·¾³±äÁ¿Öµ
+	 * @param name    ç¯å¢ƒå˜é‡åç§°
+	 * @param value    ç¯å¢ƒå˜é‡å€¼
 	 */
 	public function set($name, $value)
 	{
@@ -214,9 +227,9 @@ class spArgs {
 	}
 
 	/**
-	 * ¼ì²âÊÇ·ñ´æÔÚÄ³Öµ
+	 * æ£€æµ‹æ˜¯å¦å­˜åœ¨æŸå€¼
 	 * 
-	 * @param name    ´ı¼ì²âµÄ»·¾³±äÁ¿Ãû³Æ
+	 * @param name    å¾…æ£€æµ‹çš„ç¯å¢ƒå˜é‡åç§°
 	 */
 	public function has($name)
 	{
@@ -224,8 +237,8 @@ class spArgs {
 	}
 
 	/**
-	 * ¹¹ÔìÊäÈëº¯Êı£¬±ê×¼ÓÃ·¨
-	 * @param args    »·¾³±äÁ¿Ãû³ÆµÄ²ÎÊı
+	 * æ„é€ è¾“å…¥å‡½æ•°ï¼Œæ ‡å‡†ç”¨æ³•
+	 * @param args    ç¯å¢ƒå˜é‡åç§°çš„å‚æ•°
 	 */
 	public function __input($args = -1)
 	{
@@ -235,7 +248,7 @@ class spArgs {
 	}
 	
 	/**
-	 * »ñÈ¡ÇëÇó×Ö·û
+	 * è·å–è¯·æ±‚å­—ç¬¦
 	 */
 	public function request(){
 		return $_SERVER["QUERY_STRING"];

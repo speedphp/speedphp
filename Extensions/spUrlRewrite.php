@@ -1,14 +1,14 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * spUrlRewrite Àà£¬ÒÔÀ©Õ¹ĞÎÊ½Ö§³ÖSpeedPHP¿ò¼ÜURL_REWRITEµÄÀ©Õ¹¡£
+ * spUrlRewrite ç±»ï¼Œä»¥æ‰©å±•å½¢å¼æ”¯æŒSpeedPHPæ¡†æ¶URL_REWRITEçš„æ‰©å±•ã€‚
  *
- * ¸ÃÀ©Õ¹µÄÊ¹ÓÃ£¬Ê×ÏÈÒªÈ·¶¨·şÎñÆ÷¿ªÆôURL_REWRITE¹¦ÄÜ£¬²¢ÇÒÔÚ.htaccessÖĞÒÑ¾­ÓĞÒÔÏÂµÄÄÚÈİ
+ * è¯¥æ‰©å±•çš„ä½¿ç”¨ï¼Œé¦–å…ˆè¦ç¡®å®šæœåŠ¡å™¨å¼€å¯URL_REWRITEåŠŸèƒ½ï¼Œå¹¶ä¸”åœ¨.htaccessä¸­å·²ç»æœ‰ä»¥ä¸‹çš„å†…å®¹
  *
- * .htaccessÊÇÕë¶Ôµ±Ç°Ó¦ÓÃ³ÌĞòµÄ
+ * .htaccessæ˜¯é’ˆå¯¹å½“å‰åº”ç”¨ç¨‹åºçš„
  *
  * <IfModule mod_rewrite.c>
  * RewriteEngine On
@@ -17,9 +17,9 @@
  * RewriteRule ^(.*)$ index.php?$1 [L]
  * </IfModule>
  *
- * ±¾À©Õ¹ÒªÇóSpeedPHP¿ò¼Ü2.5°æ±¾ÒÔÉÏ£¬ÒÔÖ§³Ö¶ÔspUrlº¯ÊıµÄ¹Ò¿¿³ÌĞò¡£
+ * æœ¬æ‰©å±•è¦æ±‚SpeedPHPæ¡†æ¶2.5ç‰ˆæœ¬ä»¥ä¸Šï¼Œä»¥æ”¯æŒå¯¹spUrlå‡½æ•°çš„æŒ‚é ç¨‹åºã€‚
  *
- * Ó¦ÓÃ³ÌĞòÅäÖÃÖĞĞèÒªÊ¹ÓÃµ½Â·ÓÉ¹Ò¿¿µãÒÔ¼°spUrl¹Ò¿¿µã
+ * åº”ç”¨ç¨‹åºé…ç½®ä¸­éœ€è¦ä½¿ç”¨åˆ°è·¯ç”±æŒ‚é ç‚¹ä»¥åŠspUrlæŒ‚é ç‚¹
  * 'launch' => array( 
  *	 	'router_prefilter' => array( 
  *			array('spUrlRewrite', 'setReWrite'), 
@@ -29,27 +29,42 @@
  * 	    ),
  *),
  *
- * ¶ÔspUrlRewriteµÄÅäÖÃ
+ * å¯¹spUrlRewriteçš„é…ç½®
  *
  * 'ext' => array(
  * 		'spUrlRewrite' => array(
- *			'hide_default' => true, // Òş²ØÄ¬ÈÏµÄmain/indexÃû³Æ£¬µ«ÕâÇ°ÌáÊÇĞèÒªÒş²ØµÄÄ¬ÈÏ¶¯×÷ÊÇÎŞGET²ÎÊıµÄ
- * 			'args_path_info' => false, // µØÖ·²ÎÊıÊÇ·ñÊ¹ÓÃpath_infoµÄ·½Ê½£¬Ä¬ÈÏ·ñ
- *			'suffix' => '.html', // Éú³ÉµØÖ·µÄ½áÎ²·û
+ *			'suffix' => '.html', // ç”Ÿæˆåœ°å€çš„ç»“å°¾ç¬¦ï¼Œç½‘å€åç¼€
+ *			'sep' => '/', // ç½‘å€å‚æ•°åˆ†éš”ç¬¦ï¼Œå»ºè®®æ˜¯â€œ-_/â€ä¹‹ä¸€
+ *			'map' => array( // ç½‘å€æ˜ å°„ï¼Œæ¯”å¦‚ 'search' => 'main@search'ï¼Œ
+ *							// å°†ä½¿å¾— http://www.example.com/search.html è½¬å‘æ§åˆ¶å™¨main/åŠ¨ä½œserachæ‰§è¡Œ
+ *							// ç‰¹ä¾‹ '@' => 'main@no' å¦‚æœæ˜ å°„æ˜¯@ï¼Œå°†ä½¿å¾—ç¬¦åˆä»¥ä¸‹æ¡ä»¶çš„ç½‘å€è½¬å‘åˆ° æ§åˆ¶å™¨main/åŠ¨ä½œnoæ‰§è¡Œï¼š
+ *							// 1. åœ¨mapä¸­æ— æ³•æ‰¾åˆ°å…¶ä»–æ˜ å°„ï¼Œ2. ç½‘å€ç¬¬ä¸€ä¸ªå‚æ•°å¹¶éæ§åˆ¶å™¨åç§°ã€‚			
+ *			),
+ *			'args' => array( // ç½‘å€æ˜ å°„é™„åŠ çš„éšè—å‚æ•°ï¼Œå¦‚æœé’ˆå¯¹æŸä¸ªç½‘å€æ˜ å°„è®¾ç½®äº†éšè—å‚æ•°ï¼Œåˆ™åœ¨ç½‘å€ä¸­ä»…ä¼šå­˜åœ¨å‚æ•°å€¼ï¼Œè€Œå‚æ•°åç§°è¢«éšè—ã€‚
+ *						 	 // æ¯”å¦‚ 'search' => array('q','page'), é‚£ä¹ˆç”Ÿæˆçš„ç½‘å€å°†ä¼šæ˜¯ï¼š
+ *							 // http://www.example.com/search-thekey-2.html
+ *							 // é…åˆmapæ˜ å°„'search' => 'main@search'ï¼Œè¿™ä¸ªç½‘å€å°†ä¼šæ‰§è¡Œ æ§åˆ¶å™¨main/åŠ¨ä½œserachï¼Œ
+ *							 // è€Œå‚æ•°qå°†ç­‰äºthekeyï¼Œå‚æ•°pageå°†ç­‰äº2
+ *			),
  *		),
  * ),
  *
  */
-if( SP_VERSION < 2.5 )spError('spUrlRewriteÀ©Õ¹ÒªÇóSpeedPHP¿ò¼Ü°æ±¾2.5ÒÔÉÏ¡£');
+if( SP_VERSION < 2.5 )spError('spUrlRewriteæ‰©å±•è¦æ±‚SpeedPHPæ¡†æ¶ç‰ˆæœ¬2.5ä»¥ä¸Šã€‚');
 class spUrlRewrite
 {
 	var $params = array(
-		'hide_default' => true,
-		'args_path_info' => false,
+		// 'hide_default' => true, // éšè—é»˜è®¤çš„main/indexåç§°ï¼Œå·²æ— æ•ˆ
+		// 'args_path_info' => false, // åœ°å€å‚æ•°æ˜¯å¦ä½¿ç”¨path_infoæ¨¡å¼ï¼Œå·²æ— æ•ˆã€‚å…¨ä¸ºépath_infoçš„æ¨¡å¼
 		'suffix' => '.html',
+		'sep' => '-',
+		'map' => array(
+		),
+		'args' => array(
+		),
 	);
 	/**
-	 * ¹¹Ôìº¯Êı£¬´¦ÀíÅäÖÃ
+	 * æ„é€ å‡½æ•°ï¼Œå¤„ç†é…ç½®
 	 */
 	public function __construct()
 	{
@@ -57,72 +72,78 @@ class spUrlRewrite
 		if(is_array($params))$this->params = array_merge($this->params, $params);
 	}	
 	/**
-	 * ÔÚ¿ØÖÆÆ÷/¶¯×÷Ö´ĞĞÇ°£¬¶ÔÂ·ÓÉ½øĞĞ¸Ä×°£¬Ê¹Æä¿ÉÒÔ½âÎöURL_WRITEµÄµØÖ·
+	 * åœ¨æ§åˆ¶å™¨/åŠ¨ä½œæ‰§è¡Œå‰ï¼Œå¯¹è·¯ç”±è¿›è¡Œæ”¹è£…ï¼Œä½¿å…¶å¯ä»¥è§£æURL_WRITEçš„åœ°å€
 	 */
 	public function setReWrite()
 	{
 		GLOBAL $__controller, $__action;
-
-		$uri = substr($_SERVER["REQUEST_URI"], strlen(dirname($GLOBALS['G_SP']['url']['url_path_base'])));
-		if( empty($uri) || '/' == $uri ){
+		if(isset($_SERVER['HTTP_X_REWRITE_URL']))$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
+		$request = ltrim(strtolower(substr($_SERVER["REQUEST_URI"], strlen(dirname($GLOBALS['G_SP']['url']['url_path_base'])))),"\/\\");
+		if( '?' == substr($request, 0, 1) or 'index.php?' == substr($request, 0, 10) )return ;
+		if( empty($request) or 'index.php' == $request ){
 			$__controller = $GLOBALS['G_SP']['default_controller'];
 			$__action = $GLOBALS['G_SP']['default_action'];
 			return ;
 		}
-		$lasturi = stristr($uri,$this->params['suffix']);if( false == $lasturi )return ;
-		$firsturi = explode('/',trim(substr($uri, 0, -strlen($lasturi)),"\/\\"));
-		if( true == $this->params['hide_default'] && !isset($firsturi[1]) ){ // ¿ªÆôÒş²ØÄ¬ÈÏÃû³Æ
-			$__controller = $GLOBALS['G_SP']['default_controller'];
-			$__action = $firsturi[0];
-		}else{
-			// ²»¿ªÆô
-			$__controller = (empty($firsturi[0])) ? $GLOBALS['G_SP']['default_controller'] : $firsturi[0];
-			$__action = (empty($firsturi[1])) ? $GLOBALS['G_SP']['default_action'] : $firsturi[1];
-		}
-		$lasturi = substr($lasturi, strlen($this->params['suffix']));
-		if( "" != $lasturi ){
-			if(true == $this->params['args_path_info']){
-				$lasturi = explode('/',$lasturi);
-				for($u = 1; $u < count($lasturi); $u++){
-					spClass("spArgs")->set($lasturi[$u], isset($lasturi[$u+1]) ? $lasturi[$u+1] : false);$u+=1;
-				}
-			}else{
-				$lasturi = explode('&',ltrim($lasturi,'?'));
-				foreach( $lasturi as $val ){
-					$valarr = explode('=',$val);spClass("spArgs")->set(isset($valarr[0])?$valarr[0]:"",isset($valarr[1])?$valarr[1]:"");
-				}
+		$this->params['suffix'] = ( '' == $this->params['suffix'] )?'?':$this->params['suffix'];
+		$request = explode($this->params['suffix'], $request);
+		$uri = array('first' => array_shift($request),'last' => ltrim(implode($request),'?'));
+		$request = explode($this->params['sep'], $uri['first']);
+		$uri['first'] = array('pattern' => array_shift($request),'args'  => $request);
+		
+		if( array_key_exists($uri['first']['pattern'], $this->params['map']) ){
+			@list($__controller, $__action) = explode('@',$this->params['map'][$uri['first']['pattern']]);
+			if( !empty($this->params['args'][$uri['first']['pattern']]) )foreach( $this->params['args'][$uri['first']['pattern']] as $v )spClass("spArgs")->set($v, array_shift($uri['first']['args']));
+		}elseif( isset($this->params['map']['@']) && !in_array($uri['first']['pattern'].'.php', array_map('strtolower',scandir($GLOBALS['G_SP']['controller_path']))) ){
+			@list($__controller, $__action) = explode('@',$this->params['map']['@']);
+			if( !empty($this->params['args']['@']) ){
+				$uri['first']['args'] = array_merge(array($uri['first']['pattern']), $uri['first']['args']);
+				foreach( $this->params['args']['@'] as $v )spClass("spArgs")->set($v, array_shift($uri['first']['args']));
 			}
+		}else{
+			$__controller = $uri['first']['pattern'];$__action = array_shift($uri['first']['args']);
 		}
+		if(!empty($uri['first']['args']))for($u = 0; $u < count($uri['first']['args']); $u++){
+			spClass("spArgs")->set($uri['first']['args'][$u], isset($uri['first']['args'][$u+1])?$uri['first']['args'][$u+1]:"");
+			$u+=1;}
+		if(!empty($uri['last'])){
+			$uri['last'] = explode('&',$uri['last']);
+			foreach( $uri['last'] as $val ){
+				@list($k, $v) = explode('=',$val);if(!empty($k))spClass("spArgs")->set($k,isset($v)?$v:"");}}
 	}
 
 
 	/**
-	 * ÔÚ¹¹ÔìspUrlµØÖ·Ê±£¬¶ÔµØÖ·½øĞĞURL_WRITEµÄ¸ÄĞ´
+	 * åœ¨æ„é€ spUrlåœ°å€æ—¶ï¼Œå¯¹åœ°å€è¿›è¡ŒURL_WRITEçš„æ”¹å†™
 	 *
-	 * @param urlargs    spUrlµÄ²ÎÊı
+	 * @param urlargs    spUrlçš„å‚æ•°
 	 */
 	public function getReWrite($urlargs = array())
 	{
-		$url = trim(dirname($GLOBALS['G_SP']['url']["url_path_base"]),"\/\\");
-		if( empty($url) ){$url = '/';}else{$url = '/'.$url.'/';}
-		if( $GLOBALS['G_SP']["default_controller"] == $urlargs['controller'] && $GLOBALS['G_SP']["default_action"] == $urlargs['action'] ){
-		}elseif( true == $this->params['hide_default'] && $GLOBALS['G_SP']["default_controller"] == $urlargs['controller'] ){ // ¿ªÆôÒş²ØÄ¬ÈÏÃû³Æ
-			$url .= (null != $urlargs['action'] ? $urlargs['action'] : $GLOBALS['G_SP']["default_action"]).$this->params['suffix'];
-		}else{
-			// ²»¿ªÆô
-			$controller = (null != $urlargs['controller']) ? $urlargs['controller'] : $GLOBALS['G_SP']["default_controller"];
-			$action = (null != $urlargs['action']) ? $urlargs['action']: $GLOBALS['G_SP']["default_action"];
-			$url .= "{$controller}/{$action}".$this->params['suffix'];
-		}
-		if(null != $urlargs['args']){
-			if(true == $this->params['args_path_info']){
-				foreach($urlargs['args'] as $key => $arg)$url .= "/{$key}/{$arg}";
-			}else{
-				$url .= '?';
-				foreach($urlargs['args'] as $key => $arg)$url .= "{$key}={$arg}&";
-				$url = rtrim($url,'&');
+		$uri = trim(dirname($GLOBALS['G_SP']['url']["url_path_base"]),"\/\\");
+		if( empty($uri) ){$uri = '/';}else{$uri = '/'.$uri.'/';}
+		if( $GLOBALS['G_SP']["default_controller"] == $urlargs['controller'] && $GLOBALS['G_SP']["default_action"] == $urlargs['action'] && empty($urlargs['args']) ){
+			return $uri.((null != $urlargs['anchor']) ? "#{$anchor}" : '');
+		}elseif( $k = array_search(strtolower($urlargs['controller'].'@'.$urlargs['action']), array_map('strtolower',$this->params['map']))){
+			$uri .= ('@'==$k)?'':$k;$isfirstmark = ('@'==$k);
+			if( !empty( $this->params['args'][$k] ) && !empty($urlargs['args']) ){
+				foreach( $this->params['args'][$k] as $defarg ){
+					if( $isfirstmark ){
+						$uri .= isset($urlargs['args'][$defarg]) ? $urlargs['args'][$defarg] : '';$isfirstmark = 0;
+					}else{
+						$uri .= isset($urlargs['args'][$defarg]) ? $this->params['sep'].$urlargs['args'][$defarg] : $this->params['sep'];
+					}
+					unset($urlargs['args'][$defarg]);
+				}
 			}
+		}else{
+			$uri .= $urlargs['controller'].$this->params['sep'].$urlargs['action'];
 		}
-		return $url .((null != $urlargs['anchor']) ? "#{$anchor}" : '');
+		if( !empty($urlargs['args']) ){
+			foreach($urlargs['args'] as $k => $v)$uri.= $this->params['sep'].$k.$this->params['sep'].$v;
+		}else{
+			$uri = rtrim($uri, $this->params['sep']);
+		}
+		return $uri.$this->params['suffix'] .((null != $urlargs['anchor']) ? "#{$anchor}" : '');
 	}
 }

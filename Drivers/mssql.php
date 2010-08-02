@@ -1,29 +1,28 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * db_mssql MsSQLÊı¾İ¿âµÄÇı¶¯Ö§³Ö
+ * db_mssql MsSQLæ•°æ®åº“çš„é©±åŠ¨æ”¯æŒ
  */
 class db_mssql {
 	/**
-	 * Êı¾İ¿âÁ´½Ó¾ä±ú
+	 * æ•°æ®åº“é“¾æ¥å¥æŸ„
 	 */
 	public $conn;
 	/**
-	 * Ö´ĞĞµÄSQLÓï¾ä¼ÇÂ¼
+	 * æ‰§è¡Œçš„SQLè¯­å¥è®°å½•
 	 */
 	public $arrSql;
 
 	/**
-	 * °´SQLÓï¾ä»ñÈ¡¼ÇÂ¼½á¹û£¬·µ»ØÊı×é
+	 * æŒ‰SQLè¯­å¥è·å–è®°å½•ç»“æœï¼Œè¿”å›æ•°ç»„
 	 * 
-	 * @param sql  Ö´ĞĞµÄSQLÓï¾ä
+	 * @param sql  æ‰§è¡Œçš„SQLè¯­å¥
 	 */
 	public function getArray($sql)
 	{
-		$this->arrSql[] = $sql;
 		if( ! $result = $this->exec($sql) )return FALSE;
 		if( ! mssql_num_rows($result) )return FALSE;
 		$rows = array();
@@ -34,7 +33,7 @@ class db_mssql {
 	}
 	
 	/**
-	 * ·µ»Øµ±Ç°²åÈë¼ÇÂ¼µÄÖ÷¼üID
+	 * è¿”å›å½“å‰æ’å…¥è®°å½•çš„ä¸»é”®ID
 	 */
 	public function newinsertid()
 	{
@@ -43,7 +42,7 @@ class db_mssql {
 	}
 	
 	/**
-	 * ¸ñÊ½»¯´ølimitµÄSQLÓï¾ä
+	 * æ ¼å¼åŒ–å¸¦limitçš„SQLè¯­å¥
 	 */
 	public function setlimit($sql, $limit)
 	{
@@ -53,9 +52,9 @@ class db_mssql {
 	}
 
 	/**
-	 * Ö´ĞĞÒ»¸öSQLÓï¾ä
+	 * æ‰§è¡Œä¸€ä¸ªSQLè¯­å¥
 	 * 
-	 * @param sql ĞèÒªÖ´ĞĞµÄSQLÓï¾ä
+	 * @param sql éœ€è¦æ‰§è¡Œçš„SQLè¯­å¥
 	 */
 	public function exec($sql)
 	{
@@ -63,12 +62,12 @@ class db_mssql {
 		if( $result = mssql_query($sql, $this->conn) ){
 			return $result;
 		}else{
-			spError("{$sql}<br />Ö´ĞĞ´íÎó: " . mssql_get_last_message());
+			spError("{$sql}<br />æ‰§è¡Œé”™è¯¯: " . mssql_get_last_message());
 		}
 	}
 	
 	/**
-	 * ·µ»ØÓ°ÏìĞĞÊı
+	 * è¿”å›å½±å“è¡Œæ•°
 	 */
 	public function affected_rows()
 	{
@@ -76,48 +75,49 @@ class db_mssql {
 	}
 
 	/**
-	 * »ñÈ¡Êı¾İ±í½á¹¹
+	 * è·å–æ•°æ®è¡¨ç»“æ„
 	 *
-	 * @param tbl_name  ±íÃû³Æ
+	 * @param tbl_name  è¡¨åç§°
 	 */
 	public function getTable($tbl_name)
 	{
 		$result = $this->getArray("SELECT syscolumns.name FROM syscolumns, systypes WHERE syscolumns.xusertype = systypes.xusertype AND syscolumns.id = object_id('{$tbl_name}')");
 		$columns = array();
-		foreach( $result as $column )$columns[] = array('Field'=>$column);
+		foreach( $result as $column )$columns[] = array('Field'=>$column['name']);
 		return $columns;
 	}
 
 	/**
-	 * ¹¹Ôìº¯Êı
+	 * æ„é€ å‡½æ•°
 	 *
-	 * @param dbConfig  Êı¾İ¿âÅäÖÃ
+	 * @param dbConfig  æ•°æ®åº“é…ç½®
 	 */
 	public function __construct($dbConfig)
 	{
-		if(!function_exists('mssql_connect'))spError('PHP»·¾³Î´°²×°MSSQLº¯Êı¿â£¡');
+		if(!function_exists('mssql_connect'))spError('PHPç¯å¢ƒæœªå®‰è£…MSSQLå‡½æ•°åº“ï¼');
 		$linkfunction = ( TRUE == $dbConfig['persistent'] ) ? 'mssql_pconnect' : 'mssql_connect';
-		$this->conn = $linkfunction($dbConfig['host'], $dbConfig['login'], $dbConfig['password']) or spError("Êı¾İ¿âÁ´½Ó´íÎó : " . mssql_get_last_message()); 
-		mssql_select_db($dbConfig['database'], $this->conn) or spError("ÎŞ·¨ÕÒµ½Êı¾İ¿â£¬ÇëÈ·ÈÏÊı¾İ¿âÃû³ÆÕıÈ·£¡");
+		$this->conn = $linkfunction($dbConfig['host'], $dbConfig['login'], $dbConfig['password']) or spError("æ•°æ®åº“é“¾æ¥é”™è¯¯ : " . mssql_get_last_message()); 
+		mssql_select_db($dbConfig['database'], $this->conn) or spError("æ— æ³•æ‰¾åˆ°æ•°æ®åº“ï¼Œè¯·ç¡®è®¤æ•°æ®åº“åç§°æ­£ç¡®ï¼");
 	}
 	/**
-	 * ¶ÔÌØÊâ×Ö·û½øĞĞ¹ıÂË
+	 * å¯¹ç‰¹æ®Šå­—ç¬¦è¿›è¡Œè¿‡æ»¤
 	 *
-	 * @param value  Öµ
+	 * @param value  å€¼
 	 */
-	public function __val_escape($value) {
-		if(is_null($value))return null;
+	public function __val_escape($value, $quotes = FALSE) {
+		if(is_null($value))return 'NULL';
 		if(is_bool($value))return $value ? 1 : 0;
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
 		$value = str_replace("'","''",$value);
 		$value = str_replace("\0","[NULL]",$value);
+		if($quotes)$value = "'{$value}'";
 		return $value;
 	}
 
 	/**
-	 * Îö¹¹º¯Êı
+	 * ææ„å‡½æ•°
 	 */
 	public function __destruct()
 	{
@@ -125,14 +125,14 @@ class db_mssql {
 	}
 
 	/**
-	 * ×ª»»MSSQLµÄLIMITÓï¾äµÄ×ª»»º¯Êı
+	 * è½¬æ¢MSSQLçš„LIMITè¯­å¥çš„è½¬æ¢å‡½æ•°
 	 */
 	function translimit($sql){       
 		if(preg_match('/ limit /i', $sql)){
-			//È¥Á¬Ğø¿Õ¸ñ 
+			//å»è¿ç»­ç©ºæ ¼ 
 			while(preg_match("/  /", $sql))$sql = str_replace("  "," ",$sql);
 			$sql_array = explode(" ",$sql);
-			//È¡µÃ²¿·ÖÖØÒªµÄÊı×éË÷Òı 
+			//å–å¾—éƒ¨åˆ†é‡è¦çš„æ•°ç»„ç´¢å¼• 
 			$i = 0;
 			while(isset($sql_array[$i]) && $sql_array[$i]){ 
 				if(strtolower($sql_array[$i])=="from")$from_id = $i;  
@@ -146,12 +146,12 @@ class db_mssql {
 
 			$sql_return = "SELECT ";
 			for($i=1;$i<=$from_id;$i++){ 
-				$sql_return .= $this->translimit_notblname($sql_array[$i]); 
+				$sql_return .= $sql_array[$i]; 
 				$sql_return .= " "; 
 			}
 			$sql_return .= " ( SELECT TOP {$two_num[1]} ";
 			for($i=1;$i<=$from_id;$i++){
-				$sql_return .= $this->translimit_notblname($sql_array[$i]); 
+				$sql_return .= $sql_array[$i]; 
 				$sql_return .= " "; 
 			}
 			$sql_return .=" ( SELECT TOP {$totle_num} ";
@@ -179,10 +179,5 @@ class db_mssql {
 		}else{
 			return $sql;
 		}
-	}
-	function translimit_notblname($field){
-		$posdot = strpos($field,'.');
-		if( FALSE === $posdot )return $field;
-		return substr( $field, $posdot + 1 );
 	}
 }

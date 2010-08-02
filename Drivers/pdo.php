@@ -1,33 +1,33 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * db_pdo_mysql PDO MySQLÊı¾İÇı¶¯Àà
+ * db_pdo_mysql PDO MySQLæ•°æ®é©±åŠ¨ç±»
  */
 class db_pdo_mysql extends db_pdo {
 	/**
-	 * »ñÈ¡Êı¾İ±í½á¹¹
+	 * è·å–æ•°æ®è¡¨ç»“æ„
 	 *
-	 * @param tbl_name  ±íÃû³Æ
+	 * @param tbl_name  è¡¨åç§°
 	 */
 	public function getTable($tbl_name){
 		return $this->getArray("DESCRIBE {$tbl_name}");
 	}
 }
 /**
- * db_pdo_sqlite PDO SqliteÊı¾İÇı¶¯Àà
+ * db_pdo_sqlite PDO Sqliteæ•°æ®é©±åŠ¨ç±»
  */
 class db_pdo_sqlite extends db_pdo {
 	/**
-	 * »ñÈ¡Êı¾İ±í½á¹¹
+	 * è·å–æ•°æ®è¡¨ç»“æ„
 	 *
-	 * @param tbl_name  ±íÃû³Æ
+	 * @param tbl_name  è¡¨åç§°
 	 */
 	public function getTable($tbl_name){
-		$tmptable = $this->conn->query("SELECT sql FROM SQLITE_MASTER type = table AND name = '{$tbl_name}'");
-		$tmp = explode('[',$tmptable['sql']);
+		$tmptable = $this->getArray("SELECT * FROM SQLITE_MASTER WHERE name = '{$tbl_name}' AND type='table'");
+		$tmp = explode('[',$tmptable[0]['sql']);
 		foreach( $tmp as $value ){
 			$towarr = explode(']', $value);
 			if( isset($towarr[1]) )$columns[]['Field'] = $towarr[0];
@@ -38,37 +38,37 @@ class db_pdo_sqlite extends db_pdo {
 }
 
 /**
- * db_pdo PDOÇı¶¯Àà 
+ * db_pdo PDOé©±åŠ¨ç±» 
  */
 class db_pdo {
 	/**
-	 * Êı¾İ¿âÁ´½Ó¾ä±ú
+	 * æ•°æ®åº“é“¾æ¥å¥æŸ„
 	 */
 	public $conn;
 	/**
-	 * Ö´ĞĞµÄSQLÓï¾ä¼ÇÂ¼
+	 * æ‰§è¡Œçš„SQLè¯­å¥è®°å½•
 	 */
 	public $arrSql;
 	/**
-	 * execÖ´ĞĞÓ°ÏìĞĞÊı
+	 * execæ‰§è¡Œå½±å“è¡Œæ•°
 	 */
 	private $num_rows;
 
 	/**
-	 * °´SQLÓï¾ä»ñÈ¡¼ÇÂ¼½á¹û£¬·µ»ØÊı×é
+	 * æŒ‰SQLè¯­å¥è·å–è®°å½•ç»“æœï¼Œè¿”å›æ•°ç»„
 	 * 
-	 * @param sql  Ö´ĞĞµÄSQLÓï¾ä
+	 * @param sql  æ‰§è¡Œçš„SQLè¯­å¥
 	 */
 	public function getArray($sql)
 	{
 		$this->arrSql[] = $sql;
-		$rows = array();
-		while($rows[] = $this->conn->query($sql)){}
-		return $rows;
+		$rows = $this->conn->prepare($sql);
+		$rows->execute();
+		return $rows->fetchAll(PDO::FETCH_ASSOC);
 	}
 	
 	/**
-	 * ·µ»Øµ±Ç°²åÈë¼ÇÂ¼µÄÖ÷¼üID
+	 * è¿”å›å½“å‰æ’å…¥è®°å½•çš„ä¸»é”®ID
 	 */
 	public function newinsertid()
 	{
@@ -76,7 +76,7 @@ class db_pdo {
 	}
 	
 	/**
-	 * ¸ñÊ½»¯´ølimitµÄSQLÓï¾ä
+	 * æ ¼å¼åŒ–å¸¦limitçš„SQLè¯­å¥
 	 */
 	public function setlimit($sql, $limit)
 	{
@@ -84,9 +84,9 @@ class db_pdo {
 	}
 
 	/**
-	 * Ö´ĞĞÒ»¸öSQLÓï¾ä
+	 * æ‰§è¡Œä¸€ä¸ªSQLè¯­å¥
 	 * 
-	 * @param sql ĞèÒªÖ´ĞĞµÄSQLÓï¾ä
+	 * @param sql éœ€è¦æ‰§è¡Œçš„SQLè¯­å¥
 	 */
 	public function exec($sql)
 	{
@@ -96,12 +96,12 @@ class db_pdo {
 			$this->num_rows = $result;
 			return $result;
 		}else{
-			spError("{$sql}<br />Ö´ĞĞ´íÎó: " .$this->conn->errorInfo());
+			spError("{$sql}<br />æ‰§è¡Œé”™è¯¯: " .$this->conn->errorInfo());
 		}
 	}
 	
 	/**
-	 * ·µ»ØÓ°ÏìĞĞÊı
+	 * è¿”å›å½±å“è¡Œæ•°
 	 */
 	public function affected_rows()
 	{
@@ -109,49 +109,51 @@ class db_pdo {
 	}
 
 	/**
-	 * »ñÈ¡Êı¾İ±í½á¹¹
+	 * è·å–æ•°æ®è¡¨ç»“æ„
 	 *
-	 * @param tbl_name  ±íÃû³Æ
+	 * @param tbl_name  è¡¨åç§°
 	 */
 	public function getTable($tbl_name){}
 
 	/**
-	 * ¹¹Ôìº¯Êı
+	 * æ„é€ å‡½æ•°
 	 *
-	 * @param dbConfig  Êı¾İ¿âÅäÖÃ
+	 * @param dbConfig  æ•°æ®åº“é…ç½®
 	 */
 	public function __construct($dbConfig)
 	{
-		if(!class_exists("PDO"))spError('PHP»·¾³Î´°²×°PDOº¯Êı¿â£¡');
+		if(!class_exists("PDO"))spError('PHPç¯å¢ƒæœªå®‰è£…PDOå‡½æ•°åº“ï¼');
 		try {
 		    $this->conn = new PDO($dbConfig['host'], $dbConfig['login'], $dbConfig['password']); 
 		} catch (PDOException $e) {
-		    echo 'Êı¾İ¿âÁ´½Ó´íÎó/ÎŞ·¨ÕÒµ½Êı¾İ¿â :  ' . $e->getMessage();
+		    echo 'æ•°æ®åº“é“¾æ¥é”™è¯¯/æ— æ³•æ‰¾åˆ°æ•°æ®åº“ :  ' . $e->getMessage();
 		}
 	}
 	/**
-	 * ¶ÔÌØÊâ×Ö·û½øĞĞ¹ıÂË
+	 * å¯¹ç‰¹æ®Šå­—ç¬¦è¿›è¡Œè¿‡æ»¤
 	 *
-	 * @param value  Öµ
+	 * @param value  å€¼
 	 */
-	public function __val_escape($value) {
-		if(is_null($value))return null;
+	public function __val_escape($value, $quotes = FALSE) {
+		if(is_null($value))return 'NULL';
 		if(is_bool($value))return $value ? 1 : 0;
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
-		return $this->conn->quote($value);
+		$value = $this->conn->quote($value);
+		//if($quotes)$value = "'{$value}'";
+		return $value;
 	}
 
 	/**
-	 * Îö¹¹º¯Êı
+	 * ææ„å‡½æ•°
 	 */
 	public function __destruct(){
 		$this->conn = null;
 	}
 	
 	/**
-	 * getConn È¡µÃPDO¶ÔÏó
+	 * getConn å–å¾—PDOå¯¹è±¡
 	 */
 	public function getConn()
 	{

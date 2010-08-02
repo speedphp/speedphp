@@ -1,33 +1,32 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * db_oracle OracleÊı¾İ¿âµÄÇı¶¯Ö§³Ö
+ * db_oracle Oracleæ•°æ®åº“çš„é©±åŠ¨æ”¯æŒ
  */
 class db_oracle {
 	/**
-	 * Êı¾İ¿âÁ´½Ó¾ä±ú
+	 * æ•°æ®åº“é“¾æ¥å¥æŸ„
 	 */
 	public $conn;
 	/**
-	 * Ö´ĞĞµÄSQLÓï¾ä¼ÇÂ¼
+	 * æ‰§è¡Œçš„SQLè¯­å¥è®°å½•
 	 */
 	public $arrSql;
 	/**
-	 * execÖ´ĞĞÓ°ÏìĞĞÊı
+	 * execæ‰§è¡Œå½±å“è¡Œæ•°
 	 */
 	private $num_rows;
 
 	/**
-	 * °´SQLÓï¾ä»ñÈ¡¼ÇÂ¼½á¹û£¬·µ»ØÊı×é
+	 * æŒ‰SQLè¯­å¥è·å–è®°å½•ç»“æœï¼Œè¿”å›æ•°ç»„
 	 * 
-	 * @param sql  Ö´ĞĞµÄSQLÓï¾ä
+	 * @param sql  æ‰§è¡Œçš„SQLè¯­å¥
 	 */
 	public function getArray($sql)
 	{
-		$this->arrSql[] = $sql;
 		$result = $this->exec($sql);
 		oci_fetch_all($result, $res, null, null, OCI_FETCHSTATEMENT_BY_ROW);
 		oci_free_statement($result);
@@ -35,43 +34,41 @@ class db_oracle {
 	}
 	
 	/**
-	 * ·µ»Øµ±Ç°²åÈë¼ÇÂ¼µÄÖ÷¼üID
+	 * è¿”å›å½“å‰æ’å…¥è®°å½•çš„ä¸»é”®ID
 	 */
 	public function newinsertid()
 	{
-		return FALSE; // Ê¹ÓÃspModelµÄcreateÀ´½øĞĞ²éÕÒ×îºó²åÈëID
+		return FALSE; // ä½¿ç”¨spModelçš„createæ¥è¿›è¡ŒæŸ¥æ‰¾æœ€åæ’å…¥ID
 	}
 	
 	/**
-	 * ¸ñÊ½»¯´ølimitµÄSQLÓï¾ä
+	 * æ ¼å¼åŒ–å¸¦limitçš„SQLè¯­å¥
 	 */
 	public function setlimit($sql, $limit)
 	{
 		$limitarr = explode(',',str_replace(' ','',$limit));
 		$total = (isset($limitarr[1])) ? ($limitarr[1] + $limitarr[0]) : $limitarr[0];
-		$start = (isset($limitarr[1])) ? $limitarr[1] : 0;
-		return "SELECT * FROM ( SELECT *, ROWNUM sptmp_limit_rownum FROM ({$sql}) sptmp_limit_tblname WHERE ROWNUM <= {$total} )WHERE sptmp_limit_rownum >= {$start}";
+		$start = (isset($limitarr[1])) ? $limitarr[0] : 0;
+		return "SELECT * FROM ( SELECT SPTMP_LIMIT_TBLNAME.*, ROWNUM SPTMP_LIMIT_ROWNUM FROM ({$sql}) SPTMP_LIMIT_TBLNAME WHERE ROWNUM <= {$total} )WHERE SPTMP_LIMIT_ROWNUM > {$start}";
 	}
 
 	/**
-	 * Ö´ĞĞÒ»¸öSQLÓï¾ä
+	 * æ‰§è¡Œä¸€ä¸ªSQLè¯­å¥
 	 * 
-	 * @param sql ĞèÒªÖ´ĞĞµÄSQLÓï¾ä
+	 * @param sql éœ€è¦æ‰§è¡Œçš„SQLè¯­å¥
 	 */
 	public function exec($sql)
 	{
 		$this->arrSql[] = $sql;
 		$result = oci_parse($this->conn, $sql);
-		if( !$result or !oci_execute($result) ){
-			$e = oci_error();spError('{$sql}<br />Ö´ĞĞ´íÎó: ' . strip_tags($e['message']));
-		}
+		if( !oci_execute($result) ){$e = oci_error($result);spError("{$sql}<br />æ‰§è¡Œé”™è¯¯: " . strip_tags($e['message']));}
 		$this->num_rows = oci_num_rows($result);
 		return $result;
 	}
 	
 	
 	/**
-	 * ·µ»ØÓ°ÏìĞĞÊı
+	 * è¿”å›å½±å“è¡Œæ•°
 	 */
 	public function affected_rows()
 	{
@@ -79,47 +76,50 @@ class db_oracle {
 	}
 
 	/**
-	 * »ñÈ¡Êı¾İ±í½á¹¹
+	 * è·å–æ•°æ®è¡¨ç»“æ„
 	 *
-	 * @param tbl_name  ±íÃû³Æ
+	 * @param tbl_name  è¡¨åç§°
 	 */
 	public function getTable($tbl_name)
 	{
-		return $this->getArray("SELECT column_name AS Field FROM USER_TAB_COLUMNS WHERE table_name = '{$tbl_name}'");
+		$tbl_name = strtoupper($tbl_name);
+		$upcaseres = $this->getArray("SELECT COLUMN_NAME AS FIELD FROM USER_TAB_COLUMNS WHERE TABLE_NAME = '{$tbl_name}'");
+		foreach( $upcaseres as $k => $v )$upcaseres[$k] = array('Field'=>$v['FIELD']);
+		return $upcaseres;
 	}
 
 	/**
-	 * ¹¹Ôìº¯Êı
+	 * æ„é€ å‡½æ•°
 	 *
-	 * @param dbConfig  Êı¾İ¿âÅäÖÃ
+	 * @param dbConfig  æ•°æ®åº“é…ç½®
 	 */
 	public function __construct($dbConfig)
 	{
-		if(!function_exists('oci_connect'))spError('PHP»·¾³Î´°²×°ORACLEº¯Êı¿â£¡');
+		if(!function_exists('oci_connect'))spError('PHPç¯å¢ƒæœªå®‰è£…ORACLEå‡½æ•°åº“ï¼');
 		$linkfunction = ( TRUE == $dbConfig['persistent'] ) ? 'oci_pconnect' : 'oci_connect';
-		if( ! $this->conn = $linkfunction($dbConfig['login'], $dbConfig['password'], $dbConfig['host'], 'ZHS16GBK') ){
-			$e = oci_error();spError('Êı¾İ¿âÁ´½Ó´íÎó : ' . strip_tags($e['message']));
+		if( ! $this->conn = $linkfunction($dbConfig['login'], $dbConfig['password'], $dbConfig['host']) ){
+			$e = oci_error();spError('æ•°æ®åº“é“¾æ¥é”™è¯¯ : ' . strip_tags($e['message']));
 		}
 	}
 	/**
-	 * ¶ÔÌØÊâ×Ö·û½øĞĞ¹ıÂË
+	 * å¯¹ç‰¹æ®Šå­—ç¬¦è¿›è¡Œè¿‡æ»¤
 	 *
-	 * @param value  Öµ
+	 * @param value  å€¼
 	 */
-	public function __val_escape($value) {
-		if(is_null($value))return null;
+	public function __val_escape($value, $quotes = FALSE) {
+		if(is_null($value))return 'NULL';
 		if(is_bool($value))return $value ? 1 : 0;
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
-		$value = addslashes($value); // ?
 		$value = str_replace("_","\_",$value);
 		$value = str_replace("%","\%",$value);
+		if($quotes)$value = "'{$value}'";
 		return $value;
 	}
 
 	/**
-	 * Îö¹¹º¯Êı
+	 * ææ„å‡½æ•°
 	 */
 	public function __destruct()
 	{

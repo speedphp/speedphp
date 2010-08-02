@@ -1,46 +1,46 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPÖÐÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPä¸­æ–‡PHPæ¡†æž¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
-define('SP_VERSION', '3.0.32.1'); // µ±Ç°¿ò¼Ü°æ±¾
+define('SP_VERSION', '3.0.73.1'); // å½“å‰æ¡†æž¶ç‰ˆæœ¬
 
 /**
  * spCore
  *
- * SpeedPHPÓ¦ÓÃ¿ò¼ÜµÄÏµÍ³Ö´ÐÐ³ÌÐò
+ * SpeedPHPåº”ç”¨æ¡†æž¶çš„ç³»ç»Ÿæ‰§è¡Œç¨‹åº
  */
 
-// ¶¨ÒåÏµÍ³Â·¾¶
+// å®šä¹‰ç³»ç»Ÿè·¯å¾„
 if(!defined('SP_PATH')) define('SP_PATH', dirname(__FILE__).'/SpeedPHP');
 if(!defined('APP_PATH')) define('APP_PATH', dirname(__FILE__).'/app');
 
-// ÔØÈëºËÐÄº¯Êý¿â
+// è½½å…¥æ ¸å¿ƒå‡½æ•°åº“
 require(SP_PATH."/spFunctions.php");
-if (substr(PHP_VERSION, 0, 1) != '5')spError("SpeedPHP¿ò¼Ü»·¾³ÒªÇóPHP5£¡");
+if (substr(PHP_VERSION, 0, 1) != '5')spError("SpeedPHPæ¡†æž¶çŽ¯å¢ƒè¦æ±‚PHP5ï¼");
 
-// ÔØÈëÅäÖÃÎÄ¼þ
+// è½½å…¥é…ç½®æ–‡ä»¶
 $GLOBALS['G_SP'] = spConfigReady(require(SP_PATH."/spConfig.php"),$spConfig);
 
-// ¸ù¾ÝÅäÖÃÎÄ¼þ½øÐÐÒ»Ð©È«¾Ö±äÁ¿µÄ¶¨Òå
+// æ ¹æ®é…ç½®æ–‡ä»¶è¿›è¡Œä¸€äº›å…¨å±€å˜é‡çš„å®šä¹‰
 if('debug' == $GLOBALS['G_SP']['mode']){
-	define("SP_DEBUG",TRUE); // µ±Ç°ÕýÔÚµ÷ÊÔÄ£Ê½ÏÂ
+	define("SP_DEBUG",TRUE); // å½“å‰æ­£åœ¨è°ƒè¯•æ¨¡å¼ä¸‹
 }else{
-	define("SP_DEBUG",FALSE); // µ±Ç°ÕýÔÚ²¿ÊðÄ£Ê½ÏÂ
+	define("SP_DEBUG",FALSE); // å½“å‰æ­£åœ¨éƒ¨ç½²æ¨¡å¼ä¸‹
 }
-// ÉèÖÃ´íÎó´¦Àíº¯Êý
+// è®¾ç½®é”™è¯¯å¤„ç†å‡½æ•°
 set_error_handler("spErrorHandler");
 @set_magic_quotes_runtime(0);
 
-// ×Ô¶¯¿ªÆôSESSION
+// è‡ªåŠ¨å¼€å¯SESSION
 if($GLOBALS['G_SP']['auto_session'])@session_start();
 
-// ÔØÈëºËÐÄMVC¼Ü¹¹ÎÄ¼þ
+// è½½å…¥æ ¸å¿ƒMVCæž¶æž„æ–‡ä»¶
 import($GLOBALS['G_SP']["sp_core_path"]."/spController.php", FALSE, TRUE);
 import($GLOBALS['G_SP']["sp_core_path"]."/spModel.php", FALSE, TRUE);
 import($GLOBALS['G_SP']["sp_core_path"]."/spView.php", FALSE, TRUE);
 
-// µ±ÔÚ¶þ¼¶Ä¿Â¼ÖÐÊ¹ÓÃSpeedPHP¿ò¼ÜÊ±£¬×Ô¶¯»ñÈ¡µ±Ç°·ÃÎÊµÄÎÄ¼þÃû
+// å½“åœ¨äºŒçº§ç›®å½•ä¸­ä½¿ç”¨SpeedPHPæ¡†æž¶æ—¶ï¼Œè‡ªåŠ¨èŽ·å–å½“å‰è®¿é—®çš„æ–‡ä»¶å
 if('' == $GLOBALS['G_SP']['url']["url_path_base"]){
 	if(basename($_SERVER['SCRIPT_NAME']) === basename($_SERVER['SCRIPT_FILENAME']))
 		$GLOBALS['G_SP']['url']["url_path_base"] = $_SERVER['SCRIPT_NAME'];
@@ -48,11 +48,9 @@ if('' == $GLOBALS['G_SP']['url']["url_path_base"]){
 		$GLOBALS['G_SP']['url']["url_path_base"] = $_SERVER['PHP_SELF'];
 	elseif (isset($_SERVER['ORIG_SCRIPT_NAME']) && basename($_SERVER['ORIG_SCRIPT_NAME']) === basename($_SERVER['SCRIPT_FILENAME']))
 		$GLOBALS['G_SP']['url']["url_path_base"] = $_SERVER['ORIG_SCRIPT_NAME'];
-}else{
-	$GLOBALS['G_SP']['url']["url_path_base"] = '/index.php';
 }
 
-// ÔÚÊ¹ÓÃPATH_INFOµÄÇé¿öÏÂ£¬¶ÔÂ·ÓÉ½øÐÐÔ¤´¦Àí
+// åœ¨ä½¿ç”¨PATH_INFOçš„æƒ…å†µä¸‹ï¼Œå¯¹è·¯ç”±è¿›è¡Œé¢„å¤„ç†
 if(TRUE == $GLOBALS['G_SP']['url']["url_path_info"] && !empty($_SERVER['PATH_INFO'])){
 	$url_args = explode("/", $_SERVER['PATH_INFO']);$url_sort = array();
 	for($u = 1; $u < count($url_args); $u++){
@@ -63,7 +61,7 @@ if(TRUE == $GLOBALS['G_SP']['url']["url_path_info"] && !empty($_SERVER['PATH_INF
 	}else{$_REQUEST = $_GET = $_GET + $url_sort;}
 }
 
-// ¹¹ÔìÖ´ÐÐÂ·ÓÉ
+// æž„é€ æ‰§è¡Œè·¯ç”±
 $__controller = isset($_REQUEST[$GLOBALS['G_SP']["url_controller"]]) ? 
 	$_REQUEST[$GLOBALS['G_SP']["url_controller"]] : 
 	$GLOBALS['G_SP']["default_controller"];
@@ -71,5 +69,5 @@ $__action = isset($_REQUEST[$GLOBALS['G_SP']["url_action"]]) ?
 	$_REQUEST[$GLOBALS['G_SP']["url_action"]] : 
 	$GLOBALS['G_SP']["default_action"];
 
-// ×Ô¶¯Ö´ÐÐÓÃ»§´úÂë
+// è‡ªåŠ¨æ‰§è¡Œç”¨æˆ·ä»£ç 
 if(TRUE == $GLOBALS['G_SP']['auto_sp_run'])spRun();

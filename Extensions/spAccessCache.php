@@ -1,66 +1,66 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * spAccessCache Àà£¬ÒÔÀ©Õ¹ĞÎÊ½Ö§³ÖspAccessº¯ÊıÓµÓĞ¸ü¶àµÄ»º´æ·½Ê½µÄÀ©Õ¹¡£
+ * spAccessCache ç±»ï¼Œä»¥æ‰©å±•å½¢å¼æ”¯æŒspAccesså‡½æ•°æ‹¥æœ‰æ›´å¤šçš„ç¼“å­˜æ–¹å¼çš„æ‰©å±•ã€‚
  *
- * Ä¿Ç°spAccessCacheÖ§³ÖµÄ»º´æÇı¶¯ÀàĞÍÈçÏÂ£º
+ * ç›®å‰spAccessCacheæ”¯æŒçš„ç¼“å­˜é©±åŠ¨ç±»å‹å¦‚ä¸‹ï¼š
  *
- * Xcache£¨Çı¶¯Ãû³Æ£ºxcache)
+ * Xcacheï¼ˆé©±åŠ¨åç§°ï¼šxcache)
  * Memcache (memcache)
  * APC (apc)
  * eAccelerator (eaccelerator)
- * SAEµÄmemcache (saememcache)
- * Ê¹ÓÃÊı¾İ¿â×÷Îª»º´æ (db)
+ * SAEçš„memcache (saememcache)
+ * ä½¿ç”¨æ•°æ®åº“ä½œä¸ºç¼“å­˜ (db)
  *
- * Çë×¢Òâ£ºMemcache¡¢db Çı¶¯ÀàÓĞÆäÌØÊâµÄÉèÖÃ£¬Çë²Î¿¼Àà×¢ÊÍ¡£
+ * è¯·æ³¨æ„ï¼šMemcacheã€db é©±åŠ¨ç±»æœ‰å…¶ç‰¹æ®Šçš„è®¾ç½®ï¼Œè¯·å‚è€ƒç±»æ³¨é‡Šã€‚
  *
- * Ó¦ÓÃ³ÌĞòÅäÖÃÖĞĞèÒªÊ¹ÓÃµ½Â·ÓÉ¹Ò¿¿µãÒÔ¼°spAccess¹Ò¿¿µã
+ * åº”ç”¨ç¨‹åºé…ç½®ä¸­éœ€è¦ä½¿ç”¨åˆ°è·¯ç”±æŒ‚é ç‚¹ä»¥åŠspAccessæŒ‚é ç‚¹
  * 'launch' => array( 
  *  	'function_access' => array(
- *			array("spAccessCache", "xcache"), // µÚ¶ş¸ö²ÎÊıÎª»º´æÇı¶¯ÀàĞÍµÄÃû³Æ
+ *			array("spAccessCache", "xcache"), // ç¬¬äºŒä¸ªå‚æ•°ä¸ºç¼“å­˜é©±åŠ¨ç±»å‹çš„åç§°
  * 	    ),
  *),
  * 
- * ±¾À©Õ¹ÒªÇóSpeedPHP¿ò¼Ü2.5°æ±¾ÒÔÉÏ£¬ÒÔÖ§³Ö¶ÔspAccessº¯ÊıµÄ¹Ò¿¿³ÌĞò¡£
+ * æœ¬æ‰©å±•è¦æ±‚SpeedPHPæ¡†æ¶2.5ç‰ˆæœ¬ä»¥ä¸Šï¼Œä»¥æ”¯æŒå¯¹spAccesså‡½æ•°çš„æŒ‚é ç¨‹åºã€‚
  */
-if( SP_VERSION < 2.5 )spError('spAccessCacheÀ©Õ¹ÒªÇóSpeedPHP¿ò¼Ü°æ±¾2.5ÒÔÉÏ¡£');
+if( SP_VERSION < 2.5 )spError('spAccessCacheæ‰©å±•è¦æ±‚SpeedPHPæ¡†æ¶ç‰ˆæœ¬2.5ä»¥ä¸Šã€‚');
 class spAccessCache{
 	/**
-	 * Ä§Êõº¯Êı  Í¨¹ıº¯ÊıÃûÀ´µ÷ÓÃ²»Í¬µÄ»º´æÇı¶¯Àà
+	 * é­”æœ¯å‡½æ•°  é€šè¿‡å‡½æ•°åæ¥è°ƒç”¨ä¸åŒçš„ç¼“å­˜é©±åŠ¨ç±»
 	 */
 	public function __call($name, $args){
 		$driverClass = 'access_driver_'.$name;
-		if(!class_exists($driverClass))spError('spAccessÎŞ·¨ÕÒµ½ÃûÎª{$name}»º´æÇı¶¯³ÌĞò£¬Çë¼ì²é!');
+		if(!class_exists($driverClass))spError('spAccessæ— æ³•æ‰¾åˆ°åä¸º{$name}ç¼“å­˜é©±åŠ¨ç¨‹åºï¼Œè¯·æ£€æŸ¥!');
 		@list($method, $name, $value, $life_time) = $args;
-		if('w' == $method){ // Ğ´Êı¾İ
+		if('w' == $method){ // å†™æ•°æ®
 			$life_time = ( -1 == $life_time ) ? '300000000' : $life_time;
 			return spClass($driverClass)->set($name, serialize($value), $life_time);
-		}elseif('c' == $method){ // Çå³ıÊı¾İ
+		}elseif('c' == $method){ // æ¸…é™¤æ•°æ®
 			return spClass($driverClass)->del($name);
-		}else{ // ¶ÁÊı¾İ
+		}else{ // è¯»æ•°æ®
 			return unserialize(spClass($driverClass)->get($name));
 		}
 	}
 }
 
 /**
- * access_driver_memcache  memcache»º´æÇı¶¯Àà
+ * access_driver_memcache  memcacheç¼“å­˜é©±åŠ¨ç±»
  *
- * memcache·şÎñÆ÷µÄÄ¬ÈÏÉèÖÃÊÇ localhost:11211£¬Èç¹ûÄúµÄÉèÖÃÓëÖ®²»ÏàÍ¬£¬Çë×öÒÔÏÂÅäÖÃ£º
+ * memcacheæœåŠ¡å™¨çš„é»˜è®¤è®¾ç½®æ˜¯ localhost:11211ï¼Œå¦‚æœæ‚¨çš„è®¾ç½®ä¸ä¹‹ä¸ç›¸åŒï¼Œè¯·åšä»¥ä¸‹é…ç½®ï¼š
  * 'ext' => array(
  * 		'spAccessCache' => array(
- *			'memcache_host' => '123.456.789.10', // memcache·şÎñÆ÷µØÖ·
- * 			'memcache_port' => '1111', // memcache·şÎñÆ÷¶Ë¿Ú
+ *			'memcache_host' => '123.456.789.10', // memcacheæœåŠ¡å™¨åœ°å€
+ * 			'memcache_port' => '1111', // memcacheæœåŠ¡å™¨ç«¯å£
  *		),
  * ),
  */
 class access_driver_memcache{
 	public $mmc = null;
 	public function __construct(){
-		if(!function_exists('memcache_connect'))spError('PHP»·¾³Î´°²×°Memcacheº¯Êı¿â£¡');
+		if(!function_exists('memcache_connect'))spError('PHPç¯å¢ƒæœªå®‰è£…Memcacheå‡½æ•°åº“ï¼');
 		$params = spExt('spAccessCache');
 		$memcache_host = (isset($params['memcache_host'])) ? $params['memcache_host'] : 'localhost';
 		$memcache_port = (isset($params['memcache_port'])) ? $params['memcache_port'] : '11211';
@@ -72,60 +72,60 @@ class access_driver_memcache{
 }
 
 /**
- * access_driver_saememcache  SAEµÄmemcache»º´æÇı¶¯Àà
+ * access_driver_saememcache  SAEçš„memcacheç¼“å­˜é©±åŠ¨ç±»
  */
 class access_driver_saememcache{
 	public $mmc = null;
-	public function __construct(){if( ! $this->mmc = memcache_init() )spError("SAEµÄmemcache³õÊ¼»¯Ê§°Ü£¡");}
+	public function __construct(){if( ! $this->mmc = memcache_init() )spError("SAEçš„memcacheåˆå§‹åŒ–å¤±è´¥ï¼");}
 	public function get($name){return memcache_get($this->mmc, $name);}
 	public function set($name, $value, $life_time){return memcache_set($this->mmc, $name, $value, 0, $life_time);}
 	public function del($name){return memcache_delete($this->mmc, $name);}
 }
 
 /**
- * access_driver_apc  APC»º´æÇı¶¯Àà
+ * access_driver_apc  APCç¼“å­˜é©±åŠ¨ç±»
  */
 class access_driver_apc{
-	public function __construct(){if(!function_exists('apc_store'))spError('PHP»·¾³Î´°²×°APCº¯Êı¿â£¡');}
+	public function __construct(){if(!function_exists('apc_store'))spError('PHPç¯å¢ƒæœªå®‰è£…APCå‡½æ•°åº“ï¼');}
 	public function get($name){return apc_fetch($name);}
 	public function set($name, $value, $life_time){return apc_store($name, $value, $life_time);}
 	public function del($name){return apc_delete($name);}
 }
 
 /**
- * access_driver_eaccelerator  eAccelerator»º´æÇı¶¯Àà
+ * access_driver_eaccelerator  eAcceleratorç¼“å­˜é©±åŠ¨ç±»
  */
 class access_driver_eaccelerator{
-	public function __construct(){if(!function_exists('eaccelerator_put'))spError('PHP»·¾³Î´°²×°eAcceleratorº¯Êı¿â£¡');}
+	public function __construct(){if(!function_exists('eaccelerator_put'))spError('PHPç¯å¢ƒæœªå®‰è£…eAcceleratorå‡½æ•°åº“ï¼');}
 	public function get($name){return eaccelerator_get($name);}
 	public function set($name, $value, $life_time){return eaccelerator_put($name, $value, $life_time);}
 	public function del($name){return eaccelerator_rm($name);}
 }
 
 /**
- * access_driver_xcache  Xcache»º´æÇı¶¯Àà
+ * access_driver_xcache  Xcacheç¼“å­˜é©±åŠ¨ç±»
  */
 class access_driver_xcache{
-	public function __construct(){if(!function_exists('xcache_set'))spError('PHP»·¾³Î´°²×°Xcacheº¯Êı¿â£¡');}
+	public function __construct(){if(!function_exists('xcache_set'))spError('PHPç¯å¢ƒæœªå®‰è£…Xcacheå‡½æ•°åº“ï¼');}
 	public function get($name){return xcache_get($name);}
 	public function set($name, $value, $life_time){return xcache_set($name, $value, $life_time);}
 	public function del($name){return xcache_unset($name);}
 }
 
 /**
- * access_driver_db  Êı¾İ¿â»º´æÇı¶¯Àà
+ * access_driver_db  æ•°æ®åº“ç¼“å­˜é©±åŠ¨ç±»
  *
- * access_driver_db¿ÉÒÔÈÃ¿ª·¢ÕßÊ¹ÓÃÊı¾İ¿â±¾Éí×÷Îª»º´æÇı¶¯¡£
+ * access_driver_dbå¯ä»¥è®©å¼€å‘è€…ä½¿ç”¨æ•°æ®åº“æœ¬èº«ä½œä¸ºç¼“å­˜é©±åŠ¨ã€‚
  *
- * ÔÚÊ¹ÓÃ access_driver_db Ö®Ç°£¬Îñ±Ø½¨Á¢¶ÔÓ¦µÄ access_cache Êı¾İ±í
+ * åœ¨ä½¿ç”¨ access_driver_db ä¹‹å‰ï¼ŒåŠ¡å¿…å»ºç«‹å¯¹åº”çš„ access_cache æ•°æ®è¡¨
  *
- * Éú³É±íÓï¾ä£º
+ * ç”Ÿæˆè¡¨è¯­å¥ï¼š
  * CREATE TABLE `access_cache` (
  *   `cacheid` bigint(20) NOT NULL AUTO_INCREMENT,
  *   `cachename` varchar(100) NOT NULL,
  *   `cachevalue` text,
  *   PRIMARY KEY (`cacheid`)
- * ) ENGINE=MyISAM;
+ * ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
  *
  */
 class access_driver_db extends spModel{
