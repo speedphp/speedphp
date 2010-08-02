@@ -1,29 +1,29 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHP����PHP���, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHP中文PHP框架, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
-define("SPANONYMOUS","SPANONYMOUS"); // ��Ȩ�����õĽ�ɫ����
+define("SPANONYMOUS","SPANONYMOUS"); // 无权限设置的角色名称
 
 /**
- * ��������û�Ȩ���жϻ���
- * Ҫʹ�ø�Ȩ�޿��Ƴ�����Ҫ��Ӧ�ó������������������ã�
- * ���޿��Ƶ��������������ʹ��	'launch' => array( 'router_prefilter' => array( array('spAcl','mincheck'), ), )
- * ǿ�ƿ��Ƶ��������������ʹ��	'launch' => array( 'router_prefilter' => array( array('spAcl','maxcheck'), ), )
+ * 基于组的用户权限判断机制
+ * 要使用该权限控制程序，需要在应用程序配置中做以下配置：
+ * 有限控制的情况，在配置中使用	'launch' => array( 'router_prefilter' => array( array('spAcl','mincheck'), ), )
+ * 强制控制的情况，在配置中使用	'launch' => array( 'router_prefilter' => array( array('spAcl','maxcheck'), ), )
  */
 class spAcl
 {
 	/**
-	 * Ĭ��Ȩ�޼��Ĵ����������ã������Ǻ������������飨array(����,����)����ʽ��
+	 * 默认权限检查的处理程序设置，可以是函数名或是数组（array(类名,方法)的形式）
 	 */
 	public $checker = array('spAclModel','check');
 	
 	/**
-	 * Ĭ����ʾ��Ȩ����ʾ�������Ǻ������������飨array(����,����)����ʽ��
+	 * 默认提示无权限提示，可以是函数名或是数组（array(类名,方法)的形式）
 	 */
 	public $prompt = array('spAcl','def_prompt');
 	/**
-	 * ���캯��������Ȩ�޼���������ʾ����
+	 * 构造函数，设置权限检查程序与提示程序
 	 */
 	public function __construct()
 	{	
@@ -33,7 +33,7 @@ class spAcl
 	}
 
 	/**
-	 * ��ȡ��ǰ�Ự���û���ʶ
+	 * 获取当前会话的用户标识
 	 */
 	public function get()
 	{
@@ -41,7 +41,7 @@ class spAcl
 	}
 
 	/**
-	 * ǿ�ƿ��Ƶļ����������ں�̨����Ȩ�޿��Ƶ�ҳ������ܽ���
+	 * 强制控制的检查程序，适用于后台。无权限控制的页面均不能进入
 	 */
 	public function maxcheck()
 	{
@@ -54,7 +54,7 @@ class spAcl
 	}
 
 	/**
-	 * ���޵�Ȩ�޿��ƣ�������ǰ̨������Ȩ�ޱ�������ֹ��ҳ�������ã�����������ҳ����ɽ���
+	 * 有限的权限控制，适用于前台。仅在权限表声明禁止的页面起作用，其他无声明页面均可进入
 	 */
 	public function mincheck()
 	{
@@ -67,7 +67,7 @@ class spAcl
 	}
 	
 	/**
-	 * ʹ�ó�����������м��ȴ���
+	 * 使用程序调度器进行检查等处理
 	 */
 	private function check()
 	{
@@ -81,7 +81,7 @@ class spAcl
 		}
 	}
 	/**
-	 * ��Ȩ����ʾ��ת
+	 * 无权限提示跳转
 	 */
 	public function prompt()
 	{
@@ -94,19 +94,19 @@ class spAcl
 	}
 	
 	/**
-	 * Ĭ�ϵ���Ȩ����ʾ��ת
+	 * 默认的无权限提示跳转
 	 */
 	public function def_prompt()
 	{
-		$url = spUrl(); // ��ת����ҳ����ǿ��Ȩ�޵�����£��뽫��ҳ�����óɿ��Խ��롣
+		$url = spUrl(); // 跳转到首页，在强制权限的情况下，请将该页面设置成可以进入。
 		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"Access Failed!\");location.href=\"{$url}\";}</script></head><body onload=\"sptips()\"></body></html>";
 		exit;
 	}
 
 	/**
-	 * ���õ�ǰ�û����ڲ�ʹ��SESSION��¼
+	 * 设置当前用户，内部使用SESSION记录
 	 * 
-	 * @param acl_name    �û���ʶ���������������û���
+	 * @param acl_name    用户标识：可以是组名或用户名
 	 */
 	public function set($acl_name)
 	{
@@ -115,8 +115,8 @@ class spAcl
 }
 
  /**
- * ACL�����࣬ͨ�����ݱ�ȷ���û�Ȩ��
- * ���ṹ��
+ * ACL操作类，通过数据表确定用户权限
+ * 表结构：
  * CREATE TABLE acl
  * (
  * 	aclid int NOT NULL AUTO_INCREMENT,
@@ -125,26 +125,26 @@ class spAcl
  * 	action VARCHAR(50) NOT NULL,
  * 	acl_name VARCHAR(50) NOT NULL,
  * 	PRIMARY KEY (aclid)
- * ) ENGINE=MyISAM;
+ * ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci
  */
 class spAclModel extends spModel
 {
 
 	public $pk = 'aclid';
 	/**
-	 * ����
+	 * 表名
 	 */
 	public $table = 'acl';
 
 	/**
-	 * ����Ӧ��Ȩ��
+	 * 检查对应的权限
 	 *
-	 * ����1��ͨ����飬0�ǲ���ͨ����飨���������������ڵ��û���ʶû�м�¼��
-	 * ����-1���޸�Ȩ�޿��ƣ����ÿ�������������������Ȩ�ޱ��У�
+	 * 返回1是通过检查，0是不能通过检查（控制器及动作存在但用户标识没有记录）
+	 * 返回-1是无该权限控制（即该控制器及动作不存在于权限表中）
 	 * 
-	 * @param acl_name    �û���ʶ�����������������û���
-	 * @param controller    ����������
-	 * @param action    ��������
+	 * @param acl_name    用户标识：可以是组名或是用户名
+	 * @param controller    控制器名称
+	 * @param action    动作名称
 	 */
 	public function check($acl_name = SPANONYMOUS, $controller, $action)
 	{

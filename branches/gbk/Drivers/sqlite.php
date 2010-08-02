@@ -1,25 +1,25 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 /**
- * db_sqlite SqliteÊı¾İ¿âµÄÇı¶¯Ö§³Ö 
+ * db_sqlite Sqliteæ•°æ®åº“çš„é©±åŠ¨æ”¯æŒ 
  */
 class db_sqlite {
 	/**
-	 * Êı¾İ¿âÁ´½Ó¾ä±ú
+	 * æ•°æ®åº“é“¾æ¥å¥æŸ„
 	 */
 	public $conn;
 	/**
-	 * Ö´ĞĞµÄSQLÓï¾ä¼ÇÂ¼
+	 * æ‰§è¡Œçš„SQLè¯­å¥è®°å½•
 	 */
 	public $arrSql;
 
 	/**
-	 * °´SQLÓï¾ä»ñÈ¡¼ÇÂ¼½á¹û£¬·µ»ØÊı×é
+	 * æŒ‰SQLè¯­å¥è·å–è®°å½•ç»“æœï¼Œè¿”å›æ•°ç»„
 	 * 
-	 * @param sql  Ö´ĞĞµÄSQLÓï¾ä
+	 * @param sql  æ‰§è¡Œçš„SQLè¯­å¥
 	 */
 	public function getArray($sql)
 	{
@@ -28,7 +28,7 @@ class db_sqlite {
 	}
 	
 	/**
-	 * ·µ»Øµ±Ç°²åÈë¼ÇÂ¼µÄÖ÷¼üID
+	 * è¿”å›å½“å‰æ’å…¥è®°å½•çš„ä¸»é”®ID
 	 */
 	public function newinsertid()
 	{
@@ -36,7 +36,7 @@ class db_sqlite {
 	}
 	
 	/**
-	 * ¸ñÊ½»¯´ølimitµÄSQLÓï¾ä
+	 * æ ¼å¼åŒ–å¸¦limitçš„SQLè¯­å¥
 	 */
 	public function setlimit($sql, $limit)
 	{
@@ -44,9 +44,9 @@ class db_sqlite {
 	}
 
 	/**
-	 * Ö´ĞĞÒ»¸öSQLÓï¾ä
+	 * æ‰§è¡Œä¸€ä¸ªSQLè¯­å¥
 	 * 
-	 * @param sql ĞèÒªÖ´ĞĞµÄSQLÓï¾ä
+	 * @param sql éœ€è¦æ‰§è¡Œçš„SQLè¯­å¥
 	 */
 	public function exec($sql)
 	{
@@ -54,12 +54,12 @@ class db_sqlite {
 		if( $result = sqlite_query($this->conn, $sql, SQLITE_ASSOC, $sqliteerror) ){
 			return $result;
 		}else{
-			spError("{$sql}<br />Ö´ĞĞ´íÎó: " . $sqliteerror);
+			spError("{$sql}<br />æ‰§è¡Œé”™è¯¯: " . $sqliteerror);
 		}
 	}
 	
 	/**
-	 * ·µ»ØÓ°ÏìĞĞÊı
+	 * è¿”å›å½±å“è¡Œæ•°
 	 */
 	public function affected_rows()
 	{
@@ -67,9 +67,9 @@ class db_sqlite {
 	}
 
 	/**
-	 * »ñÈ¡Êı¾İ±í½á¹¹
+	 * è·å–æ•°æ®è¡¨ç»“æ„
 	 *
-	 * @param tbl_name  ±íÃû³Æ
+	 * @param tbl_name  è¡¨åç§°
 	 */
 	public function getTable($tbl_name)
 	{
@@ -82,32 +82,34 @@ class db_sqlite {
 	}
 
 	/**
-	 * ¹¹Ôìº¯Êı
+	 * æ„é€ å‡½æ•°
 	 *
-	 * @param dbConfig  Êı¾İ¿âÅäÖÃ
+	 * @param dbConfig  æ•°æ®åº“é…ç½®
 	 */
 	public function __construct($dbConfig)
 	{
-		if(!function_exists('sqlite_open'))spError('PHP»·¾³Î´°²×°Sqliteº¯Êı¿â£¡');
+		if(!function_exists('sqlite_open'))spError('PHPç¯å¢ƒæœªå®‰è£…Sqliteå‡½æ•°åº“ï¼');
 		$linkfunction = ( TRUE == $dbConfig['persistent'] ) ? 'sqlite_popen' : 'sqlite_open';
-		if (! $this->conn = $linkfunction($dbConfig['database'], 0666, $sqliteerror))spError('Êı¾İ¿âÁ´½Ó´íÎó/ÎŞ·¨ÕÒµ½Êı¾İ¿â : '. $sqliteerror);
+		if (! $this->conn = $linkfunction($dbConfig['host'], 0666, $sqliteerror))spError('æ•°æ®åº“é“¾æ¥é”™è¯¯/æ— æ³•æ‰¾åˆ°æ•°æ®åº“ : '. $sqliteerror);
 	}
 	/**
-	 * ¶ÔÌØÊâ×Ö·û½øĞĞ¹ıÂË
+	 * å¯¹ç‰¹æ®Šå­—ç¬¦è¿›è¡Œè¿‡æ»¤
 	 *
-	 * @param value  Öµ
+	 * @param value  å€¼
 	 */
-	public function __val_escape($value) {
-		if(is_null($value))return null;
+	public function __val_escape($value, $quotes = FALSE) {
+		if(is_null($value))return 'NULL';
 		if(is_bool($value))return $value ? 1 : 0;
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
-		return sqlite_escape_string($value);
+		$value = sqlite_escape_string($value);
+		if($quotes)$value = "'{$value}'";
+		return $value;
 	}
 
 	/**
-	 * Îö¹¹º¯Êı
+	 * ææ„å‡½æ•°
 	 */
 	public function __destruct()
 	{

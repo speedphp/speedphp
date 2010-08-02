@@ -27,6 +27,7 @@ class spController {
 			$this->v = spClass('spView');
 		}
 	}
+
     /**
      *
      * 跳转程序
@@ -74,7 +75,7 @@ class spController {
 	 */
 	public function __set($name, $value)
 	{
-		if(TRUE == $GLOBALS['G_SP']['view']['enabled']){
+		if(TRUE == $GLOBALS['G_SP']['view']['enabled'] && false !== $value){
 			$this->v->engine->assign(array($name=>$value));
 		}
 		$this->__template_vals[$name] = $value;
@@ -104,6 +105,18 @@ class spController {
 			require($tplname);
 		}
 		if( TRUE != $output )return ob_get_clean();
+	}
+	
+	/**
+	 * 自动输出页面
+	 * @param tplname 模板文件路径
+	 */
+	public function auto_display($tplname)
+	{
+		if( TRUE != $this->v->displayed && FALSE != $GLOBALS['G_SP']['view']['auto_display']){
+			if( !method_exists($this->v->engine, 'template_exists') || TRUE == $this->v->engine->template_exists($tplname) )
+				$this->display($tplname);
+		}
 	}
 
 	/**

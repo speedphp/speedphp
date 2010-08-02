@@ -23,7 +23,7 @@ function spRun(){
 	if(FALSE != $GLOBALS['G_SP']['view']['auto_display']){
 		$__tplname = $__controller.$GLOBALS['G_SP']['view']['auto_display_sep'].
 				$__action.$GLOBALS['G_SP']['view']['auto_display_suffix']; // 拼装模板路径
-		$handle_controller->v->auto_display($__tplname);
+		$handle_controller->auto_display($__tplname);
 	}
 	// 对路由进行后续相关操作
 	spLaunch("router_postfilter");
@@ -76,7 +76,7 @@ function import($sfilename, $auto_search = TRUE, $auto_error = FALSE){
 			}
 		}
 	}
-	if( TRUE == $auto_error )spError('未能找到名为：{$sfilename}的文件');
+	if( TRUE == $auto_error )spError("未能找到名为：{$sfilename}的文件");
 	return FALSE;
 }
 
@@ -162,7 +162,7 @@ function spError($msg, $output = TRUE, $stop = TRUE){
 	}
 	$traces = debug_backtrace();
 	$bufferabove = ob_get_clean();
-	require($GLOBALS['G_SP']['sp_notice_php']);
+	require_once($GLOBALS['G_SP']['sp_notice_php']);
 	if(TRUE == $stop)exit;
 }
 /**

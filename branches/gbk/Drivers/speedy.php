@@ -1,37 +1,37 @@
 <?php
 /////////////////////////////////////////////////////////////////
-// SpeedPHPÖĞÎÄPHP¿ò¼Ü, Copyright (C) 2008 - 2010 SpeedPHP.com //
+// SpeedPHPä¸­æ–‡PHPæ¡†æ¶, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
 $__speedy_compression_level = 9;
 
 /**
- * speedy ¼òµ¥µÄPHPÄ£°åÒıÇæ£¬½öÍ¨¹ıPHP±¾ÉíÀ´×÷ÎªÄ£°åµÄÓï·¨¡£ÈÃ¿ª·¢Õß³ıÁËSmartyµÈÄ£°åÒıÇæÖ®Íâ£¬¿ÉÒÔÓĞÒ»¸ö¿ìËÙ²¢ÇÒ¼òµ¥µÄÄ£°åÒıÇæ·½°¸¡£
+ * speedy ç®€å•çš„PHPæ¨¡æ¿å¼•æ“ï¼Œä»…é€šè¿‡PHPæœ¬èº«æ¥ä½œä¸ºæ¨¡æ¿çš„è¯­æ³•ã€‚è®©å¼€å‘è€…é™¤äº†Smartyç­‰æ¨¡æ¿å¼•æ“ä¹‹å¤–ï¼Œå¯ä»¥æœ‰ä¸€ä¸ªå¿«é€Ÿå¹¶ä¸”ç®€å•çš„æ¨¡æ¿å¼•æ“æ–¹æ¡ˆã€‚
  *
- * speedyÓµÓĞµÄ¹¦ÄÜ£º°´Ä£°åÂ·¾¶À´»ñÈ¡Ä£°å²¢ÏÔÊ¾£¬Í¨¹ıassign¶ÔÄ£°åÄÚ±äÁ¿½øĞĞ¸³Öµ£¬¼ì²éÄ£°åÎÄ¼şÊÇ·ñ´æÔÚ£¬GZipÑ¹ËõµÈ¡£
+ * speedyæ‹¥æœ‰çš„åŠŸèƒ½ï¼šæŒ‰æ¨¡æ¿è·¯å¾„æ¥è·å–æ¨¡æ¿å¹¶æ˜¾ç¤ºï¼Œé€šè¿‡assignå¯¹æ¨¡æ¿å†…å˜é‡è¿›è¡Œèµ‹å€¼ï¼Œæ£€æŸ¥æ¨¡æ¿æ–‡ä»¶æ˜¯å¦å­˜åœ¨ï¼ŒGZipå‹ç¼©ç­‰ã€‚
  */
 class speedy{
 	/**
-	 * Ä£°åÄ¿Â¼
+	 * æ¨¡æ¿ç›®å½•
 	 */
 	public $template_dir = null;
 	/**
-	 * ÊÇ·ñ¿ªÆôGZipÑ¹Ëõ
+	 * æ˜¯å¦å¼€å¯GZipå‹ç¼©
 	 */
 	public $enable_gzip	= FALSE;
 	/**
-	 * GZipÑ¹Ëõ¼¶±ğ
+	 * GZipå‹ç¼©çº§åˆ«
 	 */
 	public $compression_level	=  9;
 	/**
-	 * Ä£°åÄÚÊ¹ÓÃµÄ±äÁ¿Öµ
+	 * æ¨¡æ¿å†…ä½¿ç”¨çš„å˜é‡å€¼
 	 */
 	private $_vars = array();
 	
 	/**
-	 * ¶ÔÄ£°å¸³Öµ
-	 * @param key ±äÁ¿Ãû³Æ£¬»ò±äÁ¿Êı×é
-	 * @param value ±äÁ¿Öµ
+	 * å¯¹æ¨¡æ¿èµ‹å€¼
+	 * @param key å˜é‡åç§°ï¼Œæˆ–å˜é‡æ•°ç»„
+	 * @param value å˜é‡å€¼
 	 */
 	public function assign($key, $value = null){
 		if (is_array($key)){
@@ -42,8 +42,8 @@ class speedy{
 	}
 	
 	/**
-	 * ¼ì²âÄ£°åÊÇ·ñ´æÔÚ
-	 * @param tplname Ä£°åÃû³Æ
+	 * æ£€æµ‹æ¨¡æ¿æ˜¯å¦å­˜åœ¨
+	 * @param tplname æ¨¡æ¿åç§°
 	 */	
 	public function template_exists($tplname){
 		if (file_exists(realpath($this->template_dir).'/'.$tplname))return TRUE;
@@ -52,8 +52,8 @@ class speedy{
 	}
 	
 	/**
-	 * ÏÔÊ¾Ä£°å
-	 * @param tplname Ä£°åÃû³Æ
+	 * æ˜¾ç¤ºæ¨¡æ¿
+	 * @param tplname æ¨¡æ¿åç§°
 	 */	
 	public function display($tplname){
 		if (file_exists(realpath($this->template_dir).'/'.$tplname)){
@@ -61,7 +61,7 @@ class speedy{
 		}elseif (file_exists($tplname)){
 			$tplpath = $tplname;
 		}else{
-			spError("speedyÒıÇæ£ºÎŞ·¨ÕÒµ½Ä£°å ".$tplname);
+			spError("speedyå¼•æ“ï¼šæ— æ³•æ‰¾åˆ°æ¨¡æ¿ ".$tplname);
 		}
 		extract($this->_vars);
 		if( TRUE == $this->enable_gzip ){

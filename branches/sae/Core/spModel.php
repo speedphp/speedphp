@@ -56,7 +56,7 @@ class spModel {
 	 * 从数据表中查找一条记录
 	 *
 	 * @param conditions    查找条件，数组array("字段名"=>"查找值")或字符串，
-	 * 请注意在使用字符串时将需要开发者自行使用__val_escape来对输入值进行过滤
+	 * 请注意在使用字符串时将需要开发者自行使用escape来对输入值进行过滤
 	 * @param sort    排序，等同于“ORDER BY ”
 	 * @param fields    返回的字段范围，默认为返回全部字段的值
 	 */
@@ -73,7 +73,7 @@ class spModel {
 	 * 从数据表中查找记录
 	 *
 	 * @param conditions    查找条件，数组array("字段名"=>"查找值")或字符串，
-	 * 请注意在使用字符串时将需要开发者自行使用__val_escape来对输入值进行过滤
+	 * 请注意在使用字符串时将需要开发者自行使用escape来对输入值进行过滤
 	 * @param sort    排序，等同于“ORDER BY ”
 	 * @param fields    返回的字段范围，默认为返回全部字段的值
 	 * @param limit    返回的结果数量限制，等同于“LIMIT ”，如$limit = " 3, 5"，即是从第3条记录（从0开始计算）开始获取，共获取5条记录
@@ -86,8 +86,8 @@ class spModel {
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
-				$condition = $this->__val_escape($condition);
-				$join[] = "{$key} = '{$condition}'";
+				$condition = $this->escape($condition, TRUE);
+				$join[] = "{$key} = {$condition}";
 			}
 			$where = "WHERE ".join(" AND ",$join);
 		}else{
@@ -98,7 +98,7 @@ class spModel {
 		}else{
 			$sort = "ORDER BY {$this->pk}";
 		}
-		$sql = "SELECT {$this->tbl_name}.{$fields} FROM {$this->tbl_name} {$where} {$sort}";
+		$sql = "SELECT {$fields} FROM {$this->tbl_name} {$where} {$sort}";
 		if(null != $limit)$sql = $this->_db->setlimit($sql, $limit);
 		return $this->_db->getArray($sql);
 	}
@@ -107,11 +107,13 @@ class spModel {
 	 *
 	 * @param value 需要进行过滤的值
 	 */
-	public function __val_escape($value)
+	public function escape($value, $quotes = FALSE)
 	{
-		return $this->_db->__val_escape($value);
+		return $this->_db->__val_escape($value, $quotes);
 	}
-
+	// __val_escape是val的别名，向前兼容
+	public function __val_escape($value, $quotes = FALSE){return $this->escape($value, $quotes);}
+	
 	/**
 	 * 在数据表中新增一行数据
 	 *
@@ -124,11 +126,11 @@ class spModel {
 		if(empty($row))return FALSE;
 		foreach($row as $key => $value){
 			$cols[] = $key;
-			$vals[] = "'".$this->__val_escape($value)."'";
+			$vals[] = $this->escape($value, TRUE);
 		}
 		$col = join(',', $cols);
 		$val = join(',', $vals);
-		
+
 		$sql = "INSERT INTO {$this->tbl_name} ({$col}) VALUES ({$val})";
 		if( FALSE != $this->_db->exec($sql) ){ // 获取当前新增的ID
 			if( $newinserid = $this->_db->newinsertid() ){
@@ -161,8 +163,8 @@ class spModel {
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
-				$condition = $this->__val_escape($condition);
-				$join[] = "{$key} = '{$condition}'";
+				$condition = $this->escape($condition, TRUE);
+				$join[] = "{$key} = {$condition}";
 			}
 			$where = "WHERE ( ".join(" AND ",$join). ")";
 		}else{
@@ -236,7 +238,7 @@ class spModel {
 	 * 计算符合条件的记录数量
 	 *
 	 * @param conditions 查找条件，数组array("字段名"=>"查找值")或字符串，
-	 * 请注意在使用字符串时将需要开发者自行使用__val_escape来对输入值进行过滤
+	 * 请注意在使用字符串时将需要开发者自行使用escape来对输入值进行过滤
 	 */
 	public function findCount($conditions = null)
 	{
@@ -244,16 +246,16 @@ class spModel {
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
-				$condition = $this->__val_escape($condition);
-				$join[] = "{$key} = '{$condition}'";
+				$condition = $this->escape($condition, TRUE);
+				$join[] = "{$key} = {$condition}";
 			}
 			$where = "WHERE ".join(" AND ",$join);
 		}else{
 			if(null != $conditions)$where = "WHERE ".$conditions;
 		}
-		$sql = "SELECT COUNT({$this->pk}) as sp_counter FROM {$this->tbl_name} {$where}";
+		$sql = "SELECT COUNT({$this->pk}) AS SP_COUNTER FROM {$this->tbl_name} {$where}";
 		$result = $this->_db->getArray($sql);
-		return $result[0]['sp_counter'];
+		return $result[0]['SP_COUNTER'];
 	}
 
 	/**
@@ -283,16 +285,16 @@ class spModel {
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
-				$condition = $this->__val_escape($condition);
-				$join[] = "{$key} = '{$condition}'";
+				$condition = $this->escape($condition, TRUE);
+				$join[] = "{$key} = {$condition}";
 			}
 			$where = "WHERE ".join(" AND ",$join);
 		}else{
 			if(null != $conditions)$where = "WHERE ".$conditions;
 		}
 		foreach($row as $key => $value){
-			$value = $this->__val_escape($value);
-			$vals[] = "{$key} = '{$value}'";
+			$value = $this->escape($value, TRUE);
+			$vals[] = "{$key} = {$value}";
 		}
 		$values = join(", ",$vals);
 		$sql = "UPDATE {$this->tbl_name} SET {$values} {$where}";
@@ -307,13 +309,13 @@ class spModel {
 	 */
 	public function replace($conditions, $row)
 	{
-		$result = $this->update($conditions, $row);
-		if( $this->affectedRows() < 1 ){
+		if( $this->find($conditions) ){
+			return $this->update($conditions, $row);
+		}else{
 			if( !is_array($conditions) )spError('replace方法的条件务必是数组形式！');
 			$rows = spConfigReady($conditions, $row);
 			return $this->create($rows);
 		}
-		return $result;
 	}
 	
 	/**
@@ -328,14 +330,14 @@ class spModel {
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
-				$condition = $this->__val_escape($condition);
-				$join[] = "{$key} = '{$condition}'";
+				$condition = $this->escape($condition, TRUE);
+				$join[] = "{$key} = {$condition}";
 			}
 			$where = "WHERE ".join(" AND ",$join);
 		}else{
 			if(null != $conditions)$where = "WHERE ".$conditions;
 		}
-		$values = "{$this->tbl_name}.{$field} = {$this->tbl_name}.{$field} + {$optval}";
+		$values = "{$field} = {$field} + {$optval}";
 		$sql = "UPDATE {$this->tbl_name} SET {$values} {$where}";
 		return $this->_db->exec($sql);
 	}
@@ -598,8 +600,6 @@ class spCache {
 	 */
 	public $life_time = 3600;
 	
-
-	
 	/**
 	 * 模型对象
 	 */
@@ -621,10 +621,11 @@ class spCache {
 	 * 魔术函数，支持多重函数式使用类的方法
 	 */
 	public function __call($func_name, $func_args){
-		if( isset($this->input_args[0]) && -1 == $this->input_args[0] ){
-			return $this->clear( $this->model_obj , $func_name, $func_args);
-		}
-		return $this->cache_obj( $this->model_obj , $func_name, $func_args, $this->input_args[0]);
+		if( isset($this->input_args[0]) && -1 == $this->input_args[0] )return $this->clear($this->model_obj, $func_name, $func_args);
+		$cache_id = get_class($this->model_obj) . md5($func_name);
+		if( null != $func_args )$cache_id .= md5(json_encode($func_args));
+		if( $cache_file = spAccess('r', "sp_cache_{$cache_id}") )return unserialize( $cache_file );
+		return $this->cache_obj($cache_id, call_user_func_array(array($this->model_obj, $func_name), $func_args), $this->input_args[0]);
 	}
 	/** 
 	 * 执行spModel子类对象的方法，并对返回结果进行缓存。
@@ -634,16 +635,8 @@ class spCache {
 	 * @param func_args    函数的参数
 	 * @param life_time    缓存生存时间
 	 */
-	public function cache_obj(& $obj, $func_name, $func_args = null, $life_time = null ){
-		$cache_id = get_class($obj) . md5($func_name);
-		if( null != $func_args )$cache_id .= md5(serialize($func_args));
-		if( $cache_file = spAccess('r', "sp_cache_{$cache_id}") ){
-			return unserialize( $cache_file );
-		}
-		if( null == $life_time ){
-			$life_time = $this->life_time;
-		}
-		$run_result = call_user_func_array(array($obj, $func_name), $func_args);
+	public function cache_obj($cache_id, $run_result, $life_time = null ){
+		if( null == $life_time )$life_time = $this->life_time;
 		spAccess('w', "sp_cache_{$cache_id}", serialize($run_result), $life_time);
 		if( $cache_list = spAccess('r', 'sp_cache_list') ){
 			$cache_list = explode("\n",$cache_list);
@@ -663,7 +656,7 @@ class spCache {
 	 */
 	public function clear(& $obj, $func_name, $func_args = null){
 		$cache_id = get_class($obj) . md5($func_name);
-		if( null != $func_args )$cache_id .= md5(serialize($func_args));
+		if( null != $func_args )$cache_id .= md5(json_encode($func_args));
 		if( $cache_list = spAccess('r', 'sp_cache_list') ){
 			$cache_list = explode("\n",$cache_list);
 			$new_list = '';
@@ -704,11 +697,6 @@ class spLinker
 	private $model_obj = null;
 	
 	/** 
-	 * 链接方式指示
-	 */
-	private $linker = null;
-	
-	/** 
 	 * 预准备的结果
 	 */
 	private $prepare_result = null;
@@ -730,8 +718,6 @@ class spLinker
 	 * 函数式使用模型辅助类的输入函数
 	 */
     public function __input(& $obj, $args = null){
-		$this->linker = ((null != $args) ? $args[0] : array()) + ((null != $obj->linker) ? $obj->linker : array());
-		if( !is_array($this->linker) or empty($this->linker) or (null != $args && FALSE == $args[0]) )$this->enabled = FALSE;
 		$this->model_obj = $obj;
 		return $this;
 	}
@@ -759,8 +745,8 @@ class spLinker
 			}elseif( !$run_result = call_user_func_array(array($this->model_obj, $func_name), $func_args) ){
 				if( 'update' != $func_name )return FALSE;
 			}
-			if( null != $this->linker ){
-				foreach( $this->linker as $thelinker ){
+			if( null != $this->model_obj->linker && is_array($this->model_obj->linker) ){
+				foreach( $this->model_obj->linker as $thelinker ){
 					if( FALSE == $thelinker['enabled'] )continue;
 					$thelinker['type'] = strtolower($thelinker['type']);
 					if( 'find' == $func_name || 'findBy' == $func_name ){
@@ -778,7 +764,9 @@ class spLinker
 				}
 			}
 			return $run_result;
-		}else{
+		}elseif(in_array($func_name, $GLOBALS['G_SP']["auto_load_model"])){
+			return spClass($func_name)->__input($this, $func_args);
+  		}else{
 			return call_user_func_array(array($this->model_obj, $func_name), $func_args);
 		}
 	}
@@ -872,7 +860,6 @@ class spLinker
 	 * @param run_result    主表执行查找后返回的结果
 	 */
 	private function do_select( $thelinker, $run_result ){
-		if( FALSE == $thelinker['enabled'] )return FALSE;
 		if(empty($thelinker['mapkey']))$thelinker['mapkey'] = $this->model_obj->pk;
 		if( 'manytomany' == $thelinker['type'] ){
 			$do_func = 'findAll';
