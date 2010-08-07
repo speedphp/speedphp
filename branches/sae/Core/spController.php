@@ -233,7 +233,7 @@ class spArgs {
 	 */
 	public function has($name)
 	{
-		return isset($this->args[$name]) && ( strlen(trim($this->args[$name])) > 0 );
+		return isset($this->args[$name]);
 	}
 
 	/**
