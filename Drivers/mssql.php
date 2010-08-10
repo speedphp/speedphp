@@ -104,16 +104,15 @@ class db_mssql {
 	 *
 	 * @param value  值
 	 */
-	public function __val_escape($value, $quotes = FALSE) {
+	public function __val_escape($value) {
 		if(is_null($value))return 'NULL';
 		if(is_bool($value))return $value ? 1 : 0;
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
-		$value = str_replace("'","''",$value);
-		$value = str_replace("\0","[NULL]",$value);
-		if($quotes)$value = "'{$value}'";
-		return $value;
+		$search=array("\\","\0","\n","\r","\x1a","'",'"');
+        $replace=array("\\\\","[NULL]","\\n","\\r","\Z","''",'\"');
+        return '\''.str_replace($search,$replace,$value).'\'';
 	}
 
 	/**

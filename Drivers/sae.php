@@ -104,9 +104,7 @@ class db_sae {
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
-		$value = $this->conn->escape($value);
-		if($quotes)$value = "'{$value}'";
-		return $value;
+		return '\''.$this->conn->escape($value).'\'';
 	}
 
 	/**
