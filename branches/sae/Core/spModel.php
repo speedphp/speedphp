@@ -86,7 +86,7 @@ class spModel {
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
-				$condition = $this->escape($condition, TRUE);
+				$condition = $this->escape($condition);
 				$join[] = "{$key} = {$condition}";
 			}
 			$where = "WHERE ".join(" AND ",$join);
@@ -107,12 +107,12 @@ class spModel {
 	 *
 	 * @param value 需要进行过滤的值
 	 */
-	public function escape($value, $quotes = FALSE)
+	public function escape($value)
 	{
-		return $this->_db->__val_escape($value, $quotes);
+		return $this->_db->__val_escape($value);
 	}
 	// __val_escape是val的别名，向前兼容
-	public function __val_escape($value, $quotes = FALSE){return $this->escape($value, $quotes);}
+	public function __val_escape($value){return $this->escape($value);}
 	
 	/**
 	 * 在数据表中新增一行数据
@@ -126,7 +126,7 @@ class spModel {
 		if(empty($row))return FALSE;
 		foreach($row as $key => $value){
 			$cols[] = $key;
-			$vals[] = $this->escape($value, TRUE);
+			$vals[] = $this->escape($value);
 		}
 		$col = join(',', $cols);
 		$val = join(',', $vals);
@@ -163,7 +163,7 @@ class spModel {
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
-				$condition = $this->escape($condition, TRUE);
+				$condition = $this->escape($condition);
 				$join[] = "{$key} = {$condition}";
 			}
 			$where = "WHERE ( ".join(" AND ",$join). ")";
@@ -246,7 +246,7 @@ class spModel {
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
-				$condition = $this->escape($condition, TRUE);
+				$condition = $this->escape($condition);
 				$join[] = "{$key} = {$condition}";
 			}
 			$where = "WHERE ".join(" AND ",$join);
@@ -285,7 +285,7 @@ class spModel {
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
-				$condition = $this->escape($condition, TRUE);
+				$condition = $this->escape($condition);
 				$join[] = "{$key} = {$condition}";
 			}
 			$where = "WHERE ".join(" AND ",$join);
@@ -293,7 +293,7 @@ class spModel {
 			if(null != $conditions)$where = "WHERE ".$conditions;
 		}
 		foreach($row as $key => $value){
-			$value = $this->escape($value, TRUE);
+			$value = $this->escape($value);
 			$vals[] = "{$key} = {$value}";
 		}
 		$values = join(", ",$vals);
@@ -330,7 +330,7 @@ class spModel {
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
-				$condition = $this->escape($condition, TRUE);
+				$condition = $this->escape($condition);
 				$join[] = "{$key} = {$condition}";
 			}
 			$where = "WHERE ".join(" AND ",$join);
