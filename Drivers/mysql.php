@@ -104,9 +104,7 @@ class db_mysql {
 		if(is_int($value))return (int)$value;
 		if(is_float($value))return (float)$value;
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
-		$value = mysql_real_escape_string($value, $this->conn);
-		if($quotes)$value = "'{$value}'";
-		return $value;
+		return '\''.mysql_real_escape_string($value, $this->conn).'\'';
 	}
 
 	/**
