@@ -123,12 +123,13 @@ function spAccess($method, $name, $value = NULL, $life_time = -1){
  * @param class_name    类名称
  * @param args   类初始化时使用的参数，数组形式
  * @param sdir 载入类定义文件的路径，可以是目录+文件名的方式，也可以单独是目录。sdir的值将传入import()进行载入
+ * @param force_inst 是否强制重新实例化对象
  */
-function spClass($class_name, $args = null, $sdir = null){
+function spClass($class_name, $args = null, $sdir = null, $force_inst = FALSE){
 	// 检查类名称是否正确，以保证类定义文件载入的安全性
 	if(preg_match('/[^a-z0-9\-_.]/i', $class_name))spError($class_name."类名称错误，请检查。");
 	// 检查是否该类已经实例化，直接返回已实例对象，避免再次实例化
-	if(isset($GLOBALS['G_SP']["inst_class"][$class_name]))return $GLOBALS['G_SP']["inst_class"][$class_name];
+	if(TRUE != $force_inst)if(isset($GLOBALS['G_SP']["inst_class"][$class_name]))return $GLOBALS['G_SP']["inst_class"][$class_name];
 	// 如果$sdir不能读取，则测试是否仅路径
 	if(null != $sdir && !import($sdir) && !import($sdir.'/'.$class_name.'.php'))return FALSE;
 	
