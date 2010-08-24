@@ -98,6 +98,7 @@ class spController {
 	 */
 	public function display($tplname, $output = TRUE)
 	{
+		@ob_start();
 		if(TRUE == $GLOBALS['G_SP']['view']['enabled']){
 			$this->v->display($tplname);
 		}else{
