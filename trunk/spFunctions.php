@@ -38,7 +38,7 @@ function spRun(){
  */
 function dump($vars, $output = TRUE, $show_trace = FALSE){
 	// 部署模式下同时不允许查看调试信息的情况，直接退出。
-	if(TRUE != SP_DEBUG && TRUE != $GLOBALS['G_SP']['allow_trace_onrelease'])exit;
+	if(TRUE != SP_DEBUG && TRUE != $GLOBALS['G_SP']['allow_trace_onrelease'])return;
 	if( TRUE == $show_trace ){ // 显示变量运行路径
 		$content = spError(htmlspecialchars(print_r($vars, true)), TRUE, FALSE);
 	}else{
