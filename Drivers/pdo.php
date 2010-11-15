@@ -69,7 +69,10 @@ class db_pdo {
 	public function getArray($sql)
 	{
 		$this->arrSql[] = $sql;
-		$rows = $this->conn->prepare($sql);
+		if( ! $rows = $this->conn->prepare($sql) ){
+			$poderror = $this->conn->errorInfo();
+			spError("{$sql}<br />执行错误: " .$poderror[2]);
+		}
 		$rows->execute();
 		return $rows->fetchAll(PDO::FETCH_ASSOC);
 	}
@@ -103,7 +106,8 @@ class db_pdo {
 			$this->num_rows = $result;
 			return $result;
 		}else{
-			spError("{$sql}<br />执行错误: " .$this->conn->errorInfo());
+			$poderror = $this->conn->errorInfo();
+			spError("{$sql}<br />执行错误: " .$poderror[2]);
 		}
 	}
 	
