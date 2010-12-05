@@ -143,7 +143,9 @@ function spClass($class_name, $args = null, $sdir = null, $force_inst = FALSE){
 		}
 	}
 	if(FALSE != $has_define){
-		$GLOBALS['G_SP']["inst_class"][$class_name] = new $class_name($args);
+		$argString = '';$comma = ''; 
+		if(null != $args)for ($i = 0; $i < count($args); $i ++) { $argString .= $comma . "\$args[$i]"; $comma = ', '; } 
+		eval("\$GLOBALS['G_SP']['inst_class'][\$class_name]= new \$class_name($argString);"); 
 		return $GLOBALS['G_SP']["inst_class"][$class_name];
 	}
 	spError($class_name."类定义不存在，请检查。");
