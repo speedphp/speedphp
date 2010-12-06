@@ -24,13 +24,14 @@ class spView {
 		if(FALSE == $GLOBALS['G_SP']['view']['enabled'])return FALSE;
 		if(FALSE != $GLOBALS['G_SP']['view']['auto_ob_start'])ob_start();
 		$this->engine = spClass($GLOBALS['G_SP']['view']['engine_name'],null,$GLOBALS['G_SP']['view']['engine_path']);
-		$configs = $GLOBALS['G_SP']['view']['config'];
-		if( is_array($configs) ){
+		if( $GLOBALS['G_SP']['view']['config'] && is_array($GLOBALS['G_SP']['view']['config']) ){
 			$engine_vars = get_class_vars(get_class($this->engine));
-			foreach( $configs as $key => $value ){
+			foreach( $GLOBALS['G_SP']['view']['config'] as $key => $value ){
 				if( array_key_exists($key,$engine_vars) )$this->engine->{$key} = $value;
 			}
 		}
+		// 检查编译目录是否可写
+		if( empty($this->engine->no_compile_dir) && (!is_dir($this->engine->compile_dir) || !is_readable($this->engine->compile_dir)))spError("模板编译目录“".$this->engine->compile_dir."”不可写！");
 		spAddViewFunction('T', array( 'spView', '__template_T'));
 		spAddViewFunction('spUrl', array( 'spView', '__template_spUrl'));
 	}
