@@ -57,6 +57,7 @@ class spView {
 			foreach( $GLOBALS['G_SP']["view_registered_functions"] as $alias => $func ){
 				if( is_array($func) && !is_object($func[0]) )$func = array(spClass($func[0]),$func[1]);
 				$this->engine->register_function($alias, $func);
+				unset($GLOBALS['G_SP']["view_registered_functions"][$alias]);
 			}
 		}
 	}
