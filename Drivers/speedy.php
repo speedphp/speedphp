@@ -24,6 +24,10 @@ class speedy{
 	 */
 	public $compression_level	=  9;
 	/**
+	 * 不检查编译目录
+	 */
+	public $no_compile_dir = true;
+	/**
 	 * 模板内使用的变量值
 	 */
 	private $_vars = array();
