@@ -45,7 +45,8 @@ function dump($vars, $output = TRUE, $show_trace = FALSE){
 		$content = "<div align=left><pre>\n" . htmlspecialchars(print_r($vars, true)) . "\n</pre></div>\n";
 	}
     if(TRUE != $output) { return $content; } // 直接返回，不输出。 
-    echo $content; return;
+       echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head><body>{$content}</body></html>"; 
+	   return;
 }
 
 /**
