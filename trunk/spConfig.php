@@ -67,7 +67,7 @@ return array(
 			'cache_dir' => APP_PATH.'/tmp', // 缓存目录
 			'left_delimiter' => '{',  // smarty左限定符
 			'right_delimiter' => '}', // smarty右限定符
-			'auto_literal' => FALSE, // Smarty3新特性
+			'auto_literal' => TRUE, // Smarty3新特性
 		),
 		'debugging' => FALSE, // 是否开启视图调试功能，在部署模式下无法开启视图调试功能
 		'engine_name' => 'Smarty', // 模板引擎的类名称，默认为Smarty
