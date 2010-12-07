@@ -97,6 +97,15 @@ class Template_Lite {
 		$this->_version_date = strtotime($this->_version_date);
 	}
 
+	/**
+	 * for smarty3, add by SpeedPHP
+	 */	
+	public function templateExists($tplname){return $this->templateExists($tplname);}
+	/**
+	 * for smarty3, add by SpeedPHP
+	 */	
+	public function registerPlugin($type, $alias, $func){return $this->{'register_'.$type}($alias, $func);}
+	
 	function load_filter($type, $name)
 	{
 		switch ($type)
