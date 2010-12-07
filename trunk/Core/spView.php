@@ -53,11 +53,10 @@ class spView {
 	 */
 	public function addfuncs()
 	{
-		if( is_array($GLOBALS['G_SP']["view_registered_functions"]) && 
-			method_exists($this->engine, 'register_function') ){
+		if( is_array($GLOBALS['G_SP']["view_registered_functions"]) ){
 			foreach( $GLOBALS['G_SP']["view_registered_functions"] as $alias => $func ){
 				if( is_array($func) && !is_object($func[0]) )$func = array(spClass($func[0]),$func[1]);
-				$this->engine->register_function($alias, $func);
+				$this->engine->registerPlugin("function", $alias, $func);
 				unset($GLOBALS['G_SP']["view_registered_functions"][$alias]);
 			}
 		}
