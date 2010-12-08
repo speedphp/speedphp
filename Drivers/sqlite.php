@@ -111,7 +111,7 @@ class db_sqlite {
 	 */
 	public function __destruct()
 	{
-		if( TRUE != $dbConfig['persistent'] )sqlite_close($this->conn);
+		if( TRUE != $GLOBALS['G_SP']['db']['persistent'] )@sqlite_close($this->conn);
 	}
 }
 

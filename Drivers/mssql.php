@@ -120,7 +120,7 @@ class db_mssql {
 	 */
 	public function __destruct()
 	{
-		if( TRUE != $dbConfig['persistent'] )@mssql_close($this->conn);
+		if( TRUE != $GLOBALS['G_SP']['db']['persistent'] )@mssql_close($this->conn);
 	}
 
 	/**
