@@ -42,10 +42,14 @@ class spView {
 	 */
 	public function display($tplname)
 	{
-		$this->addfuncs();
-		$this->displayed = TRUE;
-		if($GLOBALS['G_SP']['view']['debugging'] && SP_DEBUG)$this->engine->debugging = TRUE;
-		$this->engine->display($tplname);
+		try {
+				$this->addfuncs();
+				$this->displayed = TRUE;
+				if($GLOBALS['G_SP']['view']['debugging'] && SP_DEBUG)$this->engine->debugging = TRUE;
+				$this->engine->display($tplname);
+		} catch (Exception $e) {
+			spError( $GLOBALS['G_SP']['view']['engine_name']. ' Error: '.$e->getMessage() );
+		}
 	}
 	
 	/**
