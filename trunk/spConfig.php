@@ -37,6 +37,7 @@ return array(
 	'auto_sp_run' => FALSE, // 是否自动执行spRun函数
 	
 	'sp_cache' => APP_PATH.'/tmp', // 框架临时文件夹目录
+	'sp_cache_id' => '',  // 框架临时文件缓存ID
 	'controller_path' => APP_PATH.'/controller', // 用户控制器程序的路径定义
 	'model_path' => APP_PATH.'/model', // 用户模型程序的路径定义
 	'sp_notice_php' => SP_PATH."/Misc/notice.php", // 框架默认的错误提示程序

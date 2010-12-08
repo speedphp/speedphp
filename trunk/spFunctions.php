@@ -94,7 +94,7 @@ function spAccess($method, $name, $value = NULL, $life_time = -1){
 	if( $launch = spLaunch("function_access", array('method'=>$method, 'name'=>$name, 'value'=>$value, 'life_time'=>$life_time), TRUE) )return $launch;
 	// 准备缓存目录和缓存文件名称，缓存文件名称为$name的MD5值，文件后缀为php
 	if(!is_dir($GLOBALS['G_SP']['sp_cache']))__mkdirs($GLOBALS['G_SP']['sp_cache']);
-	$sfile = $GLOBALS['G_SP']['sp_cache'].'/'.md5($name).".php";
+	$sfile = $GLOBALS['G_SP']['sp_cache'].'/'.$GLOBALS['G_SP']['sp_cache_id'].md5($name).".php";
 	// 对$method进行判断，分别进行读写删的操作
 	if('w' == $method){ 
 		// 写数据，在$life_time为-1的时候，将增大$life_time值以令$life_time不过期
