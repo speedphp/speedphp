@@ -113,7 +113,7 @@ class db_mysqli {
 	 */
 	public function __destruct()
 	{
-		if( TRUE != $dbConfig['persistent'] )@mysqli_close($this->conn);
+		if( TRUE != $GLOBALS['G_SP']['db']['persistent'] )@mysqli_close($this->conn);
 	}
 }
 

@@ -122,6 +122,6 @@ class db_oracle {
 	 */
 	public function __destruct()
 	{
-		if( TRUE != $dbConfig['persistent'] )@oci_close($this->conn);
+		if( TRUE != $GLOBALS['G_SP']['db']['persistent'] )@oci_close($this->conn);
 	}
 }
