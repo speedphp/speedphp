@@ -24,15 +24,13 @@ class spView {
 		if(FALSE == $GLOBALS['G_SP']['view']['enabled'])return FALSE;
 		if(FALSE != $GLOBALS['G_SP']['view']['auto_ob_start'])ob_start();
 		$this->engine = spClass($GLOBALS['G_SP']['view']['engine_name'],null,$GLOBALS['G_SP']['view']['engine_path']);
-		if( $GLOBALS['G_SP']['view']['config'] && is_array($GLOBALS['G_SP']['view']['config']) ){
+		$configs = $GLOBALS['G_SP']['view']['config'];
+		if( is_array($configs) ){
 			$engine_vars = get_class_vars(get_class($this->engine));
-			foreach( $GLOBALS['G_SP']['view']['config'] as $key => $value ){
+			foreach( $configs as $key => $value ){
 				if( array_key_exists($key,$engine_vars) )$this->engine->{$key} = $value;
 			}
 		}
-		if( !empty($GLOBALS['G_SP']['sp_cache_id']) && isset($this->engine->compile_id) )$this->engine->compile_id = $GLOBALS['G_SP']['sp_cache_id'];
-		// 检查编译目录是否可写
-		if( empty($this->engine->no_compile_dir) && (!is_dir($this->engine->compile_dir) || !is_readable($this->engine->compile_dir)))spError("模板编译目录“".$this->engine->compile_dir."”不可写！");
 		spAddViewFunction('T', array( 'spView', '__template_T'));
 		spAddViewFunction('spUrl', array( 'spView', '__template_spUrl'));
 	}
@@ -43,14 +41,10 @@ class spView {
 	 */
 	public function display($tplname)
 	{
-		try {
-				$this->addfuncs();
-				$this->displayed = TRUE;
-				if($GLOBALS['G_SP']['view']['debugging'] && SP_DEBUG)$this->engine->debugging = TRUE;
-				$this->engine->display($tplname);
-		} catch (Exception $e) {
-			spError( $GLOBALS['G_SP']['view']['engine_name']. ' Error: '.$e->getMessage() );
-		}
+		$this->addfuncs();
+		$this->displayed = TRUE;
+		if($GLOBALS['G_SP']['view']['debugging'] && SP_DEBUG)$this->engine->debugging = TRUE;
+		$this->engine->display($tplname);
 	}
 	
 	/**
@@ -58,11 +52,11 @@ class spView {
 	 */
 	public function addfuncs()
 	{
-		if( is_array($GLOBALS['G_SP']["view_registered_functions"]) ){
+		if( is_array($GLOBALS['G_SP']["view_registered_functions"]) && 
+			method_exists($this->engine, 'register_function') ){
 			foreach( $GLOBALS['G_SP']["view_registered_functions"] as $alias => $func ){
 				if( is_array($func) && !is_object($func[0]) )$func = array(spClass($func[0]),$func[1]);
-				$this->engine->registerPlugin("function", $alias, $func);
-				unset($GLOBALS['G_SP']["view_registered_functions"][$alias]);
+				$this->engine->register_function($alias, $func);
 			}
 		}
 	}

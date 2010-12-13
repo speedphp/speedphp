@@ -112,7 +112,7 @@ class db_mysql {
 	 */
 	public function __destruct()
 	{
-		if( TRUE != $GLOBALS['G_SP']['db']['persistent'] )@mysql_close($this->conn);
+		if( TRUE != $dbConfig['persistent'] )@mysql_close($this->conn);
 	}
 }
 

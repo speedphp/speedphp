@@ -98,7 +98,6 @@ class spController {
 	 */
 	public function display($tplname, $output = TRUE)
 	{
-		@ob_start();
 		if(TRUE == $GLOBALS['G_SP']['view']['enabled']){
 			$this->v->display($tplname);
 		}else{
@@ -115,7 +114,8 @@ class spController {
 	public function auto_display($tplname)
 	{
 		if( TRUE != $this->v->displayed && FALSE != $GLOBALS['G_SP']['view']['auto_display']){
-			if( method_exists($this->v->engine, 'templateExists') && TRUE == $this->v->engine->templateExists($tplname))$this->display($tplname);
+			if( !method_exists($this->v->engine, 'template_exists') || TRUE == $this->v->engine->template_exists($tplname) )
+				$this->display($tplname);
 		}
 	}
 

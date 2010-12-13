@@ -1,9 +1,8 @@
 <?php
 /**
  * Smarty plugin
- *
  * @package Smarty
- * @subpackage PluginsFunction
+ * @subpackage plugins
  */
 
 /**
@@ -39,11 +38,10 @@
  * @author credit to Jason Sweat <jsweat_php@yahoo.com>
  * @version  1.3
  * @param array
- * @param object $template template object
+ * @param Smarty
  * @return string|null
  */
-
-function smarty_function_cycle($params, $template)
+function smarty_function_cycle($params, &$smarty)
 {
     static $cycle_vars;
     
@@ -54,7 +52,7 @@ function smarty_function_cycle($params, $template)
             
     if (!in_array('values', array_keys($params))) {
         if(!isset($cycle_vars[$name]['values'])) {
-            trigger_error("cycle: missing 'values' parameter");
+            $smarty->trigger_error("cycle: missing 'values' parameter");
             return;
         }
     } else {
@@ -65,11 +63,7 @@ function smarty_function_cycle($params, $template)
         $cycle_vars[$name]['values'] = $params['values'];
     }
 
-    if (isset($params['delimiter'])) {
-        $cycle_vars[$name]['delimiter'] = $params['delimiter'];
-    } elseif (!isset($cycle_vars[$name]['delimiter'])) {
-        $cycle_vars[$name]['delimiter'] = ',';       
-    }
+    $cycle_vars[$name]['delimiter'] = (isset($params['delimiter'])) ? $params['delimiter'] : ',';
     
     if(is_array($cycle_vars[$name]['values'])) {
         $cycle_array = $cycle_vars[$name]['values'];
@@ -83,7 +77,7 @@ function smarty_function_cycle($params, $template)
     
     if (isset($params['assign'])) {
         $print = false;
-        $template->assign($params['assign'], $cycle_array[$cycle_vars[$name]['index']]);
+        $smarty->assign($params['assign'], $cycle_array[$cycle_vars[$name]['index']]);
     }
         
     if($print) {
@@ -102,5 +96,7 @@ function smarty_function_cycle($params, $template)
     
     return $retval;
 }
+
+/* vim: set expandtab: */
 
 ?>
