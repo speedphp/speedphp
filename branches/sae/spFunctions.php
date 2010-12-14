@@ -38,14 +38,15 @@ function spRun(){
  */
 function dump($vars, $output = TRUE, $show_trace = FALSE){
 	// 部署模式下同时不允许查看调试信息的情况，直接退出。
-	if(TRUE != SP_DEBUG && TRUE != $GLOBALS['G_SP']['allow_trace_onrelease'])exit;
+	if(TRUE != SP_DEBUG && TRUE != $GLOBALS['G_SP']['allow_trace_onrelease'])return;
 	if( TRUE == $show_trace ){ // 显示变量运行路径
 		$content = spError(htmlspecialchars(print_r($vars, true)), TRUE, FALSE);
 	}else{
 		$content = "<div align=left><pre>\n" . htmlspecialchars(print_r($vars, true)) . "\n</pre></div>\n";
 	}
     if(TRUE != $output) { return $content; } // 直接返回，不输出。 
-    echo $content; return;
+       echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head><body>{$content}</body></html>"; 
+	   return;
 }
 
 /**
@@ -93,7 +94,7 @@ function spAccess($method, $name, $value = NULL, $life_time = -1){
 	if( $launch = spLaunch("function_access", array('method'=>$method, 'name'=>$name, 'value'=>$value, 'life_time'=>$life_time), TRUE) )return $launch;
 	// 准备缓存目录和缓存文件名称，缓存文件名称为$name的MD5值，文件后缀为php
 	if(!is_dir($GLOBALS['G_SP']['sp_cache']))__mkdirs($GLOBALS['G_SP']['sp_cache']);
-	$sfile = $GLOBALS['G_SP']['sp_cache'].'/'.md5($name).".php";
+	$sfile = $GLOBALS['G_SP']['sp_cache'].'/'.$GLOBALS['G_SP']['sp_cache_id'].md5($name).".php";
 	// 对$method进行判断，分别进行读写删的操作
 	if('w' == $method){ 
 		// 写数据，在$life_time为-1的时候，将增大$life_time值以令$life_time不过期
@@ -123,12 +124,13 @@ function spAccess($method, $name, $value = NULL, $life_time = -1){
  * @param class_name    类名称
  * @param args   类初始化时使用的参数，数组形式
  * @param sdir 载入类定义文件的路径，可以是目录+文件名的方式，也可以单独是目录。sdir的值将传入import()进行载入
+ * @param force_inst 是否强制重新实例化对象
  */
-function spClass($class_name, $args = null, $sdir = null){
+function spClass($class_name, $args = null, $sdir = null, $force_inst = FALSE){
 	// 检查类名称是否正确，以保证类定义文件载入的安全性
 	if(preg_match('/[^a-z0-9\-_.]/i', $class_name))spError($class_name."类名称错误，请检查。");
 	// 检查是否该类已经实例化，直接返回已实例对象，避免再次实例化
-	if(isset($GLOBALS['G_SP']["inst_class"][$class_name]))return $GLOBALS['G_SP']["inst_class"][$class_name];
+	if(TRUE != $force_inst)if(isset($GLOBALS['G_SP']["inst_class"][$class_name]))return $GLOBALS['G_SP']["inst_class"][$class_name];
 	// 如果$sdir不能读取，则测试是否仅路径
 	if(null != $sdir && !import($sdir) && !import($sdir.'/'.$class_name.'.php'))return FALSE;
 	
@@ -142,7 +144,9 @@ function spClass($class_name, $args = null, $sdir = null){
 		}
 	}
 	if(FALSE != $has_define){
-		$GLOBALS['G_SP']["inst_class"][$class_name] = new $class_name($args);
+		$argString = '';$comma = ''; 
+		if(null != $args)for ($i = 0; $i < count($args); $i ++) { $argString .= $comma . "\$args[$i]"; $comma = ', '; } 
+		eval("\$GLOBALS['G_SP']['inst_class'][\$class_name]= new \$class_name($argString);"); 
 		return $GLOBALS['G_SP']["inst_class"][$class_name];
 	}
 	spError($class_name."类定义不存在，请检查。");

@@ -41,6 +41,7 @@ return array(
 	'auto_sp_run' => FALSE, // 是否自动执行spRun函数
 	
 	// 'sp_cache' => APP_PATH.'/tmp', // 框架临时文件夹目录
+	'sp_cache_id' => '',  // 框架临时文件缓存ID
 	'controller_path' => APP_PATH.'/controller', // 用户控制器程序的路径定义
 	'model_path' => APP_PATH.'/model', // 用户模型程序的路径定义
 	'sp_notice_php' => SP_PATH."/Misc/notice.php", // 框架默认的错误提示程序
@@ -69,12 +70,13 @@ return array(
 			'template_dir' => APP_PATH.'/tpl', // 模板目录
 			// 'compile_dir' => APP_PATH.'/tmp', // 编译目录
 			// 'cache_dir' => APP_PATH.'/tmp', // 缓存目录
-			// 'left_delimiter' => '{',  // smarty左限定符
-			// 'right_delimiter' => '}', // smarty右限定符
+			'left_delimiter' => '{',  // smarty左限定符
+			'right_delimiter' => '}', // smarty右限定符
+			'auto_literal' => TRUE, // Smarty3新特性
 		),
-		// 'debugging' => FALSE, // 是否开启视图调试功能，在部署模式下无法开启视图调试功能
-		'engine_name' => 'speedy', // 模板引擎的类名称，默认为Smarty
-		'engine_path' => SP_PATH.'/Drivers/speedy.php', // 模板引擎主类路径
+		'debugging' => FALSE, // 是否开启视图调试功能，在部署模式下无法开启视图调试功能
+		'engine_name' => 'Smarty', // 模板引擎的类名称，默认为Smarty
+		'engine_path' => SP_PATH.'/Drivers/Smarty/Smarty.class.php', // 模板引擎主类路径
 		'auto_ob_start' => TRUE, // 是否自动开启缓存输出控制
 		'auto_display' => FALSE, // 是否使用自动输出模板功能
 		'auto_display_sep' => '/', // 自动输出模板的拼装模式，/为按目录方式拼装，_为按下划线方式，以此类推
