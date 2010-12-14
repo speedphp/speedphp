@@ -49,7 +49,7 @@ class spModel {
 		if( '' == $GLOBALS['G_SP']['db_driver_path'] ){
 			$GLOBALS['G_SP']['db_driver_path'] = $GLOBALS['G_SP']['sp_drivers_path'].'/'.$GLOBALS['G_SP']['db']['driver'].'.php';
 		}
-		$this->_db = spClass('db_'.$GLOBALS['G_SP']['db']['driver'], $GLOBALS['G_SP']['db'], $GLOBALS['G_SP']['db_driver_path']);
+		$this->_db = spClass('db_'.$GLOBALS['G_SP']['db']['driver'], array(0=>$GLOBALS['G_SP']['db']), $GLOBALS['G_SP']['db_driver_path']);
 	}
 
 	/**
