@@ -28,7 +28,7 @@
  * @author Monte Ohrt <monte at ohrt dot com> 
  * @author Uwe Tews 
  * @package Smarty
- * @version 3-SVN$Rev: 3286 $
+ * @version 3.0.6
  */
 
 /**
@@ -87,7 +87,7 @@ class Smarty extends Smarty_Internal_Data {
 	* constant definitions
 	*/
     // smarty version
-    const SMARTY_VERSION = 'Smarty3-SVN$Rev: 3286 $'; 
+    const SMARTY_VERSION = 'Smarty-3.0.6'; 
   	//define variable scopes
 	const SCOPE_LOCAL = 0;
 	const SCOPE_PARENT = 1;
