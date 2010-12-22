@@ -51,8 +51,9 @@ class spController {
      * @param $msg   错误提示需要的相关信息
      * @param $url   跳转地址
      */
-    public function error($msg, $url){
-		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"{$msg}\");location.href=\"{$url}\";}</script></head><body onload=\"sptips()\"></body></html>";
+    public function error($msg, $url = ''){
+		$url = empty($url) ? "window.history.back();" : "location.href=\"{$url}\";";
+		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"{$msg}\");{$url}}</script></head><body onload=\"sptips()\"></body></html>";
 		exit;
     }
 
@@ -65,8 +66,9 @@ class spController {
      * @param $msg   成功提示需要的相关信息
      * @param $url   跳转地址
      */
-    public function success($msg, $url){
-		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"{$msg}\");location.href=\"{$url}\";}</script></head><body onload=\"sptips()\"></body></html>";
+    public function success($msg, $url = ''){
+		$url = empty($url) ? "window.history.back();" : "location.href=\"{$url}\";";
+		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"{$msg}\");{$url}}</script></head><body onload=\"sptips()\"></body></html>";
 		exit;
     }
 
