@@ -312,11 +312,14 @@ function spAddViewFunction($alias, $callback_function)
  * @param tbl_name    表全名 或 表名称，开发者可在配置中的db_spdb_full_tblname设置符合自己使用习惯的方式。
  *                    表全名是默认值，db_spdb_full_tblname = true，tbl_name值将是（表前缀 + 表名称）
  *                    表名称，db_spdb_full_tblname = false，这时候框架将使用db配置中的表前缀prefix。
- * @param pk    主键（可选），在无需使用到主键的情况下，可以忽略。(使用到主键的情况：create，deleteByPk，findAll)
+ * @param pk    主键（可选），忽略主键的时候，将获取表第一个字段作为主键（通常都是）
  */
-function spDB($tbl_name, $pk = 'id'){
+function spDB($tbl_name, $pk = null){
 	$modelObj = spClass("spModel");
 	$modelObj->tbl_name = (TRUE == $GLOBALS['G_SP']["db_spdb_full_tblname"]) ? $tbl_name :	$GLOBALS['G_SP']['db']['prefix'] . $tbl_name;
+	if( !$pk ){ // 主键通过数据库驱动getTable来获取
+		@list($pk) = $modelObj->_db->getTable($modelObj->tbl_name);$pk = $pk['Field'];
+	}
 	$modelObj->pk = $pk;
 	return $modelObj;
 }
