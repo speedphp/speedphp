@@ -39,7 +39,7 @@ return array(
 	'auto_sp_run' => FALSE, // 是否自动执行spRun函数
 	
 	'sp_cache' => APP_PATH.'/tmp', // 框架临时文件夹目录
-	'sp_cache_id' => '',  // 框架临时文件缓存ID
+	'sp_app_id' => '',  // 框架识别ID
 	'controller_path' => APP_PATH.'/controller', // 用户控制器程序的路径定义
 	'model_path' => APP_PATH.'/model', // 用户模型程序的路径定义
 

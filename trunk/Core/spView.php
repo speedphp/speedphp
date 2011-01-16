@@ -30,7 +30,7 @@ class spView {
 				if( array_key_exists($key,$engine_vars) )$this->engine->{$key} = $value;
 			}
 		}
-		if( !empty($GLOBALS['G_SP']['sp_cache_id']) && isset($this->engine->compile_id) )$this->engine->compile_id = $GLOBALS['G_SP']['sp_cache_id'];
+		if( !empty($GLOBALS['G_SP']['sp_app_id']) && isset($this->engine->compile_id) )$this->engine->compile_id = $GLOBALS['G_SP']['sp_app_id'];
 		// 检查编译目录是否可写
 		if( empty($this->engine->no_compile_dir) && (!is_dir($this->engine->compile_dir) || !is_readable($this->engine->compile_dir)))spError("模板编译目录“".$this->engine->compile_dir."”不可写！");
 		spAddViewFunction('T', array( 'spView', '__template_T'));
