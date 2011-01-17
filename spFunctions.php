@@ -94,7 +94,7 @@ function spAccess($method, $name, $value = NULL, $life_time = -1){
 	if( $launch = spLaunch("function_access", array('method'=>$method, 'name'=>$name, 'value'=>$value, 'life_time'=>$life_time), TRUE) )return $launch;
 	// 准备缓存目录和缓存文件名称，缓存文件名称为$name的MD5值，文件后缀为php
 	if(!is_dir($GLOBALS['G_SP']['sp_cache']))__mkdirs($GLOBALS['G_SP']['sp_cache']);
-	$sfile = $GLOBALS['G_SP']['sp_cache'].'/'.$GLOBALS['G_SP']['sp_cache_id'].md5($name).".php";
+	$sfile = $GLOBALS['G_SP']['sp_cache'].'/'.$GLOBALS['G_SP']['sp_app_id'].md5($name).".php";
 	// 对$method进行判断，分别进行读写删的操作
 	if('w' == $method){ 
 		// 写数据，在$life_time为-1的时候，将增大$life_time值以令$life_time不过期
@@ -166,16 +166,6 @@ function spError($msg, $output = TRUE, $stop = TRUE){
 	$bufferabove = ob_get_clean();
 	require_once($GLOBALS['G_SP']['sp_notice_php']);
 	if(TRUE == $stop)exit;
-}
-/**
- * spErrorHandler 系统错误提示函数
- * @param errno    出错类型
- * @param errstr    错误信息
- * @param errfile    出错的文件
- * @param errline    出错语句行号
- */
-function spErrorHandler($errno, $errstr, $errfile, $errline) {
-	if( E_ERROR == $errno || E_PARSE == $errno )spError($errstr);
 }
 
 /**
@@ -312,11 +302,14 @@ function spAddViewFunction($alias, $callback_function)
  * @param tbl_name    表全名 或 表名称，开发者可在配置中的db_spdb_full_tblname设置符合自己使用习惯的方式。
  *                    表全名是默认值，db_spdb_full_tblname = true，tbl_name值将是（表前缀 + 表名称）
  *                    表名称，db_spdb_full_tblname = false，这时候框架将使用db配置中的表前缀prefix。
- * @param pk    主键（可选），在无需使用到主键的情况下，可以忽略。(使用到主键的情况：create，deleteByPk，findAll)
+ * @param pk    主键（可选），忽略主键的时候，将获取表第一个字段作为主键（通常都是）
  */
-function spDB($tbl_name, $pk = 'id'){
+function spDB($tbl_name, $pk = null){
 	$modelObj = spClass("spModel");
 	$modelObj->tbl_name = (TRUE == $GLOBALS['G_SP']["db_spdb_full_tblname"]) ? $tbl_name :	$GLOBALS['G_SP']['db']['prefix'] . $tbl_name;
+	if( !$pk ){ // 主键通过数据库驱动getTable来获取
+		@list($pk) = $modelObj->_db->getTable($modelObj->tbl_name);$pk = $pk['Field'];
+	}
 	$modelObj->pk = $pk;
 	return $modelObj;
 }

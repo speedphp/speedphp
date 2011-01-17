@@ -51,8 +51,9 @@ class spController {
      * @param $msg   错误提示需要的相关信息
      * @param $url   跳转地址
      */
-    public function error($msg, $url){
-		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"{$msg}\");location.href=\"{$url}\";}</script></head><body onload=\"sptips()\"></body></html>";
+    public function error($msg, $url = ''){
+		$url = empty($url) ? "window.history.back();" : "location.href=\"{$url}\";";
+		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"{$msg}\");{$url}}</script></head><body onload=\"sptips()\"></body></html>";
 		exit;
     }
 
@@ -65,8 +66,9 @@ class spController {
      * @param $msg   成功提示需要的相关信息
      * @param $url   跳转地址
      */
-    public function success($msg, $url){
-		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"{$msg}\");location.href=\"{$url}\";}</script></head><body onload=\"sptips()\"></body></html>";
+    public function success($msg, $url = ''){
+		$url = empty($url) ? "window.history.back();" : "location.href=\"{$url}\";";
+		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"{$msg}\");{$url}}</script></head><body onload=\"sptips()\"></body></html>";
 		exit;
     }
 
@@ -148,8 +150,8 @@ class spController {
 		if( array_key_exists($lang, $GLOBALS['G_SP']["lang"]) ){
 			@ob_start();
 			$domain = ('www.' == substr($_SERVER["HTTP_HOST"],0,4)) ? substr($_SERVER["HTTP_HOST"],4) : $_SERVER["HTTP_HOST"];
-			setcookie("SpLangCookies", $lang, time()+31536000, '/', $domain ); // 一年过期
-			$_SESSION["SpLangSession"] = $lang;
+			setcookie($GLOBALS['G_SP']['sp_app_id']."_SpLangCookies", $lang, time()+31536000, '/', $domain ); // 一年过期
+			$_SESSION[$GLOBALS['G_SP']['sp_app_id']."_SpLangSession"] = $lang;
 			return TRUE;
 		}
 		return FALSE;
@@ -159,8 +161,8 @@ class spController {
 	 */
 	public function getLang()
 	{
-		if( !isset($_COOKIE['SpLangCookies']) )return $_SESSION["SpLangSession"];
-		return $_COOKIE['SpLangCookies'];
+		if( !isset($_COOKIE[$GLOBALS['G_SP']['sp_app_id']."_SpLangCookies"]) )return $_SESSION[$GLOBALS['G_SP']['sp_app_id']."_SpLangSession"];
+		return $_COOKIE[$GLOBALS['G_SP']['sp_app_id']."_SpLangCookies"];
 	}
 }
 

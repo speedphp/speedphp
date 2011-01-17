@@ -37,7 +37,7 @@ class spAcl
 	 */
 	public function get()
 	{
-		return $_SESSION["SpAclSession"];
+		return $_SESSION[$GLOBALS['G_SP']['sp_app_id']."_SpAclSession"];
 	}
 
 	/**
@@ -110,7 +110,7 @@ class spAcl
 	 */
 	public function set($acl_name)
 	{
-		$_SESSION["SpAclSession"] = $acl_name;
+		$_SESSION[$GLOBALS['G_SP']['sp_app_id']."_SpAclSession"] = $acl_name;
 	}
 }
 
