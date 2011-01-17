@@ -106,7 +106,7 @@ class db_oracle {
 	 *
 	 * @param value  ֵ
 	 */
-	public function __val_escape($value) {
+	public function __val_escape($value, $quotes = FALSE) {
 		if(is_null($value))return 'NULL';
 		if(is_bool($value))return $value ? 1 : 0;
 		if(is_int($value))return (int)$value;
@@ -122,6 +122,6 @@ class db_oracle {
 	 */
 	public function __destruct()
 	{
-		if( TRUE != $dbConfig['persistent'] )@oci_close($this->conn);
+		if( TRUE != $GLOBALS['G_SP']['db']['persistent'] )@oci_close($this->conn);
 	}
 }

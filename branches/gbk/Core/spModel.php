@@ -49,7 +49,7 @@ class spModel {
 		if( '' == $GLOBALS['G_SP']['db_driver_path'] ){
 			$GLOBALS['G_SP']['db_driver_path'] = $GLOBALS['G_SP']['sp_drivers_path'].'/'.$GLOBALS['G_SP']['db']['driver'].'.php';
 		}
-		$this->_db = spClass('db_'.$GLOBALS['G_SP']['db']['driver'], $GLOBALS['G_SP']['db'], $GLOBALS['G_SP']['db_driver_path']);
+		$this->_db = spClass('db_'.$GLOBALS['G_SP']['db']['driver'], array(0=>$GLOBALS['G_SP']['db']), $GLOBALS['G_SP']['db_driver_path']);
 	}
 
 	/**
@@ -545,7 +545,7 @@ class spVerifier {
 	 * @param val    待验证字符串
 	 * @param right    正确值
 	 */
-	private function notnull($val, $right){return $right === ( isset($val) && !empty($val) && "" != $val );}
+	private function notnull($val, $right){return $right === ( strlen($val) > 0 );}
 	/** 
 	 * 内置验证器，检查字符串是否小于指定长度
 	 * @param val    待验证字符串
@@ -746,7 +746,8 @@ class spLinker
 				if( 'update' != $func_name )return FALSE;
 			}
 			if( null != $this->model_obj->linker && is_array($this->model_obj->linker) ){
-				foreach( $this->model_obj->linker as $thelinker ){
+				foreach( $this->model_obj->linker as $linkey => $thelinker ){
+					if( !isset($thelinker['map']) )$thelinker['map'] = $linkey;
 					if( FALSE == $thelinker['enabled'] )continue;
 					$thelinker['type'] = strtolower($thelinker['type']);
 					if( 'find' == $func_name || 'findBy' == $func_name ){
