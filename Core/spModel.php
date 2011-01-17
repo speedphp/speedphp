@@ -746,7 +746,8 @@ class spLinker
 				if( 'update' != $func_name )return FALSE;
 			}
 			if( null != $this->model_obj->linker && is_array($this->model_obj->linker) ){
-				foreach( $this->model_obj->linker as $thelinker ){
+				foreach( $this->model_obj->linker as $linkey => $thelinker ){
+					if( !isset($thelinker['map']) )$thelinker['map'] = $linkey;
 					if( FALSE == $thelinker['enabled'] )continue;
 					$thelinker['type'] = strtolower($thelinker['type']);
 					if( 'find' == $func_name || 'findBy' == $func_name ){
