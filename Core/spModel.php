@@ -545,7 +545,7 @@ class spVerifier {
 	 * @param val    待验证字符串
 	 * @param right    正确值
 	 */
-	private function notnull($val, $right){return $right === ( isset($val) && !empty($val) && "" != $val );}
+	private function notnull($val, $right){return $right === ( strlen($val) > 0 );}
 	/** 
 	 * 内置验证器，检查字符串是否小于指定长度
 	 * @param val    待验证字符串
