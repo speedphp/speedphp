@@ -167,16 +167,6 @@ function spError($msg, $output = TRUE, $stop = TRUE){
 	require_once($GLOBALS['G_SP']['sp_notice_php']);
 	if(TRUE == $stop)exit;
 }
-/**
- * spErrorHandler 系统错误提示函数
- * @param errno    出错类型
- * @param errstr    错误信息
- * @param errfile    出错的文件
- * @param errline    出错语句行号
- */
-function spErrorHandler($errno, $errstr, $errfile, $errline) {
-	if( E_ERROR == $errno || E_PARSE == $errno )spError($errstr);
-}
 
 /**
  * spLaunch  执行挂靠程序
