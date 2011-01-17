@@ -3,7 +3,7 @@
 // SpeedPHP中文PHP框架, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
-define('SP_VERSION', '3.0.73.1'); // 当前框架版本
+define('SP_VERSION', '3.1.66.1'); // 当前框架版本
 
 /**
  * spCore
@@ -28,8 +28,16 @@ if('debug' == $GLOBALS['G_SP']['mode']){
 }else{
 	define("SP_DEBUG",FALSE); // 当前正在部署模式下
 }
-// 设置错误处理函数
-set_error_handler("spErrorHandler");
+// 如果是调试模式，打开警告输出
+if (SP_DEBUG) {
+	if( substr(PHP_VERSION, 0, 3) == "5.3" ){
+		error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING & ~E_DEPRECATED);
+	}else{
+		error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
+	}
+} else {
+	error_reporting(0);
+}
 @set_magic_quotes_runtime(0);
 
 // 自动开启SESSION

@@ -92,7 +92,7 @@ class db_mysqli {
 		$linkfunction = ( TRUE == $dbConfig['persistent'] ) ? 'mysqli_pconnect' : 'mysqli_connect';
 		$this->conn = $linkfunction($dbConfig['host'], $dbConfig['login'], $dbConfig['password'], $dbConfig['database'], $dbConfig['port']);
 		if(mysqli_connect_errno())spError('数据库链接错误/无法找到数据库 : '. mysqli_connect_error());
-		$this->exec("SET NAMES GBK");
+		// $this->exec("SET NAMES GBK");
 	}
 	/**
 	 * 对特殊字符进行过滤
@@ -113,7 +113,7 @@ class db_mysqli {
 	 */
 	public function __destruct()
 	{
-		if( TRUE != $dbConfig['persistent'] )@mysqli_close($this->conn);
+		if( TRUE != $GLOBALS['G_SP']['db']['persistent'] )@mysqli_close($this->conn);
 	}
 }
 

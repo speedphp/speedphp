@@ -27,10 +27,17 @@ class db_pdo_sqlite extends db_pdo {
 	 */
 	public function getTable($tbl_name){
 		$tmptable = $this->getArray("SELECT * FROM SQLITE_MASTER WHERE name = '{$tbl_name}' AND type='table'");
-		$tmp = explode('[',$tmptable[0]['sql']);
-		foreach( $tmp as $value ){
-			$towarr = explode(']', $value);
-			if( isset($towarr[1]) )$columns[]['Field'] = $towarr[0];
+		if (FALSE === strpos('[', $tmptable[0]['sql'])){
+			$tmp = explode('"',$tmptable[0]['sql']);
+			for( $i=1; $i < count ($tmp); $i+=2 ){
+				$columns[]['Field'] = $tmp[$i];
+			}
+		}else{
+			$tmp = explode('[',$tmptable[0]['sql']);
+			foreach( $tmp as $value ){
+				$towarr = explode(']', $value);
+				if( isset($towarr[1]) )$columns[]['Field'] = $towarr[0];
+			}
 		}
 		array_shift($columns);
 		return $columns;
@@ -62,7 +69,10 @@ class db_pdo {
 	public function getArray($sql)
 	{
 		$this->arrSql[] = $sql;
-		$rows = $this->conn->prepare($sql);
+		if( ! $rows = $this->conn->prepare($sql) ){
+			$poderror = $this->conn->errorInfo();
+			spError("{$sql}<br />执行错误: " .$poderror[2]);
+		}
 		$rows->execute();
 		return $rows->fetchAll(PDO::FETCH_ASSOC);
 	}
@@ -96,7 +106,8 @@ class db_pdo {
 			$this->num_rows = $result;
 			return $result;
 		}else{
-			spError("{$sql}<br />执行错误: " .$this->conn->errorInfo());
+			$poderror = $this->conn->errorInfo();
+			spError("{$sql}<br />执行错误: " .$poderror[2]);
 		}
 	}
 	
@@ -126,7 +137,7 @@ class db_pdo {
 		try {
 		    $this->conn = new PDO($dbConfig['host'], $dbConfig['login'], $dbConfig['password']); 
 		} catch (PDOException $e) {
-		    echo '数据库链接错误/无法找到数据库 :  ' . $e->getMessage();
+		    spError('数据库链接错误/无法找到数据库 :  ' . $e->getMessage());
 		}
 	}
 	/**
@@ -141,7 +152,7 @@ class db_pdo {
 		if(is_float($value))return (float)$value;
 		if(@get_magic_quotes_gpc())$value = stripslashes($value);
 		return $this->conn->quote($value);
-		//if($quotes)$value = "'{$value}'";
+		//$value = "'{$value}'";
 	}
 
 	/**

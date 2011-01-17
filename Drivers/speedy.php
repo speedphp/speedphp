@@ -24,6 +24,10 @@ class speedy{
 	 */
 	public $compression_level	=  9;
 	/**
+	 * 不检查编译目录
+	 */
+	public $no_compile_dir = true;
+	/**
 	 * 模板内使用的变量值
 	 */
 	private $_vars = array();
@@ -45,20 +49,28 @@ class speedy{
 	 * 检测模板是否存在
 	 * @param tplname 模板名称
 	 */	
-	public function template_exists($tplname){
-		if (file_exists(realpath($this->template_dir).'/'.$tplname))return TRUE;
-		if (file_exists($tplname))return TRUE;
+	public function templateExists($tplname){
+		if (is_readable(realpath($this->template_dir).'/'.$tplname))return TRUE;
+		if (is_readable($tplname))return TRUE;
 		return FALSE;
 	}
+	
+	/**
+	 * templateExists 别名,检测模板是否存在
+	 * @param tplname 模板名称
+	 */	
+	public function template_exists($tplname){return $this->templateExists($tplname);}
+	/** 兼容Smarty3*/
+	public function registerPlugin(){}
 	
 	/**
 	 * 显示模板
 	 * @param tplname 模板名称
 	 */	
 	public function display($tplname){
-		if (file_exists(realpath($this->template_dir).'/'.$tplname)){
+		if(is_readable(realpath($this->template_dir).'/'.$tplname)){
 			$tplpath = realpath($this->template_dir).'/'.$tplname;
-		}elseif (file_exists($tplname)){
+		}elseif(is_readable($tplname)){
 			$tplpath = $tplname;
 		}else{
 			spError("speedy引擎：无法找到模板 ".$tplname);

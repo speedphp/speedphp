@@ -91,14 +91,14 @@ class db_mysql {
 		$linkfunction = ( TRUE == $dbConfig['persistent'] ) ? 'mysql_pconnect' : 'mysql_connect';
 		$this->conn = $linkfunction($dbConfig['host'].":".$dbConfig['port'], $dbConfig['login'], $dbConfig['password']) or spError("数据库链接错误 : " . mysql_error()); 
 		mysql_select_db($dbConfig['database'], $this->conn) or spError("无法找到数据库，请确认数据库名称正确！");
-		$this->exec("SET NAMES GBK");
+		// $this->exec("SET NAMES GBK");
 	}
 	/**
 	 * 对特殊字符进行过滤
 	 *
 	 * @param value  值
 	 */
-	public function __val_escape($value, $quotes = FALSE) {
+	public function __val_escape($value) {
 		if(is_null($value))return 'NULL';
 		if(is_bool($value))return $value ? 1 : 0;
 		if(is_int($value))return (int)$value;
@@ -112,7 +112,7 @@ class db_mysql {
 	 */
 	public function __destruct()
 	{
-		if( TRUE != $dbConfig['persistent'] )@mysql_close($this->conn);
+		if( TRUE != $GLOBALS['G_SP']['db']['persistent'] )@mysql_close($this->conn);
 	}
 }
 

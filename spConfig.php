@@ -20,8 +20,10 @@ return array(
 	'auto_load_model' => array('spPager','spVerifier','spCache','spLinker'), // 模型自动加载的扩展类名
 	
 	'sp_error_show_source' => 5, // spError显示代码的行数
+	'sp_error_throw_exception' => FALSE, // 是否抛出异常
 	'allow_trace_onrelease' => FALSE, // 是否允许在部署模式下输出调试信息
-		
+	'sp_notice_php' => SP_PATH."/Misc/notice.php", // 框架默认的错误提示程序
+	
 	'inst_class' => array(), // 已实例化的类名称
 	'import_file' => array(), // 已经载入的文件
 	'sp_access_store' => array(), // 使用spAccess保存到内存的变量
@@ -37,9 +39,10 @@ return array(
 	'auto_sp_run' => FALSE, // 是否自动执行spRun函数
 	
 	'sp_cache' => APP_PATH.'/tmp', // 框架临时文件夹目录
+	'sp_app_id' => '',  // 框架识别ID
 	'controller_path' => APP_PATH.'/controller', // 用户控制器程序的路径定义
 	'model_path' => APP_PATH.'/model', // 用户模型程序的路径定义
-	'sp_notice_php' => SP_PATH."/Misc/notice.php", // 框架默认的错误提示程序
+
 
 	'url' => array( // URL设置
 		'url_path_info' => FALSE, // 是否使用path_info方式的URL
@@ -67,6 +70,7 @@ return array(
 			'cache_dir' => APP_PATH.'/tmp', // 缓存目录
 			'left_delimiter' => '{',  // smarty左限定符
 			'right_delimiter' => '}', // smarty右限定符
+			'auto_literal' => TRUE, // Smarty3新特性
 		),
 		'debugging' => FALSE, // 是否开启视图调试功能，在部署模式下无法开启视图调试功能
 		'engine_name' => 'Smarty', // 模板引擎的类名称，默认为Smarty

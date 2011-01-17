@@ -37,7 +37,7 @@ class spAcl
 	 */
 	public function get()
 	{
-		return $_SESSION["SpAclSession"];
+		return $_SESSION[$GLOBALS['G_SP']['sp_app_id']."_SpAclSession"];
 	}
 
 	/**
@@ -110,7 +110,7 @@ class spAcl
 	 */
 	public function set($acl_name)
 	{
-		$_SESSION["SpAclSession"] = $acl_name;
+		$_SESSION[$GLOBALS['G_SP']['sp_app_id']."_SpAclSession"] = $acl_name;
 	}
 }
 
@@ -125,7 +125,7 @@ class spAcl
  * 	action VARCHAR(50) NOT NULL,
  * 	acl_name VARCHAR(50) NOT NULL,
  * 	PRIMARY KEY (aclid)
- * ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci
+ * ) ENGINE=MyISAM;
  */
 class spAclModel extends spModel
 {

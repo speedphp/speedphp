@@ -98,7 +98,7 @@ class db_sae {
 	 *
 	 * @param value  ֵ
 	 */
-	public function __val_escape($value) {
+	public function __val_escape($value, $quotes = FALSE) {
 		if(is_null($value))return 'NULL';
 		if(is_bool($value))return $value ? 1 : 0;
 		if(is_int($value))return (int)$value;
