@@ -94,7 +94,9 @@ class spUrlRewrite
 		if( array_key_exists($uri['first']['pattern'], $this->params['map']) ){
 			@list($__controller, $__action) = explode('@',$this->params['map'][$uri['first']['pattern']]);
 			if( !empty($this->params['args'][$uri['first']['pattern']]) )foreach( $this->params['args'][$uri['first']['pattern']] as $v )spClass("spArgs")->set($v, array_shift($uri['first']['args']));
-		}elseif( isset($this->params['map']['@']) && !in_array($uri['first']['pattern'].'.php', array_map('strtolower',scandir($GLOBALS['G_SP']['controller_path']))) ){
+		}elseif( in_array($uri['first']['pattern'].'.php', array_map('strtolower',scandir($GLOBALS['G_SP']['controller_path']))) ){
+			$__controller = $uri['first']['pattern'];$__action = $GLOBALS['G_SP']['default_action'];
+		}elseif( isset($this->params['map']['@']) ){
 			@list($__controller, $__action) = explode('@',$this->params['map']['@']);
 			if( !empty($this->params['args']['@']) ){
 				$uri['first']['args'] = array_merge(array($uri['first']['pattern']), $uri['first']['args']);
