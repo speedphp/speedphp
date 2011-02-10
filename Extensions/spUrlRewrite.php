@@ -94,9 +94,7 @@ class spUrlRewrite
 		if( array_key_exists($uri['first']['pattern'], $this->params['map']) ){
 			@list($__controller, $__action) = explode('@',$this->params['map'][$uri['first']['pattern']]);
 			if( !empty($this->params['args'][$uri['first']['pattern']]) )foreach( $this->params['args'][$uri['first']['pattern']] as $v )spClass("spArgs")->set($v, array_shift($uri['first']['args']));
-		}elseif( in_array($uri['first']['pattern'].'.php', array_map('strtolower',scandir($GLOBALS['G_SP']['controller_path']))) ){
-			$__controller = $uri['first']['pattern'];$__action = $GLOBALS['G_SP']['default_action'];
-		}elseif( isset($this->params['map']['@']) ){
+		}elseif( isset($this->params['map']['@']) && !in_array($uri['first']['pattern'].'.php', array_map('strtolower',scandir($GLOBALS['G_SP']['controller_path']))) ){
 			@list($__controller, $__action) = explode('@',$this->params['map']['@']);
 			if( !empty($this->params['args']['@']) ){
 				$uri['first']['args'] = array_merge(array($uri['first']['pattern']), $uri['first']['args']);
@@ -104,6 +102,7 @@ class spUrlRewrite
 			}
 		}else{
 			$__controller = $uri['first']['pattern'];$__action = array_shift($uri['first']['args']);
+			if( empty($__action) )$__action = $GLOBALS['G_SP']['default_action'];
 		}
 		if(!empty($uri['first']['args']))for($u = 0; $u < count($uri['first']['args']); $u++){
 			spClass("spArgs")->set($uri['first']['args'][$u], isset($uri['first']['args'][$u+1])?$uri['first']['args'][$u+1]:"");
@@ -139,7 +138,8 @@ class spUrlRewrite
 				}
 			}
 		}else{
-			$uri .= $urlargs['controller'].$this->params['sep'].$urlargs['action'];
+			$uri .= $urlargs['controller'];
+			if( !empty($urlargs['action']) && $urlargs['action'] != $GLOBALS['G_SP']["default_action"] )$uri .= $this->params['sep'].$urlargs['action'];
 		}
 		if( !empty($urlargs['args']) ){
 			foreach($urlargs['args'] as $k => $v)$uri.= $this->params['sep'].$k.$this->params['sep'].$v;
