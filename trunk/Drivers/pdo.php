@@ -135,7 +135,7 @@ class db_pdo {
 	{
 		if(!class_exists("PDO"))spError('PHP环境未安装PDO函数库！');
 		try {
-		    $this->conn = new PDO($dbConfig['host'], $dbConfig['login'], $dbConfig['password']); 
+		    $this->conn = new PDO($dbConfig['host'], $dbConfig['login'], $dbConfig['password'],array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")); 
 		} catch (PDOException $e) {
 		    spError('数据库链接错误/无法找到数据库 :  ' . $e->getMessage());
 		}
