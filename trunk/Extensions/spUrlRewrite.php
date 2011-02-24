@@ -139,7 +139,7 @@ class spUrlRewrite
 			}
 		}else{
 			$uri .= $urlargs['controller'];
-			if( !empty($urlargs['action']) && $urlargs['action'] != $GLOBALS['G_SP']["default_action"] )$uri .= $this->params['sep'].$urlargs['action'];
+			if( !empty($urlargs['args']) || (!empty($urlargs['action']) && $urlargs['action'] != $GLOBALS['G_SP']["default_action"]) )$uri .= $this->params['sep'].$urlargs['action'];
 		}
 		if( !empty($urlargs['args']) ){
 			foreach($urlargs['args'] as $k => $v)$uri.= $this->params['sep'].$k.$this->params['sep'].$v;
