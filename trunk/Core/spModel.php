@@ -532,7 +532,7 @@ class spVerifier {
 						if(TRUE == spClass($this->add_rules[$rule][0])->{$this->add_rules[$rule][1]}($inputval, $rightval, $values))continue;
 					}
 				}else{
-					spError("未知规则！");
+					spError("未知规则：{$rule}");
 				}
 				$this->messages[$rkey][] = (isset($this->verifier["messages"][$rkey][$rule])) ? $this->verifier["messages"][$rkey][$rule] : "{$rule}";
 			}
