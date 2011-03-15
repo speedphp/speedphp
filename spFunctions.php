@@ -94,13 +94,21 @@ function spAccess($method, $name, $value = NULL, $life_time = -1){
 	if( $launch = spLaunch("function_access", array('method'=>$method, 'name'=>$name, 'value'=>$value, 'life_time'=>$life_time), TRUE) )return $launch;
 	// 准备缓存目录和缓存文件名称，缓存文件名称为$name的MD5值，文件后缀为php
 	if(!is_dir($GLOBALS['G_SP']['sp_cache']))__mkdirs($GLOBALS['G_SP']['sp_cache']);
-	$sfile = $GLOBALS['G_SP']['sp_cache'].'/'.$GLOBALS['G_SP']['sp_app_id'].md5($name).".php";
+	if( $GLOBALS['G_SP']['cache_multidir'] > 0 ){
+		$md5name = md5($name);
+		$sdir = $GLOBALS['G_SP']['sp_cache'].'/'.$GLOBALS['G_SP']['sp_app_id'];
+		for( $multi=0; $multi < $GLOBALS['G_SP']['cache_multidir']*2; $multi+=2 )$sdir .= '/'.substr($md5name,$multi,2);
+		$sfile = $sdir.'/'.$md5name.".php";
+	}else{
+		$sfile = $GLOBALS['G_SP']['sp_cache'].'/'.$GLOBALS['G_SP']['sp_app_id'].md5($name).".php";
+	}
 	// 对$method进行判断，分别进行读写删的操作
 	if('w' == $method){ 
 		// 写数据，在$life_time为-1的时候，将增大$life_time值以令$life_time不过期
 		$life_time = ( -1 == $life_time ) ? '300000000' : $life_time;
 		// 准备存入缓存文件的数据，缓存文件使用PHP的die();函数以便保证内容安全，
 		$value = '<?php die();?>'.( time() + $life_time ).serialize($value); // 数据被序列化后保存
+		if(isset($sdir))__mkdirs($sdir, 0777);
 		return file_put_contents($sfile, $value);
 	}elseif('c' == $method){
 		// 清除数据，直接移除改缓存文件
