@@ -85,8 +85,7 @@ class spUrlRewrite
 			$__action = $GLOBALS['G_SP']['default_action'];
 			return ;
 		}
-		$this->params['suffix'] = ( '' == $this->params['suffix'] )?'?':$this->params['suffix'];
-		$request = explode($this->params['suffix'], $request, 2);
+		$request = explode((( '' == $this->params['suffix'] )?'?':$this->params['suffix']), $request, 2);
 		$uri = array('first' => array_shift($request),'last' => ltrim(implode($request),'?'));
 		$request = explode($this->params['sep'], $uri['first']);
 		$uri['first'] = array('pattern' => array_shift($request),'args'  => $request);
