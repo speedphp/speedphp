@@ -91,7 +91,7 @@ class db_mysql {
 		$linkfunction = ( TRUE == $dbConfig['persistent'] ) ? 'mysql_pconnect' : 'mysql_connect';
 		$this->conn = $linkfunction($dbConfig['host'].":".$dbConfig['port'], $dbConfig['login'], $dbConfig['password']) or spError("数据库链接错误 : " . mysql_error()); 
 		mysql_select_db($dbConfig['database'], $this->conn) or spError("无法找到数据库，请确认数据库名称正确！");
-		// $this->exec("SET NAMES GBK");
+		$this->exec("SET NAMES GBK");
 	}
 	/**
 	 * 对特殊字符进行过滤
