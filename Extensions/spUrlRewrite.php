@@ -78,7 +78,9 @@ class spUrlRewrite
 	{
 		GLOBAL $__controller, $__action;
 		if(isset($_SERVER['HTTP_X_REWRITE_URL']))$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
-		$request = ltrim(strtolower(substr($_SERVER["REQUEST_URI"], strlen(dirname($GLOBALS['G_SP']['url']['url_path_base'])))),"\/\\");
+		// TODO: 区分大小写的参数获取
+		// $request = ltrim(strtolower(substr($_SERVER["REQUEST_URI"], strlen(dirname($GLOBALS['G_SP']['url']['url_path_base'])))),"\/\\");
+		$request = ltrim(substr($_SERVER["REQUEST_URI"], strlen(dirname($GLOBALS['G_SP']['url']['url_path_base']))),"\/\\");
 		if( '?' == substr($request, 0, 1) or 'index.php?' == substr($request, 0, 10) )return ;
 		if( empty($request) or 'index.php' == $request ){
 			$__controller = $GLOBALS['G_SP']['default_controller'];
