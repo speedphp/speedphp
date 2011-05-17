@@ -4,7 +4,7 @@
 /////////////////////////////////////////////////////////////////
 
 define('SP_VERSION', '3.1.66'); // 当前框架版本
-
+if (substr(PHP_VERSION, 0, 1) != '5')exit("SpeedPHP框架环境要求PHP5！");
 /**
  * spCore
  *
@@ -17,7 +17,6 @@ if(!defined('APP_PATH')) define('APP_PATH', dirname(__FILE__).'/app');
 
 // 载入核心函数库
 require(SP_PATH."/spFunctions.php");
-if (substr(PHP_VERSION, 0, 1) != '5')spError("SpeedPHP框架环境要求PHP5！");
 
 // 载入配置文件
 $GLOBALS['G_SP'] = spConfigReady(require(SP_PATH."/spConfig.php"),$spConfig);
