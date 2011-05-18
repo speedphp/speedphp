@@ -66,7 +66,7 @@ function import($sfilename, $auto_search = TRUE, $auto_error = FALSE){
 	}else{
 		if(TRUE == $auto_search){ // 需要搜索文件
 			// 按“应用程序包含目录 -> 应用程序Model目录 -> sp框架包含文件目录”的顺序搜索文件
-			foreach(array_merge( $GLOBALS['G_SP']['sp_include_path'], array($GLOBALS['G_SP']['model_path']), $GLOBALS['G_SP']['include_path'] ) as $sp_include_path){
+			foreach(array_merge( $GLOBALS['G_SP']['include_path'], array($GLOBALS['G_SP']['model_path']), $GLOBALS['G_SP']['sp_include_path'] ) as $sp_include_path){
 				// 检查当前搜索路径中，该文件是否已经载入
 				if(isset($GLOBALS['G_SP']["import_file"][md5($sp_include_path.'/'.$sfilename)]))return TRUE;
 				if( is_readable( $sp_include_path.'/'.$sfilename ) ){
