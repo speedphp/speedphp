@@ -6,7 +6,7 @@
 /**
  * spConfig
  *
- * SpeedPHP应用框架的系统默认配置
+ * SpeedPHP应用框架的系统默认配置，当前为SAE版本，根据SAE环境进行了部分修改
  */
 
 return array(
@@ -14,7 +14,11 @@ return array(
 	'sp_core_path' => SP_PATH.'/Core', // 框架MVC核心目录
 	'sp_drivers_path' => SP_PATH.'/Drivers', // 框架各类驱动文件目录
 	'sp_include_path' => array( SP_PATH.'/Extensions' ), // 框架扩展功能载入路径
-	'launch' => array(), // 自动执行点的根节点
+	'launch' => array( // 自动执行点的根节点
+	  	'function_access' => array(
+				array("spAccessCache", "saememcache"),
+	 	    ),
+	),
 	
 	'auto_load_controller' => array('spArgs'), // 控制器自动加载的扩展类名
 	'auto_load_model' => array('spPager','spVerifier','spCache','spLinker'), // 模型自动加载的扩展类名
@@ -23,7 +27,7 @@ return array(
 	'sp_error_throw_exception' => FALSE, // 是否抛出异常
 	'allow_trace_onrelease' => FALSE, // 是否允许在部署模式下输出调试信息
 	'sp_notice_php' => SP_PATH."/Misc/notice.php", // 框架默认的错误提示程序
-	
+		
 	'inst_class' => array(), // 已实例化的类名称
 	'import_file' => array(), // 已经载入的文件
 	'sp_access_store' => array(), // 使用spAccess保存到内存的变量
@@ -38,37 +42,35 @@ return array(
 	'dispatcher_error' => "spError('路由错误，请检查控制器目录下是否存在该控制器/动作。');", // 定义处理路由错误的函数
 	'auto_sp_run' => FALSE, // 是否自动执行spRun函数
 	
-	'sp_cache' => APP_PATH.'/tmp', // 框架临时文件夹目录
+	// 'sp_cache' => APP_PATH.'/tmp', // 框架临时文件夹目录
 	'sp_app_id' => '',  // 框架识别ID
-	'cache_multidir' => 0, // 缓存分目录
 	'controller_path' => APP_PATH.'/controller', // 用户控制器程序的路径定义
 	'model_path' => APP_PATH.'/model', // 用户模型程序的路径定义
-
 
 	'url' => array( // URL设置
 		'url_path_info' => FALSE, // 是否使用path_info方式的URL
 		'url_path_base' => '', // URL的根目录访问地址，默认为空则是入口文件index.php
 	),
-	
+
 	'db' => array(  // 数据库连接配置
-		'driver' => 'mysql',   // 驱动类型
-		'host' => 'localhost', // 数据库地址
-		'port' => 3306,        // 端口
-		'login' => 'root',     // 用户名
-		'password' => '',      // 密码
-		'database' => '',      // 库名称
+		'driver' => 'sae',   // 驱动类型
+		//'host' => 'localhost', // 数据库地址
+		//'port' => 3306,        // 端口
+		//'login' => 'root',     // 用户名
+		//'password' => '',      // 密码
+		//'database' => '',      // 库名称
 		'prefix' => '',           // 表前缀
-		'persistent' => FALSE,    // 是否使用长链接
+		//'persistent' => FALSE,    // 是否使用长链接
 	),
-	'db_driver_path' => '', // 自定义数据库驱动文件地址
+	'db_driver_path' => SP_PATH.'/Drivers/sae.php', // 自定义数据库驱动文件地址
 	'db_spdb_full_tblname' => TRUE, // spDB是否使用表全名
 	
 	'view' => array( // 视图配置
 		'enabled' => TRUE, // 开启视图
 		'config' =>array(
 			'template_dir' => APP_PATH.'/tpl', // 模板目录
-			'compile_dir' => APP_PATH.'/tmp', // 编译目录
-			'cache_dir' => APP_PATH.'/tmp', // 缓存目录
+			// 'compile_dir' => APP_PATH.'/tmp', // 编译目录
+			// 'cache_dir' => APP_PATH.'/tmp', // 缓存目录
 			'left_delimiter' => '{',  // smarty左限定符
 			'right_delimiter' => '}', // smarty右限定符
 			'auto_literal' => TRUE, // Smarty3新特性
@@ -82,11 +84,11 @@ return array(
 		'auto_display_suffix' => '.html', // 自动输出模板的后缀名
 	),
 		
-	'html' => array( 
-		'enabled' => FALSE, // 是否开启真实静态HTML文件生成器
-		'file_root_name' => 'topic', // 静态文件生成的根目录名称，设置为空则是直接在入口文件的同级目录生成
-		'safe_check_file_exists' => FALSE, // 获取URL时，检查物理HTML文件是否存在，如文件不存在，则返回安全的动态地址
-	),
+	//'html' => array( 
+	//	'enabled' => FALSE, // 是否开启真实静态HTML文件生成器
+	//	'file_root_name' => 'topic', // 静态文件生成的根目录名称，设置为空则是直接在入口文件的同级目录生成
+	//	'safe_check_file_exists' => FALSE, // 获取URL时，检查物理HTML文件是否存在，如文件不存在，则返回安全的动态地址
+	//),
 	
 	'lang' => array(), // 多语言设置，键是每种语言的名称，而值可以是default（默认语言），语言文件地址或者是翻译函数
 					// 同时请注意，在使用语言文件并且文件中存在中文等时，请将文件设置成UTF8编码

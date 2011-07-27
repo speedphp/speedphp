@@ -19,7 +19,8 @@ if(!defined('APP_PATH')) define('APP_PATH', dirname(__FILE__).'/app');
 require(SP_PATH."/spFunctions.php");
 
 // 载入配置文件
-$GLOBALS['G_SP'] = spConfigReady(require(SP_PATH."/spConfig.php"),$spConfig);
+if (defined('SAE_TMP_PATH')) $GLOBALS['G_SP'] = spConfigReady(require(SP_PATH."/spConfig4sae.php"),$spConfig);
+else $GLOBALS['G_SP'] = spConfigReady(require(SP_PATH."/spConfig.php"),$spConfig);
 
 // 根据配置文件进行一些全局变量的定义
 if('debug' == $GLOBALS['G_SP']['mode']){
