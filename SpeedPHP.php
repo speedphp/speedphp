@@ -27,6 +27,7 @@ if('debug' == $GLOBALS['G_SP']['mode']){
 }else{
 	define("SP_DEBUG",FALSE); // 当前正在部署模式下
 }
+
 // 如果是调试模式，打开警告输出
 if (SP_DEBUG) {
 	if( substr(PHP_VERSION, 0, 3) == "5.3" ){
@@ -37,10 +38,10 @@ if (SP_DEBUG) {
 } else {
 	error_reporting(0);
 }
-@set_magic_quotes_runtime(0);
+//set_magic_quotes_runtime(0);
 
 // 自动开启SESSION
-if($GLOBALS['G_SP']['auto_session'])@session_start();
+if($GLOBALS['G_SP']['auto_session'])session_start();
 
 // 载入核心MVC架构文件
 import($GLOBALS['G_SP']["sp_core_path"]."/spController.php", FALSE, TRUE);
