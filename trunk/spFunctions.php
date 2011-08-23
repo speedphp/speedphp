@@ -331,7 +331,7 @@ function spDB($tbl_name, $pk = null){
 if ( !function_exists('json_decode') ){
 	function json_decode($content, $assoc=false){
 		if ( $assoc ){
-			return spClass("Services_JSON",SERVICES_JSON_LOOSE_TYPE)->decode($content);
+			return spClass("Services_JSON", array(16))->decode($content);
 		} else {
 			return spClass("Services_JSON")->decode($content);
 		}
