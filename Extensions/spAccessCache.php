@@ -17,14 +17,14 @@
  *
  * 请注意：Memcache、db 驱动类有其特殊的设置，请参考类注释。
  *
- * 应用程序配置中需要使用到路由挂靠点以及spAccess挂靠点
+ * 应用程序配置中需要使用到路由扩展点以及spAccess扩展点
  * 'launch' => array( 
  *  	'function_access' => array(
  *			array("spAccessCache", "xcache"), // 第二个参数为缓存驱动类型的名称
  * 	    ),
  *),
  * 
- * 本扩展要求SpeedPHP框架2.5版本以上，以支持对spAccess函数的挂靠程序。
+ * 本扩展要求SpeedPHP框架2.5版本以上，以支持对spAccess函数的扩展程序。
  */
 if( SP_VERSION < 2.5 )spError('spAccessCache扩展要求SpeedPHP框架版本2.5以上。');
 class spAccessCache{
@@ -34,7 +34,7 @@ class spAccessCache{
 	public function __call($name, $args){
 		$driverClass = 'access_driver_'.$name;
 		if(!class_exists($driverClass))spError('spAccess无法找到名为{$name}缓存驱动程序，请检查!');
-		@list($method, $name, $value, $life_time) = $args;
+		@list($method, $name, $value, $life_time) = array_pop($args);
 		if('w' == $method){ // 写数据
 			$life_time = ( -1 == $life_time ) ? '300000000' : $life_time;
 			return spClass($driverClass)->set($name, serialize($value), $life_time);
@@ -125,14 +125,14 @@ class access_driver_xcache{
  *   `cachename` varchar(100) NOT NULL,
  *   `cachevalue` text,
  *   PRIMARY KEY (`cacheid`)
- * ) ENGINE=MyISAM;
+ * ) ENGINE=MyISAM DEFAULT CHARSET=gbk;
  *
  */
 class access_driver_db extends spModel{
 	public $pk = 'cacheid';
 	public $table = 'access_cache';
 	public function get($name){
-		if(! $result = $this->find(array('cachename'=>$name),'cacheid DESC','cachevalue') )return FALSE;
+		if(! $result = array_pop($this->find(array('cachename'=>$name),'cacheid DESC','cachevalue')) )return FALSE;
 		if( substr($result, 0, 10) < time() ){$this->del($name);return FALSE;}
 		return unserialize(substr($result, 10));
 	}

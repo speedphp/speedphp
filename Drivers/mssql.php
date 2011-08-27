@@ -23,8 +23,8 @@ class db_mssql {
 	 */
 	public function getArray($sql)
 	{
-		if( ! $result = $this->exec($sql) )return FALSE;
-		if( ! mssql_num_rows($result) )return FALSE;
+		if( ! $result = $this->exec($sql) )return array();
+		if( ! mssql_num_rows($result) )return array();
 		$rows = array();
 		while($rows[] = mssql_fetch_array($result,MSSQL_ASSOC)){}
 		mssql_free_result($result);

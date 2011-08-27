@@ -23,8 +23,8 @@ class db_mysqli {
 	 */
 	public function getArray($sql)
 	{
-		if( ! $result = $this->exec($sql) )return FALSE;
-		if( ! mysqli_num_rows($result) )return FALSE;
+		if( ! $result = $this->exec($sql) )return array();
+		if( ! mysqli_num_rows($result) )return array();
 		$rows = array();
 		while($rows[] = mysqli_fetch_array($result, MYSQLI_ASSOC)){}
 		mysqli_free_result($result);

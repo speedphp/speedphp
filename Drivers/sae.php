@@ -89,7 +89,7 @@ class db_sae {
 	public function __construct($dbConfig)
 	{
 		if(TRUE == SP_DEBUG)sae_set_display_errors(TRUE);
-		$this->conn = @new SaeMysql();
+		$this->conn = new SaeMysql();
 		if( $this->conn->errno() )spError("Êý¾Ý¿âÁ´½Ó´íÎó : " . $this->conn->error()); 
 		$this->conn->setCharset("GBK");
 	}

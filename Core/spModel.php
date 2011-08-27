@@ -532,7 +532,7 @@ class spVerifier {
 						if(TRUE == spClass($this->add_rules[$rule][0])->{$this->add_rules[$rule][1]}($inputval, $rightval, $values))continue;
 					}
 				}else{
-					spError("未知规则！");
+					spError("未知规则：{$rule}");
 				}
 				$this->messages[$rkey][] = (isset($this->verifier["messages"][$rkey][$rule])) ? $this->verifier["messages"][$rkey][$rule] : "{$rule}";
 			}
@@ -723,7 +723,7 @@ class spLinker
 	}
 	
 	/** 
-	 * 开发者可以通过spLinker()->fun($result)对已经返回的数据进行关联findAll查找
+	 * 开发者可以通过spLinker()->run($result)对已经返回的数据进行关联findAll查找
 	 * @param result    返回的数据
 	 */
     public function run($result = FALSE){

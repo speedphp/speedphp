@@ -125,7 +125,7 @@ class spAcl
  * 	action VARCHAR(50) NOT NULL,
  * 	acl_name VARCHAR(50) NOT NULL,
  * 	PRIMARY KEY (aclid)
- * ) ENGINE=MyISAM;
+ * )  ENGINE=MyISAM DEFAULT CHARSET=gbk;
  */
 class spAclModel extends spModel
 {
