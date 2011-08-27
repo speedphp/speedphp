@@ -17,9 +17,9 @@
  * RewriteRule ^(.*)$ index.php?$1 [L]
  * </IfModule>
  *
- * 本扩展要求SpeedPHP框架2.5版本以上，以支持对spUrl函数的挂靠程序。
+ * 本扩展要求SpeedPHP框架2.5版本以上，以支持对spUrl函数的扩展程序。
  *
- * 应用程序配置中需要使用到路由挂靠点以及spUrl挂靠点
+ * 应用程序配置中需要使用到路由扩展点以及spUrl扩展点
  * 'launch' => array( 
  *	 	'router_prefilter' => array( 
  *			array('spUrlRewrite', 'setReWrite'), 
@@ -78,15 +78,15 @@ class spUrlRewrite
 	{
 		GLOBAL $__controller, $__action;
 		if(isset($_SERVER['HTTP_X_REWRITE_URL']))$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
-		$request = ltrim(strtolower(substr($_SERVER["REQUEST_URI"], strlen(dirname($GLOBALS['G_SP']['url']['url_path_base'])))),"\/\\");
+		// $request = ltrim(strtolower(substr($_SERVER["REQUEST_URI"], strlen(dirname($GLOBALS['G_SP']['url']['url_path_base'])))),"\/\\");
+		$request = ltrim(substr($_SERVER["REQUEST_URI"], strlen(dirname($GLOBALS['G_SP']['url']['url_path_base']))),"\/\\");
 		if( '?' == substr($request, 0, 1) or 'index.php?' == substr($request, 0, 10) )return ;
 		if( empty($request) or 'index.php' == $request ){
 			$__controller = $GLOBALS['G_SP']['default_controller'];
 			$__action = $GLOBALS['G_SP']['default_action'];
 			return ;
 		}
-		$this->params['suffix'] = ( '' == $this->params['suffix'] )?'?':$this->params['suffix'];
-		$request = explode($this->params['suffix'], $request, 2);
+		$request = explode((( '' == $this->params['suffix'] )?'?':$this->params['suffix']), $request, 2);
 		$uri = array('first' => array_shift($request),'last' => ltrim(implode($request),'?'));
 		$request = explode($this->params['sep'], $uri['first']);
 		$uri['first'] = array('pattern' => array_shift($request),'args'  => $request);
@@ -102,6 +102,7 @@ class spUrlRewrite
 			}
 		}else{
 			$__controller = $uri['first']['pattern'];$__action = array_shift($uri['first']['args']);
+			if( empty($__action) )$__action = $GLOBALS['G_SP']['default_action'];
 		}
 		if(!empty($uri['first']['args']))for($u = 0; $u < count($uri['first']['args']); $u++){
 			spClass("spArgs")->set($uri['first']['args'][$u], isset($uri['first']['args'][$u+1])?$uri['first']['args'][$u+1]:"");
@@ -137,7 +138,8 @@ class spUrlRewrite
 				}
 			}
 		}else{
-			$uri .= $urlargs['controller'].$this->params['sep'].$urlargs['action'];
+			$uri .= $urlargs['controller'];
+			if( !empty($urlargs['args']) || (!empty($urlargs['action']) && $urlargs['action'] != $GLOBALS['G_SP']["default_action"]) )$uri .= $this->params['sep'].$urlargs['action'];
 		}
 		if( !empty($urlargs['args']) ){
 			foreach($urlargs['args'] as $k => $v)$uri.= $this->params['sep'].$k.$this->params['sep'].$v;

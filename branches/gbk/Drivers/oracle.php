@@ -100,6 +100,7 @@ class db_oracle {
 		if( ! $this->conn = $linkfunction($dbConfig['login'], $dbConfig['password'], $dbConfig['host']) ){
 			$e = oci_error();spError('数据库链接错误 : ' . strip_tags($e['message']));
 		}
+		$this->exec('ALTER SESSION SET NLS_DATE_FORMAT = \'yyyy-mm-dd hh24:mi:ss\'');
 	}
 	/**
 	 * 对特殊字符进行过滤

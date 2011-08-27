@@ -27,7 +27,7 @@ return array(
 	'inst_class' => array(), // 已实例化的类名称
 	'import_file' => array(), // 已经载入的文件
 	'sp_access_store' => array(), // 使用spAccess保存到内存的变量
-	'view_registered_functions' => array(), // 视图内挂靠的函数记录
+	'view_registered_functions' => array(), // 视图内注册的函数记录
 
 	'default_controller' => 'main', // 默认的控制器名称
 	'default_action' => 'index',  // 默认的动作名称
