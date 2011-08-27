@@ -40,7 +40,6 @@ return array(
 	
 	'sp_cache' => APP_PATH.'/tmp', // 框架临时文件夹目录
 	'sp_app_id' => '',  // 框架识别ID
-	'cache_multidir' => 0, // 缓存分目录
 	'controller_path' => APP_PATH.'/controller', // 用户控制器程序的路径定义
 	'model_path' => APP_PATH.'/model', // 用户模型程序的路径定义
 
