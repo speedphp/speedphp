@@ -89,7 +89,7 @@ class db_sae {
 	public function __construct($dbConfig)
 	{
 		if(TRUE == SP_DEBUG)sae_set_display_errors(TRUE);
-		$this->conn = @new SaeMysql();
+		$this->conn = new SaeMysql();
 		if( $this->conn->errno() )spError("数据库链接错误 : " . $this->conn->error()); 
 		$this->conn->setCharset("UTF8");
 	}
