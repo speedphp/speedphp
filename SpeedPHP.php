@@ -3,7 +3,7 @@
 // SpeedPHP中文PHP框架, Copyright (C) 2008 - 2010 SpeedPHP.com //
 /////////////////////////////////////////////////////////////////
 
-define('SP_VERSION', '3.1.87'); // 当前框架版本
+define('SP_VERSION', '3.1.89'); // 当前框架版本
 if (substr(PHP_VERSION, 0, 1) != '5')exit("SpeedPHP框架环境要求PHP5！");
 /**
  * spCore
