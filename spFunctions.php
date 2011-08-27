@@ -66,7 +66,7 @@ function import($sfilename, $auto_search = TRUE, $auto_error = FALSE){
 	}else{
 		if(TRUE == $auto_search){ // 需要搜索文件
 			// 按“应用程序包含目录 -> 应用程序Model目录 -> sp框架包含文件目录”的顺序搜索文件
-			foreach(array_merge( $GLOBALS['G_SP']['sp_include_path'], array($GLOBALS['G_SP']['model_path']), $GLOBALS['G_SP']['include_path'] ) as $sp_include_path){
+			foreach(array_merge( $GLOBALS['G_SP']['include_path'], array($GLOBALS['G_SP']['model_path']), $GLOBALS['G_SP']['sp_include_path'] ) as $sp_include_path){
 				// 检查当前搜索路径中，该文件是否已经载入
 				if(isset($GLOBALS['G_SP']["import_file"][md5($sp_include_path.'/'.$sfilename)]))return TRUE;
 				if( is_readable( $sp_include_path.'/'.$sfilename ) ){
@@ -90,7 +90,7 @@ function import($sfilename, $auto_search = TRUE, $auto_error = FALSE){
  * @param life_time    变量的生存时间，默认为永久保存
  */
 function spAccess($method, $name, $value = NULL, $life_time = -1){
-	// 使用function_access挂靠点
+	// 使用function_access扩展点
 	if( $launch = spLaunch("function_access", array('method'=>$method, 'name'=>$name, 'value'=>$value, 'life_time'=>$life_time), TRUE) )return $launch;
 	// 准备缓存目录和缓存文件名称，缓存文件名称为$name的MD5值，文件后缀为php
 	if(!is_dir($GLOBALS['G_SP']['sp_cache']))__mkdirs($GLOBALS['G_SP']['sp_cache']);
@@ -169,11 +169,11 @@ function spError($msg, $output = TRUE, $stop = TRUE){
 }
 
 /**
- * spLaunch  执行挂靠程序
+ * spLaunch  执行扩展程序
  * 
- * @param configname    挂靠程序设置点名称
- * @param launchargs    挂靠参数
- * @param return    是否存在返回数据，如需要返回，则该挂靠点仅能有一个挂靠操作
+ * @param configname    扩展程序设置点名称
+ * @param launchargs    扩展参数
+ * @param return    是否存在返回数据，如需要返回，则该扩展点仅能有一个扩展操作
  */
 function spLaunch($configname, $launchargs = null, $returns = FALSE ){
 	if( isset($GLOBALS['G_SP']['launch'][$configname]) && is_array($GLOBALS['G_SP']['launch'][$configname]) ){
@@ -232,7 +232,7 @@ function spUrl($controller = null, $action = null, $args = null, $anchor = null,
 	}
 	$controller = ( null != $controller ) ? $controller : $GLOBALS['G_SP']["default_controller"];
 	$action = ( null != $action ) ? $action : $GLOBALS['G_SP']["default_action"];
-	// 使用挂靠点
+	// 使用扩展点
 	if( $launch = spLaunch("function_url", array('controller'=>$controller, 'action'=>$action, 'args'=>$args, 'anchor'=>$anchor, 'no_sphtml'=>$no_sphtml), TRUE ))return $launch;
 	if( TRUE == $GLOBALS['G_SP']['url']["url_path_info"] ){ // 使用path_info方式
 		$url = $GLOBALS['G_SP']['url']["url_path_base"]."/{$controller}/{$action}";
@@ -257,10 +257,10 @@ function spUrl($controller = null, $action = null, $args = null, $anchor = null,
  */
 function __mkdirs($dir, $mode = 0777)
 {
-	if (!is_dir($dir)) {
-		__mkdirs(dirname($dir), $mode);
-		return @mkdir($dir, $mode);
-	}
+	//if (!is_dir($dir)) {
+	//	__mkdirs(dirname($dir), $mode);
+	//	return @mkdir($dir, $mode);
+	//}
 	return true;
 }
 
@@ -323,7 +323,7 @@ function spDB($tbl_name, $pk = null){
 if ( !function_exists('json_decode') ){
 	function json_decode($content, $assoc=false){
 		if ( $assoc ){
-			return spClass("Services_JSON",SERVICES_JSON_LOOSE_TYPE)->decode($content);
+			return spClass("Services_JSON", array(16))->decode($content);
 		} else {
 			return spClass("Services_JSON")->decode($content);
 		}

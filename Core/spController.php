@@ -169,7 +169,7 @@ class spController {
 /**
  * spArgs 
  * 应用程序变量类
- * spArgs是封装了$_SESSION、$_GET/$_POST、$_COOKIE、$_SERVER、$_FILES、$_ENV等，提供一些简便的访问和使用这些
+ * spArgs是封装了$_GET/$_POST、$_COOKIE等，提供一些简便的访问和使用这些
  * 全局变量的方法。
  */
 

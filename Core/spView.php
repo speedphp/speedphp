@@ -31,14 +31,7 @@ class spView {
 			}
 		}
 		if( !empty($GLOBALS['G_SP']['sp_app_id']) && isset($this->engine->compile_id) )$this->engine->compile_id = $GLOBALS['G_SP']['sp_app_id'];
-
-		if( empty($this->engine->no_compile_dir) ){
-			@memcache_init();
-			$path_compile="saemc://templates_c/";
-			$path_cache="saemc://cached";
-			$this->engine->compile_dir = $path_compile;
-			$this->engine->cache_dir = $path_cache;
-		}
+		if( empty($this->engine->no_compile_dir) )memcache_init();
 		spAddViewFunction('T', array( 'spView', '__template_T'));
 		spAddViewFunction('spUrl', array( 'spView', '__template_spUrl'));
 	}
@@ -60,7 +53,7 @@ class spView {
 	}
 	
 	/**
-	 * 注册已挂靠的视图函数
+	 * 注册视图函数
 	 */
 	public function addfuncs()
 	{
