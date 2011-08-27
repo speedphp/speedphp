@@ -54,7 +54,7 @@ class spView {
 	}
 	
 	/**
-	 * 注册已挂靠的视图函数
+	 * 注册视图函数
 	 */
 	public function addfuncs()
 	{
