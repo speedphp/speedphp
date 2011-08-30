@@ -34,7 +34,7 @@ class spAccessCache{
 	public function __call($name, $args){
 		$driverClass = 'access_driver_'.$name;
 		if(!class_exists($driverClass))spError('spAccess无法找到名为{$name}缓存驱动程序，请检查!');
-		@list($method, $name, $value, $life_time) = array_pop($args);
+		extract(array_pop($args));
 		if('w' == $method){ // 写数据
 			$life_time = ( -1 == $life_time ) ? '300000000' : $life_time;
 			return spClass($driverClass)->set($name, serialize($value), $life_time);
