@@ -27,7 +27,7 @@ class db_pdo_sqlite extends db_pdo {
 	 */
 	public function getTable($tbl_name){
 		$tmptable = $this->getArray("SELECT * FROM SQLITE_MASTER WHERE name = '{$tbl_name}' AND type='table'");
-		if (FALSE === strpos('[', $tmptable[0]['sql'])){
+		if (FALSE === strpos($tmptable[0]['sql'], '[')){
 			$tmp = explode('"',$tmptable[0]['sql']);
 			for( $i=1; $i < count ($tmp); $i+=2 ){
 				$columns[]['Field'] = $tmp[$i];
