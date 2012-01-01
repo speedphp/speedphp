@@ -35,8 +35,8 @@ foreach( $souceline as $singleline )echo $singleline;?>
 function getsource($file, $line){
 	if (!(file_exists($file) && is_file($file))) {return '';}
 	$data = file($file);$count = count($data) - 1;
-	$start = $line - $GLOBALS['G_SP']["sp_error_show_source"];if ($start < 1) {$start = 1;}
-	$end = $line + $GLOBALS['G_SP']["sp_error_show_source"];if ($end > $count) {$end = $count + 1;}
+	$start = $line - 5;if ($start < 1) {$start = 1;}
+	$end = $line + 5;if ($end > $count) {$end = $count + 1;}
 	$returns = array();
 	for ($i = $start; $i <= $end; $i++) {
 		if( $i == $line ){
