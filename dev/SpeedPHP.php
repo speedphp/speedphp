@@ -135,6 +135,8 @@ class spController {
 	 */
 	private $__template_vals = array();
 	
+	public $layout = null;
+	
 	/**
 	 * 构造函数
 	 */
@@ -149,6 +151,12 @@ class spController {
 			if( !is_writable($GLOBALS['G_SP']['view']['config']['cache_dir']) )spError('View Engine: cache_dir is not writable!');
 
 			spAddViewFunction('spUrl', '__template_spUrl');
+			$this->__template_url = array(
+				'root' => '网址根目录',
+				'base' => '应用根目录',
+				'current' => '当前目录',
+			);
+			$this->__init();
 		}
 	}
 
@@ -201,7 +209,6 @@ class spController {
 	 */
 	public function __set($name, $value)
 	{
-		if( $GLOBALS['G_SP']['view']['enabled'] && null !== $value)$this->v->assign(array($name=>$value));
 		$this->__template_vals[$name] = $value;
 	}
 	
@@ -214,50 +221,45 @@ class spController {
 		return $this->__template_vals[$name];
 	}
 	
+	private function __init()
+	{
+	
+	}
+	
 	/**
 	 * 输出模板
 	 *
      * @param $tplname   模板路径及名称
      * @param $output   是否直接显示模板，设置成false将返回HTML而不输出
 	 */
-	public function display($tplname, $output = true)
+	public function display($tplname, $output = true, $check_exists = true) 
 	{
+		$tplname = $GLOBALS['G_SP']['view']['config']['template_dir'].'/'.ltrim($tplname, '/');
+		if( !is_readable($tplname) ){
+			if( $check_exists )
+				spError("View Engine: Unable to load template file '{$tplname}'");
+			else
+				return false;
+		}
+		if( $this->layout ){
+			$this->__template_file = $tplname;
+			$tplname = $this->layout;
+		}
 		@ob_start();
-		if(true == $GLOBALS['G_SP']['view']['enabled']){
+		if($GLOBALS['G_SP']['view']['enabled']){
+			foreach( $GLOBALS['G_SP']["view_registered_functions"] as $alias => $func )$this->v->registerPlugin("function", $alias, $func);
+			$this->v->assign($this->__template_vals);
+			if($GLOBALS['G_SP']['view']['debugging'] && SP_DEBUG)$this->v->debugging = true;
 			try {
-					$this->__addfuncs();
-					$this->displayed = TRUE;
-					if($GLOBALS['G_SP']['view']['debugging'] && SP_DEBUG)$this->engine->debugging = TRUE;
 					$this->v->display($tplname);
 			} catch (Exception $e) {
 				spError( 'View Engine: '.$e->getMessage() );
 			}
 		}else{
 			extract($this->__template_vals);
-			require($tplname);
+			include $tplname;
 		}
-		if( true != $output )return ob_get_clean();
-	}
-	
-	/**
-	 * 自动输出页面
-	 * @param tplname 模板文件路径
-	 */
-	public function __display($tplname)
-	{
-		if( true != $this->v->displayed && false != $GLOBALS['G_SP']['view']['auto_display']){
-			if( method_exists($this->v, 'templateExists') && true == $this->v->templateExists($tplname))$this->display($tplname);
-		}
-	}
-	
-	public function __addfuncs()
-	{
-		if( is_array($GLOBALS['G_SP']["view_registered_functions"]) ){
-			foreach( $GLOBALS['G_SP']["view_registered_functions"] as $alias => $func ){
-				$this->v->registerPlugin("function", $alias, $func);
-				unset($GLOBALS['G_SP']["view_registered_functions"][$alias]);
-			}
-		}
+		if( !$output )return ob_get_clean();
 	}
 
 	/**
@@ -656,10 +658,10 @@ function spRun(){
 	// 路由并执行用户代码
 	$handle_controller->$__action();
 	// 控制器程序运行完毕，进行模板的自动输出
-	if(false != $GLOBALS['G_SP']['view']['auto_display']){
+	if($GLOBALS['G_SP']['view']['auto_display']){
 		$__tplname = $__controller.$GLOBALS['G_SP']['view']['auto_display_sep'].
 				$__action.$GLOBALS['G_SP']['view']['auto_display_suffix']; // 拼装模板路径
-		$handle_controller->auto_display($__tplname);
+		$handle_controller->display($__tplname, 1, 0);
 	}
 	// 对路由进行后续相关操作
 	spLaunch("router_postfilter");
