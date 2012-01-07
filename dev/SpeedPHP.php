@@ -120,26 +120,14 @@ $__action = isset($_REQUEST[$GLOBALS['G_SP']["url_action"]]) ?
 	$_REQUEST[$GLOBALS['G_SP']["url_action"]] : 
 	$GLOBALS['G_SP']["default_action"];
 
-/**
- * spController 基础控制器程序父类 应用程序中的每个控制器程序都应继承于spController
- */
 class spController { 
 
-	/**
-	 * 视图对象
-	 */
 	public $v;
 	
-	/**
-	 * 赋值到模板的变量
-	 */
 	private $__template_vals = array();
 	
 	public $layout = null;
 	
-	/**
-	 * 构造函数
-	 */
 	public function __construct()
 	{	
 		if(true == $GLOBALS['G_SP']['view']['enabled']){
@@ -160,62 +148,28 @@ class spController {
 		}
 	}
 
-    /**
-     *
-     * 跳转程序
-     *
-     * 应用程序的控制器类可以覆盖该函数以使用自定义的跳转程序
-     *
-     * @param $url  需要前往的地址
-     * @param $delay   延迟时间
-     */
     public function jump($url, $delay = 0){
 		echo "<html><head><meta http-equiv='refresh' content='{$delay};url={$url}'></head><body></body></html>";
 		exit;
     }
 
-    /**
-     *
-     * 错误提示程序
-     *
-     * 应用程序的控制器类可以覆盖该函数以使用自定义的错误提示
-     *
-     * @param $msg   错误提示需要的相关信息
-     * @param $url   跳转地址
-     */
     public function error($msg, $url = ''){
 		$url = empty($url) ? "window.history.back();" : "location.href=\"{$url}\";";
 		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"{$msg}\");{$url}}</script></head><body onload=\"sptips()\"></body></html>";
 		exit;
     }
 
-    /**
-     *
-     * 成功提示程序
-     *
-     * 应用程序的控制器类可以覆盖该函数以使用自定义的成功提示
-	 *
-     * @param $msg   成功提示需要的相关信息
-     * @param $url   跳转地址
-     */
     public function success($msg, $url = ''){
 		$url = empty($url) ? "window.history.back();" : "location.href=\"{$url}\";";
 		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"{$msg}\");{$url}}</script></head><body onload=\"sptips()\"></body></html>";
 		exit;
     }
 
-	/**
-	 * 魔术函数，获取赋值作为模板内变量
-	 */
 	public function __set($name, $value)
 	{
 		$this->__template_vals[$name] = $value;
 	}
-	
 
-	/**
-	 * 魔术函数，返回已赋值的变量值
-	 */
 	public function __get($name)
 	{
 		return $this->__template_vals[$name];
@@ -226,12 +180,6 @@ class spController {
 	
 	}
 	
-	/**
-	 * 输出模板
-	 *
-     * @param $tplname   模板路径及名称
-     * @param $output   是否直接显示模板，设置成false将返回HTML而不输出
-	 */
 	public function display($tplname, $output = true, $check_exists = true) 
 	{
 		$tplname = $GLOBALS['G_SP']['view']['config']['template_dir'].'/'.ltrim($tplname, '/');
@@ -262,15 +210,16 @@ class spController {
 		if( !$output )return ob_get_clean();
 	}
 
-	/**
-	 * 获取提交数据
-	 * @param name 提交数据名称
-	 * @param default 数据默认值
-	 */
-	public function args($name = null, $default = null)
+	public function args($name = null, $default = null, $callback_funcname = null)
 	{
-		
-	
+		if(!isset($GLOBALS['G_SP']['request_variables'][$name]))return $default;
+		if($callback_funcname){
+			$arg = $GLOBALS['G_SP']['request_variables'][$name];
+			array_walk_recursive($arg, $callback_funcname);
+			return $arg;
+		}else{
+			return $GLOBALS['G_SP']['request_variables'][$name];
+		}
 	}
 }
 
@@ -648,6 +597,9 @@ function spRun(){
 	GLOBAL $__controller, $__action;
 	// 对路由进行自动执行相关操作
 	spLaunch("router_prefilter");
+	
+	$GLOBALS['G_SP']['request_variables'] = array_merge($_GET, $_POST);
+	
 	// 对将要访问的控制器类进行实例化
 	$handle_controller = spClass($__controller, null, $GLOBALS['G_SP']["controller_path"].'/'.$__controller.".php");
 	// 调用控制器出错将调用路由错误处理函数
