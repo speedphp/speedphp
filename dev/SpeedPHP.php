@@ -213,13 +213,9 @@ class spController {
 	public function args($name = null, $default = null, $callback_funcname = null)
 	{
 		if(!isset($GLOBALS['G_SP']['request_variables'][$name]))return $default;
-		if($callback_funcname){
-			$arg = $GLOBALS['G_SP']['request_variables'][$name];
-			array_walk_recursive($arg, $callback_funcname);
-			return $arg;
-		}else{
-			return $GLOBALS['G_SP']['request_variables'][$name];
-		}
+		$arg = $name ? $GLOBALS['G_SP']['request_variables'][$name] : $GLOBALS['G_SP']['request_variables'];
+		if($callback_funcname)array_walk_recursive($arg, $callback_funcname);
+		return $arg;
 	}
 }
 
