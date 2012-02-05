@@ -140,9 +140,9 @@ class spController {
 
 			spAddViewFunction('spUrl', '__template_spUrl');
 			$this->__template_url = array(
-				'root' => '网址根目录',
-				'base' => '应用根目录',
-				'current' => '当前目录',
+				'root' => 'http://'.$_SERVER['HTTP_HOST'],
+				'base' => 'http://'.$_SERVER['HTTP_HOST'].'/'.$GLOBALS['G_SP']['url']["url_path_base"],
+				'current' => 'http://'.$_SERVER['HTTP_HOST'].'/'.rtrim(dirname($_SERVER['REQUEST_URI']),'\\/'),
 			);
 			$this->__init();
 		}
