@@ -825,25 +825,6 @@ function spAddViewFunction($alias, $callback_function)
 }
 
 /**
- * json_decode/json_encode
- *
- * 兼容在未配置JSON扩展的情况下使用Services_JSON类
- *
- */
-if ( !function_exists('json_decode') ){
-	function json_decode($content, $assoc=false){
-		if ( $assoc ){
-			return spClass("Services_JSON", array(16))->decode($content);
-		} else {
-			return spClass("Services_JSON")->decode($content);
-		}
-	}
-}
-if ( !function_exists('json_encode') ){
-    function json_encode($content){return spClass("Services_JSON")->encode($content);}
-}
-
-/**
  * spConfigReady   快速将用户配置覆盖到框架默认配置
  * 
  * @param preconfig    默认配置
