@@ -37,7 +37,7 @@ $__default_configs =  array(
 	'url_action' => 'a',  // 请求时使用的动作变量标识
 
 	'auto_session' => true, // 是否自动开启SESSION支持
-	'dispatcher_error' => "spError('路由错误，请检查控制器目录下是否存在该控制器/动作。');", // 定义处理路由错误的函数
+	'dispatcher_error' => 'spController::error404();', // 定义处理路由错误的函数
 	
 	'sp_cache' => APP_PATH.'/tmp', // 框架临时文件夹目录
 	'sp_app_id' => '',  // 框架识别ID
@@ -164,6 +164,17 @@ class spController {
 		echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><script>function sptips(){alert(\"{$msg}\");{$url}}</script></head><body onload=\"sptips()\"></body></html>";
 		exit;
     }
+	
+	public static function error404(){
+		if(SP_DEBUG){
+			global $__controller, $__action;
+			spError("路由错误，请检查控制器目录下是否存在该控制器".htmlspecialchars($__controller)."与动作".htmlspecialchars($__action)."。");
+		}else{
+			header("HTTP/1.1 404 Not Found");
+			header("Status: 404 Not Found");
+		}
+		exit;
+	}
 
 	public function __set($name, $value)
 	{
