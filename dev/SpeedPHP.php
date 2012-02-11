@@ -44,9 +44,9 @@ $__default_configs =  array(
 	'controller_path' => APP_PATH.'/controller', // 用户控制器程序的路径定义
 	'model_path' => APP_PATH.'/model', // 用户模型程序的路径定义
 
-
 	'url' => array( // URL设置
 		'url_path_base' => '', // URL的根目录访问地址，默认为空则是入口文件index.php
+		'url_rewrite' => array(),
 	),
 	
 	'db' => array(  // 数据库连接配置
@@ -101,6 +101,8 @@ if('debug' == strtolower($GLOBALS['G_SP']['mode'])){
 
 if($GLOBALS['G_SP']['auto_session'])@session_start();
 
+if(isset($_SERVER['HTTP_X_REWRITE_URL']))$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
+
 // 当在二级目录中使用SpeedPHP框架时，自动获取当前访问的文件名
 if('' == $GLOBALS['G_SP']['url']["url_path_base"]){
 	if(basename($_SERVER['SCRIPT_NAME']) === basename($_SERVER['SCRIPT_FILENAME']))
@@ -111,7 +113,6 @@ if('' == $GLOBALS['G_SP']['url']["url_path_base"]){
 		$GLOBALS['G_SP']['url']["url_path_base"] = $_SERVER['ORIG_SCRIPT_NAME'];
 }
 
-
 // 构造执行路由
 $__controller = isset($_REQUEST[$GLOBALS['G_SP']["url_controller"]]) ? 
 	$_REQUEST[$GLOBALS['G_SP']["url_controller"]] : 
@@ -119,6 +120,33 @@ $__controller = isset($_REQUEST[$GLOBALS['G_SP']["url_controller"]]) ?
 $__action = isset($_REQUEST[$GLOBALS['G_SP']["url_action"]]) ? 
 	$_REQUEST[$GLOBALS['G_SP']["url_action"]] : 
 	$GLOBALS['G_SP']["default_action"];
+
+if($GLOBALS['G_SP']['url']["url_rewrite"]){
+	if( ($pos = strpos( $_SERVER['REQUEST_URI'], '?' )) !== false )
+		parse_str( substr( $_SERVER['REQUEST_URI'], $pos + 1 ), $_GET );
+	foreach($GLOBALS['G_SP']['url']["url_rewrite"] as $rule => $mapper){
+		if(0!==stripos($rule, 'http://'))
+			$rule = 'http://'.$_SERVER['HTTP_HOST'].
+				rtrim(dirname($GLOBALS['G_SP']['url']["url_path_base"]), '/\\') .'/'.$rule;
+		$rule = '/'.str_ireplace(array(
+			'\\\\', 'http://', '/', '<a>', '<c>', '<', '>', ':', '.', 
+		), array(
+			'', '', '\/', '<a:\w+>', '<c:\w+>', '(?<', ')', '>',  '\.', 
+		), $rule).'/i';
+		if(preg_match($rule, 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], $matchs)){
+			@list($__controller, $__action) = explode('@', $mapper);
+			foreach($matchs as $matchkey => $matchval){
+				if('c' === $matchkey && '<c>' === $__controller)
+					$__controller = $matchval;
+				elseif( 'a' === $matchkey && '<a>' === $__action)
+					$__action = $matchval;
+				else
+					if(!is_int($matchkey))$_GET[$matchkey] = $matchval;
+			}
+			break;
+		}
+	}
+}
 
 class spController { 
 

@@ -32,7 +32,7 @@ $souceline = getsource($trace["file"], $trace["line"]);if( $souceline ){
 foreach( $souceline as $singleline )echo $singleline;?>
 </div>
 <?php }}}?>
-</div></div><div style="clear:both;"></body></html>
+</div></div><div style="clear:both;padding-bottom:50px;" /></body></html>
 <?php
 function getsource($file, $line){
 	if (!(file_exists($file) && is_file($file))) {return '';}
