@@ -207,8 +207,8 @@ class spController {
 	
 	public static function error404(){
 		if(SP_DEBUG){
-			global $__controller, $__action;
-			spError("路由错误，请检查控制器目录下是否存在该控制器".htmlspecialchars($__controller)."与动作".htmlspecialchars($__action)."。");
+			GLOBAL $__module, $__controller, $__action;
+			spError('路由错误，请检查'.htmlspecialchars($__module).'目录下是否存在控制器'.htmlspecialchars($__controller).'与动作'.htmlspecialchars($__action));
 		}else{
 			header("HTTP/1.1 404 Not Found");
 			header("Status: 404 Not Found");
@@ -641,20 +641,31 @@ class spModel {
  * spRun  执行用户代码
  */
 function spRun(){
-	GLOBAL $__controller, $__action;
+	GLOBAL $__module, $__controller, $__action;
 	// 对路由进行自动执行相关操作
 	spLaunch("router_prefilter");
 	
 	$GLOBALS['G_SP']['request_variables'] = array_merge($_GET, $_POST);
 	
-
+	if(!preg_match('/^[a-zA-Z0-9_]*$/i', $__controller))eval($GLOBALS['G_SP']["dispatcher_error"]);
+	if($__module){
+		if(!preg_match('/^[a-zA-Z0-9_]*$/i', $__module))eval($GLOBALS['G_SP']["dispatcher_error"]);
+		if(!isset($GLOBALS['G_SP']['module'][$__module]))spError('Module: '.htmlspecialchars($__module).' has no configuration!');
+		if(is_array($GLOBALS['G_SP']['module'][$__module]))
+			$module_config = $GLOBALS['G_SP']['module'][$__module];
+		else
+			$module_config = require($GLOBALS['G_SP']['module'][$__module]);
+			
+		$GLOBALS['G_SP'] = spConfigReady($GLOBALS['G_SP'], $module_config);
+		$controller_path = $GLOBALS['G_SP']["module_path"].'/'.$__module.'/'.$__controller.".php";
+	}else
+		$controller_path = $GLOBALS['G_SP']["controller_path"].'/'.$__controller.".php";
 	
-	$handle_controller = spClass($__controller, null, $GLOBALS['G_SP']["controller_path"].'/'.$__controller.".php");
+	$handle_controller = spClass($__controller, null, $controller_path);
 	// 调用控制器出错将调用路由错误处理函数
-	if(!is_object($handle_controller) || !method_exists($handle_controller, $__action)){
+	if(!is_object($handle_controller) || !method_exists($handle_controller, $__action))
 		eval($GLOBALS['G_SP']["dispatcher_error"]);
-		exit;
-	}
+
 	// 路由并执行用户代码
 	$handle_controller->$__action();
 	// 控制器程序运行完毕，进行模板的自动输出
