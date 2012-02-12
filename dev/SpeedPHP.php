@@ -19,8 +19,8 @@ $__default_configs =  array(
 	'sp_include_path' => array( SP_PATH.'/Extensions' ), // 框架扩展功能载入路径
 	'launch' => array(), // 自动执行点的根节点
 	
-	'auto_load_controller' => array('spArgs'), // 控制器自动加载的扩展类名
-	'auto_load_model' => array('spPager','spVerifier','spCache','spLinker'), // 模型自动加载的扩展类名
+	//'auto_load_controller' => array('spArgs'), // 控制器自动加载的扩展类名
+	//'auto_load_model' => array('spPager','spVerifier','spCache','spLinker'), // 模型自动加载的扩展类名
 	
 	'sp_error_throw_exception' => false, // 是否抛出异常
 	'allow_trace_onrelease' => false, // 是否允许在部署模式下输出调试信息
@@ -33,6 +33,7 @@ $__default_configs =  array(
 
 	'default_controller' => 'main', // 默认的控制器名称
 	'default_action' => 'index',  // 默认的动作名称
+	'url_module' => 'm', // 请求时使用的模块变量标识
 	'url_controller' => 'c',  // 请求时使用的控制器变量标识
 	'url_action' => 'a',  // 请求时使用的动作变量标识
 
@@ -41,9 +42,10 @@ $__default_configs =  array(
 	
 	'sp_cache' => APP_PATH.'/tmp', // 框架临时文件夹目录
 	'sp_app_id' => '',  // 框架识别ID
+	'module_path' => APP_PATH.'/module', // 用户模块程序的路径定义
 	'controller_path' => APP_PATH.'/controller', // 用户控制器程序的路径定义
 	'model_path' => APP_PATH.'/model', // 用户模型程序的路径定义
-
+	
 	'url' => array( // URL设置
 		'url_path_base' => '', // URL的根目录访问地址，默认为空则是入口文件index.php
 		'url_rewrite' => array(),
@@ -80,6 +82,10 @@ $__default_configs =  array(
 		'auto_display_suffix' => '.html', // 自动输出模板的后缀名
 	),
 	
+	'module' => array(
+		// 'admin' => array(),
+	),
+	
 	'lang' => array(), // 多语言设置，键是每种语言的名称，而值可以是default（默认语言），语言文件地址或者是翻译函数
 					// 同时请注意，在使用语言文件并且文件中存在中文等时，请将文件设置成UTF8编码
 	'ext' => array(), // 扩展使用的配置根目录
@@ -114,6 +120,8 @@ if('' == $GLOBALS['G_SP']['url']["url_path_base"]){
 }
 
 // 构造执行路由
+$__module = isset($_REQUEST[$GLOBALS['G_SP']["url_module"]]) ? 
+	$_REQUEST[$GLOBALS['G_SP']["url_module"]] : '';
 $__controller = isset($_REQUEST[$GLOBALS['G_SP']["url_controller"]]) ? 
 	$_REQUEST[$GLOBALS['G_SP']["url_controller"]] : 
 	$GLOBALS['G_SP']["default_controller"];
@@ -129,14 +137,18 @@ if($GLOBALS['G_SP']['url']["url_rewrite"]){
 			$rule = 'http://'.$_SERVER['HTTP_HOST'].
 				rtrim(dirname($GLOBALS['G_SP']['url']["url_path_base"]), '/\\') .'/'.$rule;
 		$rule = '/'.str_ireplace(array(
-			'\\\\', 'http://', '/', '<a>', '<c>', '<', '>', ':', '.', 
+			'\\\\', 'http://', '/', '<a>', '<c>', '<m>', '<', '>', ':', '.', 
 		), array(
-			'', '', '\/', '<a:\w+>', '<c:\w+>', '(?<', ')', '>',  '\.', 
+			'', '', '\/', '<a:\w+>', '<c:\w+>', '<m:\w+>', '(?<', ')', '>',  '\.', 
 		), $rule).'/i';
 		if(preg_match($rule, 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], $matchs)){
-			@list($__controller, $__action) = explode('@', $mapper);
+			list($__controller, $__action) = explode('@', $mapper);
+			if(strpos($__controller, '/') !== false)
+				list($__module, $__controller) = explode('/', $__controller);
 			foreach($matchs as $matchkey => $matchval){
-				if('c' === $matchkey && '<c>' === $__controller)
+				if( 'm' === $matchkey && '<m>' === $__module)
+					$__module = $matchval;
+				elseif('c' === $matchkey && '<c>' === $__controller)
 					$__controller = $matchval;
 				elseif( 'a' === $matchkey && '<a>' === $__action)
 					$__action = $matchval;
@@ -635,7 +647,8 @@ function spRun(){
 	
 	$GLOBALS['G_SP']['request_variables'] = array_merge($_GET, $_POST);
 	
-	// 对将要访问的控制器类进行实例化
+
+	
 	$handle_controller = spClass($__controller, null, $GLOBALS['G_SP']["controller_path"].'/'.$__controller.".php");
 	// 调用控制器出错将调用路由错误处理函数
 	if(!is_object($handle_controller) || !method_exists($handle_controller, $__action)){
