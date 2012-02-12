@@ -68,7 +68,7 @@ class db_sae {
 	 */
 	public function affected_rows()
 	{
-		return FALSE; // SAE环境暂时无法获取影响行数
+		return $this->conn->affectedRows();
 	}
 
 	/**
