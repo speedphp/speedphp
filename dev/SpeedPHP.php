@@ -132,14 +132,15 @@ $__action = isset($_REQUEST[$GLOBALS['G_SP']["url_action"]]) ?
 if($GLOBALS['G_SP']['url']["url_rewrite"]){
 	if( ($pos = strpos( $_SERVER['REQUEST_URI'], '?' )) !== false )
 		parse_str( substr( $_SERVER['REQUEST_URI'], $pos + 1 ), $_GET );
+	$GLOBALS['G_SP']['url']["url_rewrite"]['<c>-<a>'] = '<c>@<a>';
 	foreach($GLOBALS['G_SP']['url']["url_rewrite"] as $rule => $mapper){
 		if(0!==stripos($rule, 'http://'))
 			$rule = 'http://'.$_SERVER['HTTP_HOST'].
 				rtrim(dirname($GLOBALS['G_SP']['url']["url_path_base"]), '/\\') .'/'.$rule;
 		$rule = '/'.str_ireplace(array(
-			'\\\\', 'http://', '/', '<a>', '<c>', '<m>', '<', '>', ':', '.', 
+			'\\\\', 'http://', '/', '<', '>',  '.', 
 		), array(
-			'', '', '\/', '<a:\w+>', '<c:\w+>', '<m:\w+>', '(?<', ')', '>',  '\.', 
+			'', '', '\/', '(?<', '>\w+)', '\.', 
 		), $rule).'/i';
 		if(preg_match($rule, 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], $matchs)){
 			list($__controller, $__action) = explode('@', $mapper);
@@ -647,10 +648,10 @@ function spRun(){
 	
 	$GLOBALS['G_SP']['request_variables'] = array_merge($_GET, $_POST);
 	
-	if(!preg_match('/^[a-zA-Z0-9_]*$/i', $__controller))eval($GLOBALS['G_SP']["dispatcher_error"]);
+	if(!preg_match('/^[a-zA-Z0-9_]*$/', $__controller))eval($GLOBALS['G_SP']["dispatcher_error"]);
 	if($__module){
-		if(!preg_match('/^[a-zA-Z0-9_]*$/i', $__module))eval($GLOBALS['G_SP']["dispatcher_error"]);
-		if(!isset($GLOBALS['G_SP']['module'][$__module]))spError('Module: '.htmlspecialchars($__module).' has no configuration!');
+		if(!preg_match('/^[a-zA-Z0-9_]*$/', $__module))eval($GLOBALS['G_SP']["dispatcher_error"]);
+		if(!isset($GLOBALS['G_SP']['module'][$__module]))spError('Module: '.htmlspecialchars($__module).' is not exists!');
 		if(is_array($GLOBALS['G_SP']['module'][$__module]))
 			$module_config = $GLOBALS['G_SP']['module'][$__module];
 		else
@@ -740,7 +741,7 @@ function import($sfilename, $auto_search = true, $auto_error = false){
  */
 function spClass($class_name, $args = null, $sdir = null, $force_inst = false){
 	// 检查类名称是否正确，以保证类定义文件载入的安全性
-	if(preg_match('/[^a-z0-9\-_.]/i', $class_name))spError($class_name."类名称错误，请检查。");
+	if(preg_match('/[^a-zA-Z0-9\-_.]/', $class_name))spError($class_name."类名称错误，请检查。");
 	// 检查是否该类已经实例化，直接返回已实例对象，避免再次实例化
 	if(true != $force_inst)if(isset($GLOBALS['G_SP']["inst_class"][$class_name]))return $GLOBALS['G_SP']["inst_class"][$class_name];
 	// 如果$sdir不能读取，则测试是否仅路径
@@ -801,27 +802,41 @@ function spLaunch($configname, $launchargs = null, $returns = false ){
 	return false;
 }
 
-/**
- *
- * spUrl
- *
- * URL模式的构建函数
- *
- * @param controller    控制器名称，默认为配置'default_controller'
- * @param action    动作名称，默认为配置'default_action' 
- * @param args    传递的参数，数组形式
- * @param anchor    跳转锚点
- * @param no_sphtml    是否应用spHtml设置，在false时效果与不启用spHtml相同。
- */
 function spUrl($controller = null, $action = null, $args = null, $anchor = null) {
 	$controller = ( null != $controller ) ? $controller : $GLOBALS['G_SP']["default_controller"];
 	$action = ( null != $action ) ? $action : $GLOBALS['G_SP']["default_action"];
-	// 使用扩展点
-	if( $launch = spLaunch("function_url", array('controller'=>$controller, 'action'=>$action, 'args'=>$args, 'anchor'=>$anchor), true ))return $launch;
-	$url = $GLOBALS['G_SP']['url']["url_path_base"]."?". $GLOBALS['G_SP']["url_controller"]. "={$controller}&";
-	$url .= $GLOBALS['G_SP']["url_action"]. "={$action}";
-	if(null != $args)foreach($args as $key => $arg) $url .= "&{$key}={$arg}";
-
+	if($GLOBALS['G_SP']['url']["url_rewrite"]){
+		$url = '';
+		$GLOBALS['G_SP']['url']["url_rewrite"]['<c>-<a>'] = '<c>@<a>';
+		foreach($GLOBALS['G_SP']['url']["url_rewrite"] as $rule => $mapper){
+			$mapper = '/'.str_ireplace(array(
+					'/', '<a>', '<c>', '<m>',
+				), array(
+					'\/', '(?<a>\w+)', '(?<c>\w+)', '(?<m>\w+)'
+				), $mapper).'/i';
+			if(preg_match($mapper, $controller.'@'.$action, $matchs)){
+				if(isset($matchs['m']))list($controller, $module) = explode('/', $controller);
+				$url = str_ireplace(array('<a>', '<c>', '<m>'), array($action, $controller, $module), $rule);
+				if($args){
+					$_args = array();
+					foreach($args as $argkey => $arg){
+						$count = 0;
+						$url = str_ireplace('<'.$argkey.'>', $arg, $url, $count);
+						if(!$count)$_args[$argkey] = $arg;
+					}
+					$url = preg_replace('/<\w+>/', '', $url) . (!empty($_args) ? '?'.http_build_query($_args) : '');
+				}
+				break;
+			}
+		}
+		if(0!==stripos($url, 'http://'))
+			$url = 'http://'.$_SERVER['HTTP_HOST'].
+				rtrim(dirname($GLOBALS['G_SP']['url']["url_path_base"]), '/\\') .'/'.$url;
+	}else{
+		$url = $GLOBALS['G_SP']['url']["url_path_base"]."?". $GLOBALS['G_SP']["url_controller"]. "={$controller}&";
+		$url .= $GLOBALS['G_SP']["url_action"]. "={$action}";
+		if(null != $args)$url .= '&'.http_build_query($args);
+	}
 	if(null != $anchor) $url .= "#".$anchor;
 	return $url;
 }
@@ -845,14 +860,6 @@ function __template_spUrl($params)
 	return spUrl($controller, $action, $args, $anchor);
 }
 
-/**
- * __mkdirs
- *
- * 循环建立目录的辅助函数
- *
- * @param dir    目录路径
- * @param mode    文件权限
- */
 function __mkdirs($dir, $mode = 0777)
 {
 	if (!is_dir($dir)) {
@@ -862,37 +869,16 @@ function __mkdirs($dir, $mode = 0777)
 	return true;
 }
 
-/**
- * spExt
- *
- * 扩展类获取扩展配置的函数
- *
- * @param ext_node_name    扩展配置名
- */
 function spExt($ext_node_name)
 {
 	return (empty($GLOBALS['G_SP']['ext'][$ext_node_name])) ? false : $GLOBALS['G_SP']['ext'][$ext_node_name];
 }
 
-/**
- * spAddViewFunction
- *
- * 将函数注册到模板内使用，该函数可以是对象的方法，类的方法或是函数。
- *
- * @param alias    函数在模板内的别名
- * @param callback_function    回调的函数或方法
- */
 function spAddViewFunction($alias, $callback_function)
 {
 	return $GLOBALS['G_SP']["view_registered_functions"][$alias] = $callback_function;
 }
 
-/**
- * spConfigReady   快速将用户配置覆盖到框架默认配置
- * 
- * @param preconfig    默认配置
- * @param useconfig    用户配置
- */
 function spConfigReady( $preconfig, $useconfig = null){
 	$nowconfig = $preconfig;
 	if (is_array($useconfig)){
@@ -906,4 +892,3 @@ function spConfigReady( $preconfig, $useconfig = null){
 	}
 	return $nowconfig;
 }
-
