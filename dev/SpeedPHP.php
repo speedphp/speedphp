@@ -165,7 +165,7 @@ class spController {
 
 	public $v;
 	
-	private $__template_vals = array();
+	private $_template_vals = array();
 	
 	public $layout = null;
 	
@@ -180,12 +180,12 @@ class spController {
 			if( !is_writable($GLOBALS['G_SP']['view']['config']['cache_dir']) )spError('View Engine: cache_dir is not writable!');
 
 			spAddViewFunction('spUrl', '__template_spUrl');
-			$this->__template_url = array(
+			$this->_template_url = array(
 				'root' => 'http://'.$_SERVER['HTTP_HOST'],
 				'base' => 'http://'.$_SERVER['HTTP_HOST'].'/'.$GLOBALS['G_SP']['url']["url_path_base"],
 				'current' => 'http://'.$_SERVER['HTTP_HOST'].'/'.rtrim(dirname($_SERVER['REQUEST_URI']),'\\/'),
 			);
-			$this->__init();
+			$this->_init();
 		}
 	}
 
@@ -227,7 +227,7 @@ class spController {
 		return $this->__template_vals[$name];
 	}
 	
-	private function __init()
+	private function _init()
 	{
 	
 	}
@@ -264,8 +264,12 @@ class spController {
 
 	public function args($name = null, $default = null, $callback_funcname = null)
 	{
-		if(!isset($GLOBALS['G_SP']['request_variables'][$name]))return $default;
-		$arg = $name ? $GLOBALS['G_SP']['request_variables'][$name] : $GLOBALS['G_SP']['request_variables'];
+		if(empty($name)){
+			$arg = $GLOBALS['G_SP']['request_variables'];
+		}else{
+			if(!isset($GLOBALS['G_SP']['request_variables'][$name]))return $default;
+			$arg = $name ? $GLOBALS['G_SP']['request_variables'][$name];
+		}
 		if($callback_funcname)array_walk_recursive($arg, $callback_funcname);
 		return $arg;
 	}
@@ -390,7 +394,7 @@ class spModel {
 	public function create($row)
 	{
 		if(!is_array($row))return false;
-		$row = $this->__prepera_format($row);
+		$row = $this->_prepera_format($row);
 		if(empty($row))return false;
 		foreach($row as $key => $value){
 			$cols[] = $key;
@@ -538,7 +542,7 @@ class spModel {
 	public function update($conditions, $row)
 	{
 		$where = "";
-		$row = $this->__prepera_format($row);
+		$row = $this->_prepera_format($row);
 		if(empty($row))return false;
 		if(is_array($conditions)){
 			$join = array();
@@ -625,7 +629,7 @@ class spModel {
 	 * 按表字段调整适合的字段
 	 * @param rows    输入的表字段
 	 */
-	private function __prepera_format($rows)
+	private function _prepera_format($rows)
 	{
 		$columns = $this->_db->getTable($this->tbl_name);
 		$newcol = array();
