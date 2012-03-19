@@ -268,16 +268,13 @@ class spController {
 			$arg = $GLOBALS['G_SP']['request_variables'];
 		}else{
 			if(!isset($GLOBALS['G_SP']['request_variables'][$name]))return $default;
-			$arg = $name ? $GLOBALS['G_SP']['request_variables'][$name];
+			$arg = $GLOBALS['G_SP']['request_variables'][$name];
 		}
 		if($callback_funcname)array_walk_recursive($arg, $callback_funcname);
 		return $arg;
 	}
 }
 
-/**
- * spModel 系统模型类，所有模型类的父类 应用程序中的每个模型类都应继承于spModel。
- */
 class spModel {
 	/**
 	 * 供检验值的规则与返回信息
@@ -311,6 +308,12 @@ class spModel {
 	 * 数据驱动程序
 	 */
 	public $_db;
+	
+	private $_find_stack = array();
+	private $_find_result;
+	private $_find_sql;
+	
+	private $_page_data = null;
 
 	/**
 	 * 构造函数
@@ -363,7 +366,7 @@ class spModel {
 			}
 			$where = "WHERE ".join(" AND ",$join);
 		}else{
-			if(null != $conditions)$where = "WHERE ".$conditions;
+			if($conditions)$where = "WHERE ".$conditions;
 		}
 		if(null != $sort){
 			$sort = "ORDER BY {$sort}";
@@ -371,26 +374,24 @@ class spModel {
 			$sort = "ORDER BY {$this->pk}";
 		}
 		$sql = "SELECT {$fields} FROM {$this->tbl_name} {$where} {$sort}";
-		if(null != $limit)$sql = $this->_db->setlimit($sql, $limit);
-		return $this->_db->getArray($sql);
+		if($limit)$sql = $this->_db->setlimit($sql, $limit);
+		
+		if(!empty($this->_find_stack)){
+			$this->_find_sql = $sql;
+			$this->_call_stack();
+			$result = $this->_find_result;
+			$this->_find_result = null;
+		}else{
+			$result = $this->_db->getArray($sql);
+		}
+		return $result;
 	}
-	/**
-	 * 过滤转义字符
-	 *
-	 * @param value 需要进行过滤的值
-	 */
+
 	public function escape($value)
 	{
 		return $this->_db->__val_escape($value);
 	}
-	// __val_escape是val的别名，向前兼容
-	public function __val_escape($value){return $this->escape($value);}
 	
-	/**
-	 * 在数据表中新增一行数据
-	 *
-	 * @param row 数组形式，数组的键是数据表中的字段名，键对应的值是需要新增的数据。
-	 */
 	public function create($row)
 	{
 		if(!is_array($row))return false;
@@ -404,7 +405,7 @@ class spModel {
 		$val = join(',', $vals);
 
 		$sql = "INSERT INTO {$this->tbl_name} ({$col}) VALUES ({$val})";
-		if( false != $this->_db->exec($sql) ){ // 获取当前新增的ID
+		if( false != $this->_db->exec($sql) ){
 			if( $newinserid = $this->_db->newinsertid() ){
 				return $newinserid;
 			}else{
@@ -436,24 +437,11 @@ class spModel {
 		return $this->_db->exec($sql);
 	}
 
-	/**
-	 * 按字段值查找一条记录
-	 *
-	 * @param field 字符串，对应数据表中的字段名
-	 * @param value 字符串，对应的值
-	 */
 	public function findBy($field, $value)
 	{
 		return $this->find(array($field=>$value));
 	}
 
-	/**
-	 * 按字段值修改一条记录
-	 *
-	 * @param conditions 数组形式，查找条件，此参数的格式用法与find/findAll的查找条件参数是相同的。
-	 * @param field 字符串，对应数据表中的需要修改的字段名
-	 * @param value 字符串，新值
-	 */
 	public function updateField($conditions, $field, $value)
 	{
 		return $this->update($conditions, array($field=>$value));
@@ -478,20 +466,13 @@ class spModel {
 	{
 		return $this->_db->exec($sql);
 	}
-	// query是runSql的别名，向前兼容
 	public function query($sql){return $this->runSql($sql);}
 
-	/**
-	 * 返回最后执行的SQL语句供分析
-	 */
 	public function dumpSql()
 	{
 		return end( $this->_db->arrSql );
 	}
 	
-	/**
-	 * 返回上次执行update,create,delete,exec的影响行数
-	 */
 	public function affectedRows()
 	{
 		return $this->_db->affected_rows();
@@ -522,7 +503,7 @@ class spModel {
 
 	/**
 	 * 魔术函数，执行模型扩展类的自动加载及使用
-	 */
+	
 	public function __call($name, $args)
 	{
 		if(in_array($name, $GLOBALS['G_SP']["auto_load_model"])){
@@ -531,7 +512,7 @@ class spModel {
 			spError("方法 {$name} 未定义");
 		}
 	}
-
+	 */
 	/**
 	 * 修改数据，该函数将根据参数中设置的条件而更新表中数据
 	 * 
@@ -563,18 +544,12 @@ class spModel {
 		return $this->_db->exec($sql);
 	}
 	
-	/**
-	 * 替换数据，根据条件替换存在的记录，如记录不存在，则将条件与替换数据相加并新增一条记录。
-	 * 
-	 * @param conditions    数组形式，查找条件，请注意，仅能使用数组作为该条件！
-	 * @param row    数组形式，修改的数据
-	 */
 	public function replace($conditions, $row)
 	{
 		if( $this->find($conditions) ){
 			return $this->update($conditions, $row);
 		}else{
-			if( !is_array($conditions) )spError('replace方法的条件务必是数组形式！');
+			if( !is_array($conditions) )spError('Conditions var of replace must be a array!');
 			$rows = spConfigReady($conditions, $row);
 			return $this->create($rows);
 		}
@@ -604,31 +579,66 @@ class spModel {
 		return $this->_db->exec($sql);
 	}
 	
-	/**
-	 * 为设定的字段值减少
-	 * @param conditions    数组形式，查找条件，此参数的格式用法与find/findAll的查找条件参数是相同的。
-	 * @param field    字符串，需要减少的字段名称，该字段务必是数值类型
-	 * @param optval    减少的值
-	 */
 	public function decrField($conditions, $field, $optval = 1)
 	{
 		return $this->incrField($conditions, $field, - $optval);
 	}
 
-	/**
-	 * 按给定的数据表的主键删除记录
-	 *
-	 * @param pk    字符串或数字，数据表主键的值。
-	 */
 	public function deleteByPk($pk)
 	{
 		return $this->delete(array($this->pk=>$pk));
 	}
+	
+	public function pager($page, $pageSize, $total = null)
+	{
+		$this->_find_stack[] = array('pager', array($page, $pageSize, $total));
+		return $this;
+	}
+	
+	public function getPager($scope = 10)
+	{
 
-	/**
-	 * 按表字段调整适合的字段
-	 * @param rows    输入的表字段
-	 */
+	}
+	
+	public function linker()
+	{
+		$this->_find_stack[] = array('linker', array());
+		return $this;
+	}
+	
+	public function verifier($args)
+	{
+	
+	}
+	
+	public function cache($life_time = 3600)
+	{
+		$this->_find_stack[] = array('cache', array($life_time));
+		return $this;
+	}
+	
+	private function _call_stack()
+	{
+		$callback = array_pop($this->_find_stack);
+		call_user_func_array(array($this, "_do_".$callback[0]), $callback[1]);
+		if(!empty($this->_find_stack))$this->_call_stack();
+	}
+	
+	private function _do_cache($life_time = 3600)
+	{
+		$this->_find_result = 'cache'.$life_time;
+	}
+	
+	private function _do_linker()
+	{
+		$this->_find_result = 'linker';
+	}
+	
+	private function _do_pager($page, $pageSize, $total = null)
+	{
+
+	}
+
 	private function _prepera_format($rows)
 	{
 		$columns = $this->_db->getTable($this->tbl_name);
