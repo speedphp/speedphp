@@ -636,7 +636,36 @@ class spModel {
 	
 	private function _do_pager($page, $pageSize, $total = null)
 	{
-
+		$this->_page_data = null;
+		if($this->_find_sql){
+			if(!$total){
+				$total_sql = preg_replace('/^\s*select\s+(\*|[\w\._]+(\s*,\s*[\w\._]+)*)\s+from/i', 'SELECT COUNT(*) AS sp_counter FROM ', $this->_find_sql);
+				if(! $total = $this->_db->getArray($total_sql) ){
+					$this->_find_result = false;
+					return;
+				}
+				$total = $total[0]['sp_counter'];
+			}
+			$page = min(intval(max($page, 1)), $total);
+			$sql = $this->_db->setlimit($this->_find_sql, ($page - 1) * $pageSize . "," . $pageSize);
+			$this->_find_result = $this->_db->getArray($sql);
+			$this->_find_sql = null;
+		}
+		if($total > $pageSize){
+			$total_page = ceil( $total / $pageSize );
+			$page = min(intval(max($page, 1)), $total);
+			$this->_page_data = array(
+				"total_count" => $total, 
+				"page_size"   => $pageSize,
+				"total_page"  => $total_page,
+				"first_page"  => 1,
+				"prev_page"   => ( ( 1 == $page ) ? 1 : ($page - 1) ),
+				"next_page"   => ( ( $page == $total_page ) ? $total_page : ($page + 1)),
+				"last_page"   => $total_page,
+				"current_page"=> $page,
+				//"all_pages"   => range(1, $total_page),
+			);
+		}
 	}
 
 	private function _prepera_format($rows)
