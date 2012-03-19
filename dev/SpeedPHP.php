@@ -597,7 +597,18 @@ class spModel {
 	
 	public function getPager($scope = 10)
 	{
-
+		if(!$this->_page_data)return ;
+		$scope = (int)$scope;
+		if($this->_page_data['total_page'] <= $scope || $this->_page_data['current_page'] <= $scope/2) {
+			$this->_page_data['all_pages'] = range(1, $scope);
+		}elseif( $this->_page_data['current_page'] <= $this->_page_data['total_page'] - $scope/2 ){
+			$right = $this->_page_data['current_page'] + (int)($scope/2);
+			$this->_page_data['all_pages'] = range($right-$scope+1, $right);
+		}else{
+			$this->_page_data['all_pages'] = range($this->_page_data['total_page']-$scope+1, 
+				$this->_page_data['total_page']);
+		}
+		return $this->_page_data;
 	}
 	
 	public function linker()
