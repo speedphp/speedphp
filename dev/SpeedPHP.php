@@ -496,7 +496,7 @@ class spModel {
 		}else{
 			if(null != $conditions)$where = "WHERE ".$conditions;
 		}
-		$sql = "SELECT COUNT({$this->pk}) AS SP_COUNTER FROM {$this->tbl_name} {$where}";
+		$sql = "SELECT COUNT(*) AS SP_COUNTER FROM {$this->tbl_name} {$where}";
 		$result = $this->_db->getArray($sql);
 		return $result[0]['SP_COUNTER'];
 	}
@@ -650,12 +650,12 @@ class spModel {
 		$this->_page_data = null;
 		if($this->_find_sql){
 			if(!$total){
-				$total_sql = preg_replace('/^\s*select[\*\s\w\._,\(\)]+from/i', 'SELECT COUNT(*) AS sp_counter FROM ', $this->_find_sql);
+				$total_sql = preg_replace('/^\s*select[\*\s\w\._,\(\)]+from/i', 'SELECT COUNT(*) AS SP_COUNTER FROM ', $this->_find_sql);
 				if(! $total = $this->_db->getArray($total_sql) ){
 					$this->_find_result = false;
 					return;
 				}
-				$total = $total[0]['sp_counter'];
+				$total = $total[0]['SP_COUNTER'];
 			}
 			$page = min(intval(max($page, 1)), $total);
 			$sql = $this->_db->setlimit($this->_find_sql, ($page - 1) * $pageSize . "," . $pageSize);
