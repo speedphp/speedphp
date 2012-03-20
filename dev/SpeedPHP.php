@@ -650,7 +650,7 @@ class spModel {
 		$this->_page_data = null;
 		if($this->_find_sql){
 			if(!$total){
-				$total_sql = preg_replace('/^\s*select\s+(\*|[\w\._]+(\s*,\s*[\w\._]+)*)\s+from/i', 'SELECT COUNT(*) AS sp_counter FROM ', $this->_find_sql);
+				$total_sql = preg_replace('/^\s*select[\*\s\w\._,\(\)]+from/i', 'SELECT COUNT(*) AS sp_counter FROM ', $this->_find_sql);
 				if(! $total = $this->_db->getArray($total_sql) ){
 					$this->_find_result = false;
 					return;
