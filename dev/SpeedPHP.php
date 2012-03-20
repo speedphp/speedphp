@@ -60,6 +60,7 @@ $__default_configs =  array(
 		'database' => '',      // 库名称
 		'prefix' => '',           // 表前缀
 		'persistent' => false,    // 是否使用长链接
+		'prepare_columns' => false, // 是否开启预获取表结构功能
 	),
 	'db_driver_path' => '', // 自定义数据库驱动文件地址
 	'db_spdb_full_tblname' => true, // spDB是否使用表全名
@@ -314,6 +315,7 @@ class spModel {
 	private $_find_sql;
 	
 	private $_page_data = null;
+	private $_columns = array();
 
 	/**
 	 * 构造函数
@@ -395,8 +397,10 @@ class spModel {
 	public function create($row)
 	{
 		if(!is_array($row))return false;
-		$row = $this->_prepera_format($row);
-		if(empty($row))return false;
+		if($GLOBALS['G_SP']['db']['prepare_columns']){
+			$row = $this->_prepera_format($row);
+			if(empty($row))return false;
+		}
 		foreach($row as $key => $value){
 			$cols[] = $key;
 			$vals[] = $this->escape($value);
@@ -523,8 +527,10 @@ class spModel {
 	public function update($conditions, $row)
 	{
 		$where = "";
-		$row = $this->_prepera_format($row);
-		if(empty($row))return false;
+		if($GLOBALS['G_SP']['db']['prepare_columns']){
+			$row = $this->_prepera_format($row);
+			if(empty($row))return false;
+		}
 		if(is_array($conditions)){
 			$join = array();
 			foreach( $conditions as $key => $condition ){
@@ -681,14 +687,16 @@ class spModel {
 
 	private function _prepera_format($rows)
 	{
-		$columns = $this->_db->getTable($this->tbl_name);
-		$newcol = array();
-		foreach( $columns as $col ){
-			$newcol[$col['Field']] = $col['Field'];
+		if( !isset($this->_columns[$this->tbl_name]) ){
+			$columns = $this->_db->getTable($this->tbl_name);
+			$newcol = array();
+			foreach( $columns as $col ){
+				$newcol[$col['Field']] = $col['Field'];
+			}
+			$this->_columns[$this->tbl_name] = array_intersect_key($rows,$newcol);
 		}
-		return array_intersect_key($rows,$newcol);
+		return $this->_columns[$this->tbl_name];
 	}
-
 }
 
 
