@@ -687,15 +687,11 @@ class spModel {
 
 	private function _prepera_format($rows)
 	{
-		if( !isset($this->_columns[$this->tbl_name]) ){
-			$columns = $this->_db->getTable($this->tbl_name);
-			$newcol = array();
-			foreach( $columns as $col ){
-				$newcol[$col['Field']] = $col['Field'];
-			}
-			$this->_columns[$this->tbl_name] = array_intersect_key($rows,$newcol);
-		}
-		return $this->_columns[$this->tbl_name];
+		if( !isset($this->_columns[$this->tbl_name]) )
+			$this->_columns[$this->tbl_name] = $this->_db->getTable($this->tbl_name);
+		$newcol = array();
+		foreach( $this->_columns[$this->tbl_name] as $col ) $newcol[$col['Field']] = $col['Field'];
+		return array_intersect_key($rows, $newcol);
 	}
 }
 
