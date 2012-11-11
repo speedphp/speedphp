@@ -48,10 +48,10 @@ function getsource($file, $line){
 	return $returns;
 }
 function highlight_code($code){
-    if (ereg("<\?(php)?[^[:graph:]]", $code)) {
+    if (preg_match("<\?(php)?[^[:graph:]]", $code)) {
         $code = highlight_string($code, TRUE);
     } else {
-        $code = ereg_replace("(&lt;\?php&nbsp;)+", "", highlight_string("<?php ".$code, TRUE));
+        $code = preg_replace("(&lt;\?php&nbsp;)+", "", highlight_string("<?php ".$code, TRUE));
     }
     return $code;
 }
