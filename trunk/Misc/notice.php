@@ -21,7 +21,9 @@ ul{margin:0; padding:0; list-style-type:none;font-size:0;line-height:0;}
 </style>	
 </head><body><div id="main"><div id="contents">
 <h2><?php echo $msg?></h2>
-<?php foreach( $traces as $trace ){if(is_array($trace)&&!empty($trace["file"])){
+<?php 
+array_pop($traces);
+foreach( $traces as $trace ){if(is_array($trace)&&!empty($trace["file"])){
 $souceline = getsource($trace["file"], $trace["line"]);if( $souceline ){
 ?>
 <ul><li><span><?php echo $trace["file"];?> on line <?php echo $trace["line"];?> </span></li></ul>
