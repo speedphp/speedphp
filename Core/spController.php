@@ -12,7 +12,8 @@ class spController {
 	 * 视图对象
 	 */
 	public $v;
-	
+
+	public $layout = null;
 	/**
 	 * 赋值到模板的变量
 	 */
@@ -23,8 +24,15 @@ class spController {
 	 */
 	public function __construct()
 	{	
-		if(TRUE == $GLOBALS['G_SP']['view']['enabled']){
-			$this->v = spClass('spView');
+		if($GLOBALS['G_SP']['view']['enabled']){
+			$this->v = spClass($GLOBALS['G_SP']['view']['engine_name'],null,$GLOBALS['G_SP']['view']['engine_path']);
+			foreach( $GLOBALS['G_SP']['view']['config'] as $key => $value )$this->v->{$key} = $value;
+
+			if( !empty($GLOBALS['G_SP']['sp_app_id']) && isset($this->v->compile_id) )$this->v->compile_id = $GLOBALS['G_SP']['sp_app_id'];
+			if( !is_writable($GLOBALS['G_SP']['view']['config']['compile_dir']) )spError('View Engine: complie_dir is not writable!');
+			if( !is_writable($GLOBALS['G_SP']['view']['config']['cache_dir']) )spError('View Engine: cache_dir is not writable!');
+
+			spAddViewFunction('spUrl', '__template_spUrl');
 		}
 	}
 
@@ -98,16 +106,34 @@ class spController {
      * @param $tplname   模板路径及名称
      * @param $output   是否直接显示模板，设置成FALSE将返回HTML而不输出
 	 */
-	public function display($tplname, $output = TRUE)
+	public function display($tplname, $output = true, $check_exists = true)
 	{
-		@ob_start();
-		if(TRUE == $GLOBALS['G_SP']['view']['enabled']){
-			$this->v->display($tplname);
-		}else{
-			extract($this->__template_vals);
-			require($tplname);
+		$tplname = $GLOBALS['G_SP']['view']['config']['template_dir'].'/'.ltrim($tplname, '/');
+		if( !is_readable($tplname) ){
+                    if( $check_exists )
+                        spError("View Engine: Unable to load template file '{$tplname}'");
+                    else
+                        return false;
 		}
-		if( TRUE != $output )return ob_get_clean();
+		if($GLOBALS['G_SP']['view']['enabled']){
+                    if( $this->layout ){
+                        $this->__template_file = $tplname;
+                        $tplname = $this->layout;
+                    }
+                    foreach( $GLOBALS['G_SP']["view_registered_functions"] as $alias => $func )$this->v->registerPlugin("function", $alias, $func);
+                    $this->v->assign($this->__template_vals);
+                    if($GLOBALS['G_SP']['view']['debugging'] && SP_DEBUG)$this->v->debugging = true;
+                    try {
+                        $this->v->display($tplname);
+                    } catch (Exception $e) {
+                        spError( 'View Engine: '.$e->getMessage() );
+                    }
+		}else{
+                    extract($this->__template_vals);
+                    include $tplname;
+		}
+                @ob_start();
+		if( !$output )return ob_get_clean();
 	}
 	
 	/**
@@ -139,7 +165,7 @@ class spController {
 	public function getView()
 	{
 		$this->v->addfuncs();
-		return $this->v->engine;
+		return $this->v;
 	}
 	/**
 	 * 设置当前用户的语言
