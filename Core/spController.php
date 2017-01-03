@@ -32,7 +32,8 @@ class spController {
 			if( !is_writable($GLOBALS['G_SP']['view']['config']['compile_dir']) )spError('View Engine: complie_dir is not writable!');
 			if( !is_writable($GLOBALS['G_SP']['view']['config']['cache_dir']) )spError('View Engine: cache_dir is not writable!');
 
-			spAddViewFunction('spUrl', '__template_spUrl');
+			spAddViewFunction('T', array( 'spView', '__template_T'));
+			spAddViewFunction('spUrl', array( 'spView', '__template_spUrl'));
 		}
 	}
 
