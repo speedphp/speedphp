@@ -26,7 +26,10 @@ class spController {
 	{	
 		if($GLOBALS['G_SP']['view']['enabled']){
 			$this->v = spClass($GLOBALS['G_SP']['view']['engine_name'],null,$GLOBALS['G_SP']['view']['engine_path']);
-			foreach( $GLOBALS['G_SP']['view']['config'] as $key => $value )$this->v->{$key} = $value;
+			$engine_vars = get_class_vars(get_class($this->v));
+			foreach( $GLOBALS['G_SP']['view']['config'] as $key => $value ){
+				if( array_key_exists($key,$engine_vars) )$this->v->{$key} = $value;
+			}
 
 			if( !empty($GLOBALS['G_SP']['sp_app_id']) && isset($this->v->compile_id) )$this->v->compile_id = $GLOBALS['G_SP']['sp_app_id'];
 			if( !is_writable($GLOBALS['G_SP']['view']['config']['compile_dir']) )spError('View Engine: complie_dir is not writable!');
