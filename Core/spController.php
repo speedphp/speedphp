@@ -144,7 +144,7 @@ class spController {
 	public function auto_display($tplname)
 	{
 		if( TRUE != $this->v->displayed && FALSE != $GLOBALS['G_SP']['view']['auto_display']){
-			if( method_exists($this->v->engine, 'templateExists') && TRUE == $this->v->engine->templateExists($tplname))$this->display($tplname);
+			if( method_exists($this->v, 'templateExists') && TRUE == $this->v->templateExists($tplname))$this->display($tplname);
 		}
 	}
 
