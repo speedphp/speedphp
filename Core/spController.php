@@ -20,6 +20,10 @@ class spController {
 	private $__template_vals = array();
 	
 	/**
+	 * 模板是否已输出
+	 */
+	public $displayed = FALSE;
+	/**
 	 * 构造函数
 	 */
 	public function __construct()
@@ -89,8 +93,8 @@ class spController {
 	 */
 	public function __set($name, $value)
 	{
-		if(TRUE == $GLOBALS['G_SP']['view']['enabled'] && false !== $value){
-			$this->v->engine->assign(array($name=>$value));
+		if(TRUE == $GLOBALS['G_SP']['view']['enabled']){
+			$this->v->assign(array($name=>$value));
 		}
 		$this->__template_vals[$name] = $value;
 	}
@@ -114,29 +118,31 @@ class spController {
 	{
 		$tplname = $GLOBALS['G_SP']['view']['config']['template_dir'].'/'.ltrim($tplname, '/');
 		if( !is_readable($tplname) ){
-                    if( $check_exists )
-                        spError("View Engine: Unable to load template file '{$tplname}'");
-                    else
-                        return false;
+			if( $check_exists ){
+				spError("View Engine: Unable to load template file '{$tplname}'");
+			}else{
+				return false;
+			}
 		}
 		if($GLOBALS['G_SP']['view']['enabled']){
-                    if( $this->layout ){
-                        $this->__template_file = $tplname;
-                        $tplname = $this->layout;
-                    }
-                    foreach( $GLOBALS['G_SP']["view_registered_functions"] as $alias => $func )$this->v->registerPlugin("function", $alias, $func);
-                    $this->v->assign($this->__template_vals);
-                    if($GLOBALS['G_SP']['view']['debugging'] && SP_DEBUG)$this->v->debugging = true;
-                    try {
-                        $this->v->display($tplname);
-                    } catch (Exception $e) {
-                        spError( 'View Engine: '.$e->getMessage() );
-                    }
+			if( $this->layout ){
+				$this->__template_file = $tplname;
+				$tplname = $this->layout;
+			}
+			$this->v->assign($this->__template_vals);
+			if($GLOBALS['G_SP']['view']['debugging'] && SP_DEBUG)$this->v->debugging = true;
+			try {
+				$this->addfuncs();
+				$this->displayed = TRUE;
+				$this->v->display($tplname);
+			} catch (Exception $e) {
+				spError( 'View Engine: '.$e->getMessage() );
+			}
 		}else{
-                    extract($this->__template_vals);
-                    include $tplname;
+			extract($this->__template_vals);
+			include $tplname;
 		}
-                @ob_start();
+        @ob_start();
 		if( !$output )return ob_get_clean();
 	}
 	
@@ -168,7 +174,7 @@ class spController {
 	 */
 	public function getView()
 	{
-		$this->v->addfuncs();
+		$this->addfuncs();
 		return $this->v;
 	}
 	/**
@@ -193,6 +199,20 @@ class spController {
 	{
 		if( !isset($_COOKIE[$GLOBALS['G_SP']['sp_app_id']."_SpLangCookies"]) )return $_SESSION[$GLOBALS['G_SP']['sp_app_id']."_SpLangSession"];
 		return $_COOKIE[$GLOBALS['G_SP']['sp_app_id']."_SpLangCookies"];
+	}
+	
+	/**
+	 * 注册视图函数
+	 */
+	private function addfuncs()
+	{
+		if( is_array($GLOBALS['G_SP']["view_registered_functions"]) ){
+			foreach( $GLOBALS['G_SP']["view_registered_functions"] as $alias => $func ){
+				if( is_array($func) && !is_object($func[0]) )$func = array(spClass($func[0]),$func[1]);
+				$this->v->registerPlugin("function", $alias, $func);
+				unset($GLOBALS['G_SP']["view_registered_functions"][$alias]);
+			}
+		}
 	}
 }
 
