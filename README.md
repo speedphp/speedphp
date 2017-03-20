@@ -1,6 +1,6 @@
 SpeedPHP是一款全功能的国产PHP框架应用系统，速度飞快，上手容易，是最适合初学者的PHP框架。SpeedPHP以“快速开发、快速学习、快速执行”为理念，带你轻松进入PHP高手的行列。
 
-新版SpeedPHP测试版本已经在Git@OSC发布，请移步：https://git.oschina.net/SpeedPHP/speed
+新版SpeedPHP版本已经发布，请移步：https://github.com/SpeedPHP/speed
 
 **主页**：http://www.speedphp.com/
 
@@ -10,7 +10,7 @@ SpeedPHP 3.1.89是修正了3.1.66多项存在问题的稳定版本，增强对SA
 
 
 
-**下载地址**：http://www.speedphp.com/download（有UTF8、GBK和SAE专用版本下载）
+**下载地址**：https://github.com/SpeedPHP/speedphp/archive/master.zip
 
 
 
