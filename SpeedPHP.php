@@ -4,7 +4,7 @@
 /////////////////////////////////////////////////////////////////
 
 define('SP_VERSION', '3.1.89'); // 当前框架版本
-if (substr(PHP_VERSION, 0, 1) >= '5')exit("SpeedPHP框架环境要求PHP5或以上！");
+
 /**
  * spCore
  *
@@ -29,10 +29,10 @@ if('debug' == $GLOBALS['G_SP']['mode']){
 }
 // 如果是调试模式，打开警告输出
 if (SP_DEBUG) {
-	if( substr(PHP_VERSION, 0, 3) == "5.3" ){
-		error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING & ~E_DEPRECATED);
+	if( substr(PHP_VERSION, 0, 3) >= "5.3" ){
+		error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ^ E_DEPRECATED ^ E_STRICT);
 	}else{
-		error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
+		error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
 	}
 } else {
 	error_reporting(0);
